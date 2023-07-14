@@ -86,11 +86,22 @@
         </n-tooltip>
       </div>
       <!-- Personal Center -->
-      <div class="layout-header-trigger layout-header-trigger-min">
+      <!-- <div class="layout-header-trigger layout-header-trigger-min">
         <n-dropdown trigger="hover" @select="avatarSelect" :options="avatarOptions">
           <div class="avatar">
             <n-avatar round>
               {{ username }}
+              <template #icon>
+                <UserOutlined />
+              </template>
+            </n-avatar>
+          </div>
+        </n-dropdown>
+      </div> -->
+      <div class="layout-header-trigger layout-header-trigger-min">
+        <n-dropdown trigger="hover" @select="avatarSelect" :options="avatarOptions">
+          <div class="avatar">
+            <n-avatar round>
               <template #icon>
                 <UserOutlined />
               </template>
@@ -115,16 +126,19 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent, reactive, toRefs, ref, computed, unref } from 'vue';
+  import { defineComponent, reactive, toRefs, ref, computed, unref, Component } from 'vue';
   import { useRouter, useRoute } from 'vue-router';
+  import { LogOutOutline } from '@vicons/ionicons5';
+  import { PersonEdit20Regular } from '@vicons/fluent';
   import components from './components';
-  import { NDialogProvider, useDialog, useMessage } from 'naive-ui';
+  import { NDialogProvider, NIcon, useDialog, useMessage } from 'naive-ui';
   import { TABS_ROUTES } from '@/store/mutation-types';
   import { useUserStore } from '@/store/modules/user';
   import ProjectSetting from './ProjectSetting.vue';
   import { AsideMenu } from '@/layout/components/Menu';
   import { useProjectSetting } from '@/hooks/setting/useProjectSetting';
   import { websiteConfig } from '@/config/website.config';
+  import { h } from 'vue';
 
   export default defineComponent({
     name: 'PageHeader',
@@ -143,12 +157,12 @@
       const dialog = useDialog();
       const { navMode, navTheme, headerSetting, menuSetting, crumbsSetting } = useProjectSetting();
 
-      const { name } = userStore?.info || {};
+      const { profile_picture } = userStore?.info.profile || {};
 
       const drawerSetting = ref();
 
       const state = reactive({
-        username: name ?? '',
+        username: profile_picture ?? '',
         fullscreenIcon: 'FullscreenOutlined',
         navMode,
         navTheme,
@@ -258,14 +272,24 @@
           }
         }
       };
+
+      const renderIcon = (icon: Component) => {
+        return () => {
+          return h(NIcon, null, {
+            default: () => h(icon),
+          });
+        };
+      };
       const avatarOptions = [
         {
           label: 'Profile',
           key: 1,
+          icon: renderIcon(PersonEdit20Regular),
         },
         {
           label: 'Logout',
           key: 2,
+          icon: renderIcon(LogOutOutline),
         },
       ];
 

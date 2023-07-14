@@ -1,136 +1,109 @@
+<!-- eslint-disable vue/v-on-event-hyphenation -->
 <template>
-  <n-card>
+  <n-card title="Profile" v-permission="{ action: ['can view profile'] }">
     <n-row>
-      <n-col :span="8">
-        <n-avatar
-          round
-          :size="200"
-          src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg"
-        />
+      <n-col :span="8" class="text-center">
+        <n-avatar round :size="200" :src="`${imgUrl}${profileData.profile_picture}`" />
       </n-col>
       <n-col :span="16">
-        <n-form ref="formRef" :label-width="80" :model="formValue" :rules="rules" size="small">
-          <n-space style="display: block" vertical>
-            <n-card title="Profile Details">
-              <n-row gutter="12">
-                <n-col :span="8">
-                  <n-form-item label="First Name" path="first_name">
-                    <n-input v-model:value="formValue.first_name" placeholder="Enter First Name" />
-                  </n-form-item>
-                </n-col>
-                <n-col :span="8">
-                  <n-form-item label="Last Name" path="last_name">
-                    <n-input v-model:value="formValue.last_name" placeholder="Enter Last Name" />
-                  </n-form-item>
-                </n-col>
-                <n-col :span="8">
-                  <n-form-item label="Phone Number" path="phone_number">
-                    <n-input
-                      v-model:value="formValue.phone_number"
-                      placeholder="Enter Phone Number"
-                    />
-                  </n-form-item>
-                </n-col>
-                <n-col :span="8">
-                  <n-form-item label="Address" path="address">
-                    <n-input v-model:value="formValue.address" placeholder="Enter Address" />
-                  </n-form-item>
-                </n-col>
-                <n-col :span="8">
-                  <n-form-item label="City" path="city">
-                    <n-input v-model:value="formValue.city" placeholder="Enter City" />
-                  </n-form-item>
-                </n-col>
-                <n-col :span="8">
-                  <n-form-item label="State" path="state">
-                    <n-input v-model:value="formValue.state" placeholder="Enter State" />
-                  </n-form-item>
-                </n-col>
-                <n-col :span="8">
-                  <n-form-item label="Country" path="country">
-                    <n-input v-model:value="formValue.country" placeholder="Enter Country" />
-                  </n-form-item>
-                </n-col>
-              </n-row>
-            </n-card>
-          </n-space>
-          <n-space justify="end">
-            <n-form-item :theme-overrides="{ feedbackHeightSmall: '0' }">
-              <n-button type="success" @click="handleValidateClick"> Save Profile</n-button>
-            </n-form-item>
-          </n-space>
-        </n-form>
+        <n-space style="display: block" vertical>
+          <n-card title="Profile Details">
+            <n-row gutter="12">
+              <n-col :span="8">
+                <n-form-item label="First Name" path="first_name">
+                  <n-input
+                    v-model:value="profileData.first_name"
+                    placeholder="Enter First Name"
+                    readonly
+                  />
+                </n-form-item>
+              </n-col>
+              <n-col :span="8">
+                <n-form-item label="Last Name" path="last_name">
+                  <n-input
+                    v-model:value="profileData.last_name"
+                    placeholder="Enter Last Name"
+                    readonly
+                  />
+                </n-form-item>
+              </n-col>
+              <n-col :span="8">
+                <n-form-item label="Phone Number" path="phone_number">
+                  <n-input
+                    v-model:value="profileData.phone_number"
+                    placeholder="Enter Phone Number"
+                    readonly
+                  />
+                </n-form-item>
+              </n-col>
+              <n-col :span="8">
+                <n-form-item label="Address" path="address">
+                  <n-input
+                    v-model:value="profileData.address"
+                    placeholder="Enter Address"
+                    readonly
+                  />
+                </n-form-item>
+              </n-col>
+              <n-col :span="8">
+                <n-form-item label="City" path="city">
+                  <n-input v-model:value="profileData.city" placeholder="Enter City" readonly />
+                </n-form-item>
+              </n-col>
+              <n-col :span="8">
+                <n-form-item label="State" path="state">
+                  <n-input v-model:value="profileData.state" placeholder="Enter State" readonly />
+                </n-form-item>
+              </n-col>
+              <n-col :span="8">
+                <n-form-item label="Country" path="country">
+                  <n-input
+                    v-model:value="profileData.country"
+                    placeholder="Enter Country"
+                    readonly
+                  />
+                </n-form-item>
+              </n-col>
+            </n-row>
+          </n-card>
+        </n-space>
+        <n-space justify="end">
+          <n-form-item :theme-overrides="{ feedbackHeightSmall: '0' }">
+            <n-button type="success" @click="handleValidateClick"> Edit Profile</n-button>
+          </n-form-item>
+        </n-space>
       </n-col>
     </n-row>
+    <n-modal style="width: 70%" v-model:show="showEditModal" preset="dialog">
+      <template #header>
+        <div>Edit Profile</div>
+      </template>
+      <n-space :vertical="true">
+        <edit-profile @updated="showEditModal = false" />
+      </n-space>
+    </n-modal>
   </n-card>
 </template>
 
 <script lang="ts" setup>
   import { onMounted, ref } from 'vue';
-  import { FormInst } from 'naive-ui';
-  import { useRouter } from 'vue-router';
-  import { profileUpdateApi } from '@/api/user/user';
   import { useUserStore } from '@/store/modules/user';
+  import EditProfile from '@/views/users/EditProfile.vue';
+  import { useGlobSetting } from '@/hooks/setting';
 
-  const formValue: any = ref({});
-  const formRef = ref<FormInst | null>(null);
+  const profileData: any = ref({});
   const userStore = useUserStore();
-  const router = useRouter();
+  const showEditModal = ref(false);
+  const globSetting = useGlobSetting();
+  const { imgUrl } = globSetting;
 
   const handleValidateClick = (e: MouseEvent) => {
     e.preventDefault();
-    formRef.value?.validate((errors) => {
-      if (!errors) {
-        profileUpdateApi(formValue.value.id, formValue.value).then((result: any) => {
-          window['$message'].success(result.message);
-          router.replace('/system_setting');
-        });
-      } else {
-        console.log(errors);
-        window['$message'].error('Invalid');
-      }
-    });
+    showEditModal.value = true;
   };
 
   onMounted(() => {
-    formValue.value = userStore.info.profile;
-  });
-  const rules = ref({
-    first_name: {
-      required: true,
-      message: 'Please Enter First Name',
-      trigger: 'blur',
-    },
-    last_name: {
-      required: true,
-      message: 'Please Enter Last Name',
-      trigger: 'blur',
-    },
-    phone_number: {
-      required: true,
-      message: 'Please Enter Phone Number',
-      trigger: 'blur',
-    },
-    address: {
-      required: true,
-      message: 'Please Enter Address',
-      trigger: 'blur',
-    },
-    city: {
-      required: true,
-      message: 'Please Enter City',
-      trigger: 'blur',
-    },
-    state: {
-      required: true,
-      message: 'Please Enter State',
-      trigger: 'blur',
-    },
-    country: {
-      required: true,
-      message: 'Please Enter Country',
-      trigger: 'blur',
-    },
+    profileData.value = userStore.info.profile;
   });
 </script>
 <style lang="less" scoped></style>

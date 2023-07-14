@@ -32,8 +32,16 @@
         </n-form-item>
       </n-col>
       <n-col :span="12">
-        <n-form-item label="Logo" path="logo">
-          <n-input v-model:value="formValue.logo" placeholder="Enter Logo" />
+        <n-form-item path="logo">
+          <BasicUpload
+            :action="uploadUrl"
+            :data="{ type: 0 }"
+            name="images"
+            :width="100"
+            :height="100"
+            @upload-change="uploadChange"
+            v-model:value="formValue.logo"
+          />
         </n-form-item>
       </n-col>
     </n-row>
@@ -53,13 +61,21 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref } from 'vue';
+  import { ref, unref } from 'vue';
   import { FormInst } from 'naive-ui';
   import { createCompanyApi } from '@/api/company/company';
+  import { BasicUpload } from '@/components/Upload';
+  import { useGlobSetting } from '@/hooks/setting';
 
+  const globSetting = useGlobSetting();
+  const { uploadUrl } = globSetting;
   const formValue: any = ref({});
   const formRef = ref<FormInst | null>(null);
   const emits = defineEmits(['created']);
+
+  const uploadChange = (list: string) => {
+    formValue.value.logo = unref(list);
+  };
 
   const handleValidateClick = (e: MouseEvent) => {
     e.preventDefault();

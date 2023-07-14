@@ -28,7 +28,9 @@
           <tr v-else v-for="item in list" :key="item.id">
             <td>{{ item.id }}</td>
             <td>{{ item.company_name }}</td>
-            <td>{{ item.logo }}</td>
+            <td>
+              <n-avatar round size="large" :src="`${imgUrl}${item.logo}`" />
+            </td>
             <td>{{ item.user_id }}</td>
             <td> {{ item.phone }}</td>
             <td>{{ item.address + ' ' + item.city + ' ' + item.state + ' ' + item.country }}</td>
@@ -116,7 +118,10 @@
   import { MoreOutlined, EditOutlined, DeleteOutlined, PlusOutlined } from '@vicons/antd';
   import EditCompany from '@/components/company/EditCompany.vue';
   import AddCompany from '@/components/company/AddCompany.vue';
+  import { useGlobSetting } from '@/hooks/setting';
 
+  const globSetting = useGlobSetting();
+  const { imgUrl } = globSetting;
   const dialog = useDialog();
   const selectedOption: any = ref(null);
   const showModal = ref(false);
