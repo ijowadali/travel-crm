@@ -1,4 +1,4 @@
-<!-- eslint-disable vue/v-on-event-hyphenation -->
+<!-- eslint-disabled vue/v-on-event-hyphenation -->
 <template>
   <n-card title="Profile" v-permission="{ action: ['can view profile'] }">
     <n-row>
@@ -14,7 +14,7 @@
                   <n-input
                     v-model:value="profileData.first_name"
                     placeholder="Enter First Name"
-                    readonly
+                    disabled
                   />
                 </n-form-item>
               </n-col>
@@ -23,7 +23,7 @@
                   <n-input
                     v-model:value="profileData.last_name"
                     placeholder="Enter Last Name"
-                    readonly
+                    disabled
                   />
                 </n-form-item>
               </n-col>
@@ -32,7 +32,7 @@
                   <n-input
                     v-model:value="profileData.phone_number"
                     placeholder="Enter Phone Number"
-                    readonly
+                    disabled
                   />
                 </n-form-item>
               </n-col>
@@ -41,18 +41,18 @@
                   <n-input
                     v-model:value="profileData.address"
                     placeholder="Enter Address"
-                    readonly
+                    disabled
                   />
                 </n-form-item>
               </n-col>
               <n-col :span="8">
                 <n-form-item label="City" path="city">
-                  <n-input v-model:value="profileData.city" placeholder="Enter City" readonly />
+                  <n-input v-model:value="profileData.city" placeholder="Enter City" disabled />
                 </n-form-item>
               </n-col>
               <n-col :span="8">
                 <n-form-item label="State" path="state">
-                  <n-input v-model:value="profileData.state" placeholder="Enter State" readonly />
+                  <n-input v-model:value="profileData.state" placeholder="Enter State" disabled />
                 </n-form-item>
               </n-col>
               <n-col :span="8">
@@ -60,7 +60,7 @@
                   <n-input
                     v-model:value="profileData.country"
                     placeholder="Enter Country"
-                    readonly
+                    disabled
                   />
                 </n-form-item>
               </n-col>
