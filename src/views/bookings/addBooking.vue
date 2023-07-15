@@ -55,7 +55,7 @@
               <n-form-item label="Approval Date" path="approval_date">
                 <n-date-picker
                   style="width: 100%"
-                  v-model:value="formValue.approval_date"
+                  v-model:formatted-value="formValue.approval_date"
                   value-format="yyyy-MM-dd HH:mm:ss"
                   type="datetime"
                   clearable
@@ -66,7 +66,7 @@
               <n-form-item label="Expected Departure" path="expected_departure">
                 <n-date-picker
                   style="width: 100%"
-                  v-model:value="formValue.expected_departure"
+                  v-model:formatted-value="formValue.expected_departure"
                   value-format="yyyy-MM-dd HH:mm:ss"
                   type="datetime"
                   clearable
@@ -295,7 +295,7 @@
                 <SaveArrowRight20Filled />
               </n-icon>
             </template>
-            Save Booking
+            {{ route.query.booking_id ? 'Update Booking' : 'Save Booking' }}
           </n-button>
         </n-form-item>
       </n-space>
@@ -343,7 +343,7 @@
                 <n-date-picker
                   format="yyyy-MM-dd"
                   class="w-full"
-                  v-model:value="bookingMember.dob"
+                  v-model:formatted-value="bookingMember.dob"
                   type="date"
                 />
               </n-form-item>
@@ -414,7 +414,7 @@
                 <n-date-picker
                   value-format="yyyy-MM-dd"
                   class="w-full"
-                  v-model:value="bookingMember.issue_date"
+                  v-model:formatted-value="bookingMember.issue_date"
                   type="date"
                 />
               </n-form-item>
@@ -424,7 +424,7 @@
                 <n-date-picker
                   value-format="yyyy-MM-dd"
                   class="w-full"
-                  v-model:value="bookingMember.expiry_date"
+                  v-model:formatted-value="bookingMember.expiry_date"
                   type="date"
                 />
               </n-form-item>
@@ -435,7 +435,7 @@
           <n-row gutter="12">
             <n-col :span="12">
               <n-form-item label="Relation" path="relation">
-                <n-input v-model:value="bookingMember.passport" placeholder="Enter Passport" />
+                <n-input v-model:value="bookingMember.relation" placeholder="Enter Relation" />
               </n-form-item>
             </n-col>
             <n-col :span="12">
@@ -465,13 +465,15 @@
 <script lang="ts" setup>
   import { onMounted, ref } from 'vue';
   import { SaveArrowRight20Filled, Delete20Filled, NotepadEdit20Filled } from '@vicons/fluent';
-  import { createBookingApi } from '@/api/booking/booking';
+  import { createBookingApi, getBookingApi, updateBookingApi } from '@/api/booking/booking';
+  import { useRoute } from 'vue-router';
 
   const formValue: any = ref({
     visaDetails: {},
     hotelDetails: {},
     members: [],
   });
+  const route = useRoute();
   const bookingMember: any = ref({});
   const showMemberModal = ref(false);
   const modelTitle = ref('Add Member');
@@ -484,7 +486,13 @@
     },
   });
 
-  onMounted(() => {});
+  onMounted(async () => {
+    if (route.query.booking_id) {
+      getBookingApi(parseInt(String(route.query.booking_id))).then((result) => {
+        formValue.value = result;
+      });
+    }
+  });
 
   function addMemberToBooking() {
     showMemberModal.value = false;
@@ -511,9 +519,18 @@
     //   }
     //   return member;
     // });
-    createBookingApi({ ...formValue.value }).then((result) => {
-      window['$message'].success(result.message);
-      loading.value = false;
-    });
+    if (route.query.booking_id) {
+      updateBookingApi(parseInt(String(route.query.booking_id)), { ...formValue.value }).then(
+        (result) => {
+          window['$message'].success(result.message);
+          loading.value = false;
+        }
+      );
+    } else {
+      createBookingApi({ ...formValue.value }).then((result) => {
+        window['$message'].success(result.message);
+        loading.value = false;
+      });
+    }
   }
 </script>

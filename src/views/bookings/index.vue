@@ -13,19 +13,25 @@
           <tr>
             <th>Name</th>
             <th>Booking Status</th>
+            <th>Category</th>
+            <th>Group No</th>
             <th>Created At</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
           <tr v-if="list.length === 0">
-            <td colspan="7" class="data_placeholder"> Record Not Exist </td>
+            <td colspan="7" class="data_placeholder"> Record Not Exist</td>
           </tr>
           <tr v-else v-for="item in list" :key="item.id">
             <td>{{ item.customer_name }}</td>
             <td>
-              {{ item.booking_status }}
+              <n-tag type="success" size="small" round>
+                {{ item.booking_status }}
+              </n-tag>
             </td>
+            <td>{{ item.category }}</td>
+            <td>{{ item.group_no }}</td>
             <td>{{ item.created_at }}</td>
             <td>
               <n-dropdown
@@ -182,9 +188,9 @@
 
   const actionOperation = (item: any) => {
     if (selectedOption.value === 'edit') {
-      showEditModal.value = true;
-      selectedId.value = item.id;
-      // router.push(`/roles/${item.id}`);
+      // showEditModal.value = true;
+      // selectedId.value = item.id;
+      router.push(`/booking/add-booking?booking_id=${item.id}`);
     } else if (selectedOption.value === 'delete') {
       selectedId.value = item.id;
       confirmationDialog();

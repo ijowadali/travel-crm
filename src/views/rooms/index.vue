@@ -11,7 +11,7 @@
       <n-table :bordered="true" :single-line="false" size="small" :striped="true">
         <thead>
           <tr>
-            <th>Hotel Id</th>
+            <th>Hotel</th>
             <th>Room Type</th>
             <th>Room No</th>
             <th>Floor No</th>
@@ -29,14 +29,18 @@
             <td colspan="7" class="data_placeholder"> Record Not Exist</td>
           </tr>
           <tr v-else v-for="item in list" :key="item.id">
-            <td>{{ item.hotel_id }}</td>
+            <td>{{ item.hotels.name }}</td>
             <td>{{ item.room_type }}</td>
             <td>{{ item.room_no }}</td>
             <td>{{ item.floor_no }}</td>
             <td>{{ item.price_type }}</td>
             <td>{{ item.purchase_price }}</td>
             <td>{{ item.sale_price }}</td>
-            <td>{{ item.is_active === 1 ? 'active' : 'Not active' }}</td>
+            <td>
+              <n-tag size="small" type="success" round>
+                {{ item.is_active === 1 ? 'active' : 'Not active' }}
+              </n-tag>
+            </td>
             <td>{{ item.created_at }}</td>
             <td>{{ item.updated_at }}</td>
             <td>
