@@ -8,12 +8,18 @@
   </n-card>
 </template>
 <script lang="ts" setup>
-  import { onMounted } from 'vue';
+  import { onMounted, ref } from 'vue';
   import { useRoute } from 'vue-router';
+  import { getBookingApi } from '@/api/booking/booking';
 
   const route = useRoute();
-  onMounted(() => {
+  const printData = ref({});
+  console.log(printData);
+  onMounted(async () => {
     console.log(route.query.booking_id);
+    await getBookingApi(parseInt(String(route.query.booking_id))).then((result) => {
+      printData.value = result;
+    });
   });
 </script>
 <style lang="less"></style>

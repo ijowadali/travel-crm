@@ -13,7 +13,7 @@ const routes: Array<RouteRecordRaw> = [
     component: Layout,
     meta: {
       title: 'System Settings',
-      permissions: ['can view system setting'],
+      permissions: ['can view system setting menu'],
       icon: renderIcon(SettingsOutline),
       sort: 1,
     },
@@ -32,7 +32,7 @@ const routes: Array<RouteRecordRaw> = [
         name: `${routeName}_profile`,
         meta: {
           title: 'Profile',
-          permissions: ['can view Profile'],
+          permissions: ['can view profile'],
           hidden: true,
         },
         component: () => import('@/views/users/Profile.vue'),

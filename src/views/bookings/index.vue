@@ -1,5 +1,5 @@
 <template>
-  <n-card>
+  <n-card title="Bookings" v-permission="{ action: ['can view bookings'] }">
     <n-space :vertical="true">
       <n-input
         type="text"
