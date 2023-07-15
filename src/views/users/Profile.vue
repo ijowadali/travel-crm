@@ -1,4 +1,3 @@
-<!-- eslint-disabled vue/v-on-event-hyphenation -->
 <template>
   <n-card title="Profile" v-permission="{ action: ['can view profile'] }">
     <n-row>

@@ -110,6 +110,7 @@
   import type { Component } from 'vue';
   import { NIcon, NPagination } from 'naive-ui';
   import { MoreOutlined, EditOutlined, DeleteOutlined, PlusOutlined } from '@vicons/antd';
+  import { PrintAdd24Regular } from '@vicons/fluent';
   import AddRole from '@/components/Role/AddRole.vue';
   import EditRole from '@/components/Role/EditRole.vue';
   import { usePermission } from '@/hooks/web/usePermission';
@@ -132,6 +133,11 @@
   };
 
   const moreOptions = ref([
+    {
+      label: 'Print',
+      key: 'print',
+      icon: renderIcon(PrintAdd24Regular),
+    },
     {
       label: 'Edit',
       key: 'edit',
