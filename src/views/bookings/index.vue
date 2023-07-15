@@ -114,6 +114,7 @@
   import AddRole from '@/components/Role/AddRole.vue';
   import EditRole from '@/components/Role/EditRole.vue';
   import { usePermission } from '@/hooks/web/usePermission';
+  import router from '@/router';
 
   const dialog = useDialog();
   const selectedOption: any = ref(null);
@@ -187,6 +188,9 @@
     } else if (selectedOption.value === 'delete') {
       selectedId.value = item.id;
       confirmationDialog();
+    } else if (selectedOption.value === 'print') {
+      selectedId.value = item.id;
+      router.push(`/booking/print-booking?booking_id=${item.id}`);
     }
   };
   const selectedAction = (key: any) => {
