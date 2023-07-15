@@ -12,6 +12,7 @@
         <thead>
           <tr>
             <th>Hotel Id</th>
+            <th>Room Type</th>
             <th>Room No</th>
             <th>Floor No</th>
             <th>Price Type</th>
@@ -25,16 +26,17 @@
         </thead>
         <tbody>
           <tr v-if="list.length === 0">
-            <td colspan="7" class="data_placeholder"> Record Not Exist </td>
+            <td colspan="7" class="data_placeholder"> Record Not Exist</td>
           </tr>
           <tr v-else v-for="item in list" :key="item.id">
             <td>{{ item.hotel_id }}</td>
+            <td>{{ item.room_type }}</td>
             <td>{{ item.room_no }}</td>
             <td>{{ item.floor_no }}</td>
             <td>{{ item.price_type }}</td>
             <td>{{ item.purchase_price }}</td>
             <td>{{ item.sale_price }}</td>
-            <td>{{ item.is_active == '1' ? 'active' : 'Not active' }}</td>
+            <td>{{ item.is_active === 1 ? 'active' : 'Not active' }}</td>
             <td>{{ item.created_at }}</td>
             <td>{{ item.updated_at }}</td>
             <td>
@@ -69,7 +71,7 @@
         :circle="true"
         style="position: fixed; bottom: 30px; right: 40px"
         @click="showModal = true"
-        v-permission="{ action: ['can view add categories'] }"
+        v-permission="{ action: ['can view add room'] }"
       >
         <template #icon>
           <n-icon>
@@ -200,6 +202,7 @@
   .item_center {
     text-align: center;
   }
+
   .data_placeholder {
     text-align: center;
     color: gray;

@@ -2,12 +2,17 @@
   <n-form ref="formRef" :label-width="80" :model="rooms" :rules="rules" size="small">
     <n-row :gutter="10">
       <n-col :span="12">
+        <n-form-item label="Room Type" path="room_type">
+          <n-input v-model:value="rooms.room_type" placeholder="Enter Room Type" />
+        </n-form-item>
+      </n-col>
+      <n-col :span="12">
         <n-form-item label="Room No" path="room_no">
           <n-input v-model:value="rooms.room_no" placeholder="Enter Room No" />
         </n-form-item>
       </n-col>
       <n-col :span="12">
-        <n-form-item label="Room No" path="room_no">
+        <n-form-item label="Room Status" path="is_active">
           <n-switch v-model:value="rooms.is_active" />
         </n-form-item>
       </n-col>
