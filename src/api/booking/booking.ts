@@ -22,10 +22,11 @@ export function getBookingsApi(params: any) {
     params,
   });
 }
+
 /**
  * @description: Get single booking
  */
-export function getBookingApi(id: number | undefined) {
+export function getBookingApi(id: number) {
   return http.request({
     url: `/bookings/${id}`,
     method: 'get',
@@ -47,6 +48,7 @@ export function createBookingApi(params: any) {
     }
   );
 }
+
 /**
  * @description: update booking
  */
@@ -62,6 +64,7 @@ export function updateBookingApi(id: number, params: any) {
     }
   );
 }
+
 /**
  * @description: delete booking
  */

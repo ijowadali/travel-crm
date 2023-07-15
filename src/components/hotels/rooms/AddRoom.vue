@@ -20,7 +20,18 @@
     <n-row :gutter="10">
       <n-col :span="12">
         <n-form-item label="Room Type" path="room_type">
-          <n-input v-model:value="rooms.room_type" placeholder="Enter Room Type" />
+          <n-select
+            v-model:value="rooms.room_type"
+            filterable
+            placeholder="Select Option"
+            :options="[
+              { label: 'Double Bed', value: 'double bed' },
+              { label: 'Triple Bed', value: 'triple bed' },
+              { label: 'Quad Bed', value: 'quad bed' },
+              { label: 'Quint Bed', value: 'quint bed' },
+              { label: 'Six Bed', value: 'six bed' },
+            ]"
+          />
         </n-form-item>
       </n-col>
       <n-col :span="12">
