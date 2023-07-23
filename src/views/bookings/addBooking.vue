@@ -155,19 +155,14 @@
               </n-form-item>
             </n-col>
             <n-col :span="18">
-              <n-form-item label="Hotel 1" path="hotel1">
+              <n-form-item label="Hotel 1" path="hotel1_id">
                 <n-select
-                  v-model:value="formValue.hotelDetails.hotel1"
+                  v-model:value="formValue.hotelDetails.hotel1_id"
                   filterable
                   placeholder="Select Option"
-                  :options="[
-                    { label: 'Double Bed', value: 'double bed' },
-                    { label: 'Quad Bed', value: 'quad bed' },
-                    { label: 'Quint Bed', value: 'quint bed' },
-                    { label: 'Sharing', value: 'sharing' },
-                    { label: 'Six Bed', value: 'six bed' },
-                    { label: 'Triple Bed', value: 'triple bed' },
-                  ]"
+                  :options="hotels_dropdown"
+                  label-field="name"
+                  value-field="id"
                 />
               </n-form-item>
             </n-col>
@@ -181,19 +176,14 @@
               </n-form-item>
             </n-col>
             <n-col :span="18">
-              <n-form-item label="Hotel 2" path="hotel1">
+              <n-form-item label="Hotel 2" path="hotel2_id">
                 <n-select
-                  v-model:value="formValue.hotelDetails.hotel2"
+                  v-model:value="formValue.hotelDetails.hotel2_id"
                   filterable
                   placeholder="Select Option"
-                  :options="[
-                    { label: 'Double Bed', value: 'double bed' },
-                    { label: 'Quad Bed', value: 'quad bed' },
-                    { label: 'Quint Bed', value: 'quint bed' },
-                    { label: 'Sharing', value: 'sharing' },
-                    { label: 'Six Bed', value: 'six bed' },
-                    { label: 'Triple Bed', value: 'triple bed' },
-                  ]"
+                  :options="hotels_dropdown"
+                  label-field="name"
+                  value-field="id"
                 />
               </n-form-item>
             </n-col>
@@ -207,19 +197,14 @@
               </n-form-item>
             </n-col>
             <n-col :span="18">
-              <n-form-item label="Hotel 3" path="hotel1">
+              <n-form-item label="Hotel 3" path="hotel3_id">
                 <n-select
-                  v-model:value="formValue.hotelDetails.hotel3"
+                  v-model:value="formValue.hotelDetails.hotel3_id"
                   filterable
                   placeholder="Select Option"
-                  :options="[
-                    { label: 'Double Bed', value: 'double bed' },
-                    { label: 'Quad Bed', value: 'quad bed' },
-                    { label: 'Quint Bed', value: 'quint bed' },
-                    { label: 'Sharing', value: 'sharing' },
-                    { label: 'Six Bed', value: 'six bed' },
-                    { label: 'Triple Bed', value: 'triple bed' },
-                  ]"
+                  :options="hotels_dropdown"
+                  label-field="name"
+                  value-field="id"
                 />
               </n-form-item>
             </n-col>
@@ -467,6 +452,7 @@
   import { SaveArrowRight20Filled, Delete20Filled, NotepadEdit20Filled } from '@vicons/fluent';
   import { createBookingApi, getBookingApi, updateBookingApi } from '@/api/booking/booking';
   import { useRoute } from 'vue-router';
+  import { getHotelsApi } from '@/api/hotel/hotel';
 
   const formValue: any = ref({
     visaDetails: {},
@@ -474,6 +460,7 @@
     members: [],
   });
   const route = useRoute();
+  const hotels_dropdown = ref([]);
   const bookingMember: any = ref({});
   const showMemberModal = ref(false);
   const modelTitle = ref('Add Member');
@@ -492,6 +479,9 @@
         formValue.value = result;
       });
     }
+    getHotelsApi({ pageSize: 1000 }).then((result: any) => {
+      hotels_dropdown.value = result.data;
+    });
   });
 
   function addMemberToBooking() {
