@@ -24,7 +24,7 @@
       </n-col>
       <n-col :span="12">
         <n-form-item label="Room Status" path="is_active">
-          <n-switch v-model:value="rooms.is_active" />
+          <n-switch v-model:value="rooms.is_active" :checked-value="1" :unchecked-value="0" />
         </n-form-item>
       </n-col>
     </n-row>
@@ -47,6 +47,11 @@
       <n-col :span="12">
         <n-form-item label="Sale Price" path="sale_price">
           <n-input v-model:value="rooms.sale_price" placeholder="Enter Sale Price" />
+        </n-form-item>
+      </n-col>
+      <n-col :span="12">
+        <n-form-item label="No of Bed" path="no_of_bed">
+          <n-input-number v-model:value="rooms.no_of_bed" clearable />
         </n-form-item>
       </n-col>
     </n-row>

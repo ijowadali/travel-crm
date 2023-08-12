@@ -190,7 +190,7 @@
     if (selectedOption.value === 'edit') {
       // showEditModal.value = true;
       // selectedId.value = item.id;
-      router.push(`/booking/add-booking?booking_id=${item.id}`);
+      router.push(`/booking/edit-booking/${item.id}`);
     } else if (selectedOption.value === 'delete') {
       selectedId.value = item.id;
       confirmationDialog();

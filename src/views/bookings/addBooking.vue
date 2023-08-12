@@ -80,146 +80,146 @@
             </n-col>
           </n-row>
         </n-card>
-        <n-card title="Visa Details" style="display: flex; width: 100%; margin-bottom: 10px">
-          <n-row gutter="12">
-            <n-col :span="8">
-              <n-form-item label="IATA" path="iata">
-                <n-select
-                  v-model:value="formValue.visaDetails.iata"
-                  filterable
-                  placeholder="Select Option"
-                  :options="[
-                    { label: 'Basic', value: 'basic' },
-                    { label: 'Individual', value: 'individual' },
-                    { label: 'Premium', value: 'premium' },
-                    { label: 'VIP', value: 'vip' },
-                  ]"
-                />
-              </n-form-item>
-            </n-col>
-            <n-col :span="8">
-              <n-form-item label="Visa Company" path="visa_company">
-                <n-input
-                  v-model:value="formValue.visaDetails.visa_company"
-                  placeholder="Enter Visa Company"
-                />
-              </n-form-item>
-            </n-col>
-            <n-col :span="8">
-              <n-form-item label="Visa Status" path="visa_status">
-                <n-select
-                  v-model:value="formValue.visaDetails.visa_status"
-                  filterable
-                  placeholder="Select Option"
-                  :options="[
-                    { label: 'Basic', value: 'basic' },
-                    { label: 'Individual', value: 'individual' },
-                    { label: 'Premium', value: 'premium' },
-                    { label: 'VIP', value: 'vip' },
-                  ]"
-                />
-              </n-form-item>
-            </n-col>
-          </n-row>
-        </n-card>
-        <n-card title="Hotel Details" class="flex w-full mb-1">
-          <n-row gutter="12">
-            <n-col :span="12">
-              <n-form-item label="Room Type" path="room_type">
-                <n-select
-                  v-model:value="formValue.hotelDetails.room_type"
-                  filterable
-                  placeholder="Select Option"
-                  :options="[
-                    { label: 'Double Bed', value: 'double bed' },
-                    { label: 'Quad Bed', value: 'quad bed' },
-                    { label: 'Quint Bed', value: 'quint bed' },
-                    { label: 'Sharing', value: 'sharing' },
-                    { label: 'Six Bed', value: 'six bed' },
-                    { label: 'Triple Bed', value: 'triple bed' },
-                  ]"
-                />
-              </n-form-item>
-            </n-col>
-            <n-col :span="12">
-              <n-form-item label="Package" path="Package">
-                <n-select
-                  v-model:value="formValue.hotelDetails.package"
-                  filterable
-                  placeholder="Select Option"
-                  :options="[
-                    { label: 'KPT-ONLY Accommodate', value: 'kpt only accommodate' },
-                    { label: 'Standard', value: 'standard' },
-                  ]"
-                />
-              </n-form-item>
-            </n-col>
-            <n-col :span="18">
-              <n-form-item label="Hotel 1" path="hotel1_id">
-                <n-select
-                  v-model:value="formValue.hotelDetails.hotel1_id"
-                  filterable
-                  placeholder="Select Option"
-                  :options="hotels_dropdown"
-                  label-field="name"
-                  value-field="id"
-                />
-              </n-form-item>
-            </n-col>
-            <n-col :span="6">
-              <n-form-item label="Night 1" path="night1">
-                <n-input-number
-                  class="w-full"
-                  v-model:value="formValue.hotelDetails.night1"
-                  min="0"
-                />
-              </n-form-item>
-            </n-col>
-            <n-col :span="18">
-              <n-form-item label="Hotel 2" path="hotel2_id">
-                <n-select
-                  v-model:value="formValue.hotelDetails.hotel2_id"
-                  filterable
-                  placeholder="Select Option"
-                  :options="hotels_dropdown"
-                  label-field="name"
-                  value-field="id"
-                />
-              </n-form-item>
-            </n-col>
-            <n-col :span="6">
-              <n-form-item label="Night 2" path="night1">
-                <n-input-number
-                  class="w-full"
-                  v-model:value="formValue.hotelDetails.night2"
-                  min="0"
-                />
-              </n-form-item>
-            </n-col>
-            <n-col :span="18">
-              <n-form-item label="Hotel 3" path="hotel3_id">
-                <n-select
-                  v-model:value="formValue.hotelDetails.hotel3_id"
-                  filterable
-                  placeholder="Select Option"
-                  :options="hotels_dropdown"
-                  label-field="name"
-                  value-field="id"
-                />
-              </n-form-item>
-            </n-col>
-            <n-col :span="6">
-              <n-form-item label="Night 3" path="night1">
-                <n-input-number
-                  class="w-full"
-                  v-model:value="formValue.hotelDetails.night3"
-                  min="0"
-                />
-              </n-form-item>
-            </n-col>
-          </n-row>
-        </n-card>
-        <n-card title="Members Details" class="flex w-full mb-1">
+        <!--        <n-card title="Visa Details" style="display: flex; width: 100%; margin-bottom: 10px">-->
+        <!--          <n-row gutter="12">-->
+        <!--            <n-col :span="8">-->
+        <!--              <n-form-item label="IATA" path="iata">-->
+        <!--                <n-select-->
+        <!--                  v-model:value="formValue.visaDetails.iata"-->
+        <!--                  filterable-->
+        <!--                  placeholder="Select Option"-->
+        <!--                  :options="[-->
+        <!--                    { label: 'Basic', value: 'basic' },-->
+        <!--                    { label: 'Individual', value: 'individual' },-->
+        <!--                    { label: 'Premium', value: 'premium' },-->
+        <!--                    { label: 'VIP', value: 'vip' },-->
+        <!--                  ]"-->
+        <!--                />-->
+        <!--              </n-form-item>-->
+        <!--            </n-col>-->
+        <!--            <n-col :span="8">-->
+        <!--              <n-form-item label="Visa Company" path="visa_company">-->
+        <!--                <n-input-->
+        <!--                  v-model:value="formValue.visaDetails.visa_company"-->
+        <!--                  placeholder="Enter Visa Company"-->
+        <!--                />-->
+        <!--              </n-form-item>-->
+        <!--            </n-col>-->
+        <!--            <n-col :span="8">-->
+        <!--              <n-form-item label="Visa Status" path="visa_status">-->
+        <!--                <n-select-->
+        <!--                  v-model:value="formValue.visaDetails.visa_status"-->
+        <!--                  filterable-->
+        <!--                  placeholder="Select Option"-->
+        <!--                  :options="[-->
+        <!--                    { label: 'Basic', value: 'basic' },-->
+        <!--                    { label: 'Individual', value: 'individual' },-->
+        <!--                    { label: 'Premium', value: 'premium' },-->
+        <!--                    { label: 'VIP', value: 'vip' },-->
+        <!--                  ]"-->
+        <!--                />-->
+        <!--              </n-form-item>-->
+        <!--            </n-col>-->
+        <!--          </n-row>-->
+        <!--        </n-card>-->
+        <!--        <n-card title="Hotel Details" class="flex w-full mb-1">-->
+        <!--          <n-row gutter="12">-->
+        <!--            <n-col :span="12">-->
+        <!--              <n-form-item label="Room Type" path="room_type">-->
+        <!--                <n-select-->
+        <!--                  v-model:value="formValue.hotelDetails.room_type"-->
+        <!--                  filterable-->
+        <!--                  placeholder="Select Option"-->
+        <!--                  :options="[-->
+        <!--                    { label: 'Double Bed', value: 'double bed' },-->
+        <!--                    { label: 'Quad Bed', value: 'quad bed' },-->
+        <!--                    { label: 'Quint Bed', value: 'quint bed' },-->
+        <!--                    { label: 'Sharing', value: 'sharing' },-->
+        <!--                    { label: 'Six Bed', value: 'six bed' },-->
+        <!--                    { label: 'Triple Bed', value: 'triple bed' },-->
+        <!--                  ]"-->
+        <!--                />-->
+        <!--              </n-form-item>-->
+        <!--            </n-col>-->
+        <!--            <n-col :span="12">-->
+        <!--              <n-form-item label="Package" path="Package">-->
+        <!--                <n-select-->
+        <!--                  v-model:value="formValue.hotelDetails.package"-->
+        <!--                  filterable-->
+        <!--                  placeholder="Select Option"-->
+        <!--                  :options="[-->
+        <!--                    { label: 'KPT-ONLY Accommodate', value: 'kpt only accommodate' },-->
+        <!--                    { label: 'Standard', value: 'standard' },-->
+        <!--                  ]"-->
+        <!--                />-->
+        <!--              </n-form-item>-->
+        <!--            </n-col>-->
+        <!--            <n-col :span="18">-->
+        <!--              <n-form-item label="Hotel 1" path="hotel1_id">-->
+        <!--                <n-select-->
+        <!--                  v-model:value="formValue.hotelDetails.hotel1_id"-->
+        <!--                  filterable-->
+        <!--                  placeholder="Select Option"-->
+        <!--                  :options="hotels_dropdown"-->
+        <!--                  label-field="name"-->
+        <!--                  value-field="id"-->
+        <!--                />-->
+        <!--              </n-form-item>-->
+        <!--            </n-col>-->
+        <!--            <n-col :span="6">-->
+        <!--              <n-form-item label="Night 1" path="night1">-->
+        <!--                <n-input-number-->
+        <!--                  class="w-full"-->
+        <!--                  v-model:value="formValue.hotelDetails.night1"-->
+        <!--                  min="0"-->
+        <!--                />-->
+        <!--              </n-form-item>-->
+        <!--            </n-col>-->
+        <!--            <n-col :span="18">-->
+        <!--              <n-form-item label="Hotel 2" path="hotel2_id">-->
+        <!--                <n-select-->
+        <!--                  v-model:value="formValue.hotelDetails.hotel2_id"-->
+        <!--                  filterable-->
+        <!--                  placeholder="Select Option"-->
+        <!--                  :options="hotels_dropdown"-->
+        <!--                  label-field="name"-->
+        <!--                  value-field="id"-->
+        <!--                />-->
+        <!--              </n-form-item>-->
+        <!--            </n-col>-->
+        <!--            <n-col :span="6">-->
+        <!--              <n-form-item label="Night 2" path="night1">-->
+        <!--                <n-input-number-->
+        <!--                  class="w-full"-->
+        <!--                  v-model:value="formValue.hotelDetails.night2"-->
+        <!--                  min="0"-->
+        <!--                />-->
+        <!--              </n-form-item>-->
+        <!--            </n-col>-->
+        <!--            <n-col :span="18">-->
+        <!--              <n-form-item label="Hotel 3" path="hotel3_id">-->
+        <!--                <n-select-->
+        <!--                  v-model:value="formValue.hotelDetails.hotel3_id"-->
+        <!--                  filterable-->
+        <!--                  placeholder="Select Option"-->
+        <!--                  :options="hotels_dropdown"-->
+        <!--                  label-field="name"-->
+        <!--                  value-field="id"-->
+        <!--                />-->
+        <!--              </n-form-item>-->
+        <!--            </n-col>-->
+        <!--            <n-col :span="6">-->
+        <!--              <n-form-item label="Night 3" path="night1">-->
+        <!--                <n-input-number-->
+        <!--                  class="w-full"-->
+        <!--                  v-model:value="formValue.hotelDetails.night3"-->
+        <!--                  min="0"-->
+        <!--                />-->
+        <!--              </n-form-item>-->
+        <!--            </n-col>-->
+        <!--          </n-row>-->
+        <!--        </n-card>-->
+        <n-card v-if="route.query.booking_id" title="Members Details" class="flex w-full mb-1">
           <n-button @click="showMemberModal = true" type="success"> Add Member</n-button>
           <n-row gutter="12">
             <n-table v-if="formValue.members.length" :striped="true">

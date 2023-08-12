@@ -37,6 +37,15 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import('@/views/bookings/addBooking.vue'),
       },
       {
+        path: 'edit-booking/:id',
+        name: `edit-${routeName}`,
+        meta: {
+          title: 'Edit Booking',
+          permissions: ['can view edit booking'],
+        },
+        component: () => import('@/views/bookings/_id.vue'),
+      },
+      {
         path: 'print-booking',
         name: `print-${routeName}`,
         meta: {

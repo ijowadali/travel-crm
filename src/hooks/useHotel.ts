@@ -5,6 +5,7 @@ import { getHotelsApi } from '@/api/hotel/hotel';
  * @description Paginated Data
  */
 let timer: any = null;
+
 export function useHotel(tag = false) {
   const hotelsLoading = ref(false);
   const filteredHotels: any = ref([]);
@@ -29,6 +30,6 @@ export function useHotel(tag = false) {
         });
     }, 500);
   };
-  filterHotels();
+  // filterHotels();
   return { filterHotels, filteredHotels, hotelsLoading };
 }
