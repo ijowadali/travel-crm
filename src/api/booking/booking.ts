@@ -52,7 +52,7 @@ export function createBookingApi(params: any) {
 /**
  * @description: update booking
  */
-export function updateBookingApi(id: number, params: any) {
+export function updateBookingApi(id: any, params: any) {
   return http.request<BasicResponseModel>(
     {
       url: `/bookings/${id}`,

@@ -3,11 +3,25 @@
     <n-row :gutter="10">
       <n-col :span="12">
         <n-form-item label="Select Hotel" path="hotel_id">
-          <single-hotel-selector
+          <!--          <single-hotel-selector-->
+          <!--            v-model:value="rooms.hotel_id"-->
+          <!--            label-field="name"-->
+          <!--            value-field="id"-->
+          <!--            :tag="false"-->
+          <!--          />-->
+          <n-select
+            :filterable="true"
+            :tag="false"
+            placeholder="Select Hotel"
             v-model:value="rooms.hotel_id"
+            clearable
+            @focus="getHotelsOnFocus"
+            :remote="true"
+            :clear-filter-after-select="false"
             label-field="name"
             value-field="id"
-            :tag="false"
+            :loading="hotelLoading"
+            :options="hotels"
           />
         </n-form-item>
       </n-col>
@@ -83,10 +97,11 @@
   import { ref } from 'vue';
   import { FormInst } from 'naive-ui';
   import { createRoomApi } from '@/api/hotel/room/rooms';
+  import { filterHotel } from '@/filters/hotels';
 
   const formRef = ref<FormInst | null>(null);
   const rooms: any = ref({});
-
+  const { hotels, hotelLoading, getHotelsOnFocus } = filterHotel();
   const emits = defineEmits(['created']);
 
   const rules = ref({
