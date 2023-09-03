@@ -1,5 +1,6 @@
 import { ref } from 'vue'; // Import necessary Composition API functions
 import { getRoomsApi } from '@/api/hotel/room/rooms';
+import { isEmpty } from 'lodash';
 
 export function filterRoom() {
   // Define reactive variables using ref
@@ -8,28 +9,28 @@ export function filterRoom() {
   const roomsInitialized = ref(false);
 
   // Define methods using regular JavaScript functions
-  async function findRoom(query) {
-    if (query !== '') {
+  async function findRoom(query: any) {
+    if (isEmpty(query)) {
+      rooms.value = [];
+    } else {
       roomLoading.value = true;
       const response = await getRoomsApi({ name: query, pageSize: 1000 });
       rooms.value = response.data;
       roomLoading.value = false;
-    } else {
-      rooms.value = [];
     }
   }
 
-  async function findRoomByHotel(hotelId, roomType, is_active = 1) {
+  async function findRoomByHotel(hotelId: string, roomType: string, isActive = 1) {
     if (!hotelId) {
       window['$message'].error('Please Select Hotel First');
       return;
     }
-    if (hotelId !== '' || roomType !== '') {
+    if (!isEmpty(hotelId) || !isEmpty(roomType)) {
       roomLoading.value = true;
       const response = await getRoomsApi({
         hotel_id: hotelId,
         room_type: roomType,
-        is_active: is_active,
+        is_active: isActive,
         pageSize: 1000,
       });
       rooms.value = response.data;

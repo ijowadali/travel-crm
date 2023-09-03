@@ -71,7 +71,7 @@ declare global {
     VITE_BUILD_COMPRESS_DELETE_ORIGIN_FILE: boolean;
   }
 
-  declare function parseInt(s: string | number, radix?: number): number;
+  declare function parseInt(s: *, radix?: number): number;
 
   declare function parseFloat(string: string | number): number;
 

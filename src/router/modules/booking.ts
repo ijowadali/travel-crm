@@ -33,6 +33,7 @@ const routes: Array<RouteRecordRaw> = [
         meta: {
           title: 'Add Booking',
           permissions: ['can view add booking'],
+          hidden: true,
         },
         component: () => import('@/views/bookings/addBooking.vue'),
       },
@@ -42,6 +43,7 @@ const routes: Array<RouteRecordRaw> = [
         meta: {
           title: 'Edit Booking',
           permissions: ['can view edit booking'],
+          hidden: true,
         },
         component: () => import('@/views/bookings/_id.vue'),
       },

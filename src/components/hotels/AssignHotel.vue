@@ -7,7 +7,7 @@
             <n-select
               v-model:value="assignHotel.city"
               placeholder="Select City"
-              @update:value="findCityHotel(city)"
+              @update:value="findCityHotel(assignHotel.city)"
               :options="[
                 { label: 'Madina', value: 'madina' },
                 { label: 'Makkah', value: 'makkah' },
@@ -91,7 +91,7 @@
           <n-form-item label="CheckIn Date" path="checkIn_date">
             <n-date-picker
               style="width: 100%"
-              v-model:formatted-value="assignHotel.checkIn_date"
+              v-model:formatted-value="assignHotel.check_in_date"
               value-format="yyyy-MM-dd HH:mm:ss"
               type="datetime"
               clearable
@@ -102,7 +102,7 @@
           <n-form-item label="CheckOut Date" path="checkOut_date">
             <n-date-picker
               style="width: 100%"
-              v-model:formatted-value="assignHotel.checkOut_date"
+              v-model:formatted-value="assignHotel.check_out_date"
               value-format="yyyy-MM-dd HH:mm:ss"
               type="datetime"
               clearable
@@ -131,14 +131,13 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref } from 'vue';
+  import { ref, watchEffect } from 'vue';
   import { FormInst } from 'naive-ui';
   import { filterHotel } from '@/filters/hotels';
   import { filterRoom } from '@/filters/rooms';
   import { filterBed } from '@/filters/beds';
   import { SaveArrowRight20Filled } from '@vicons/fluent';
   import { updateBookingApi } from '@/api/booking/booking';
-  // import { createHotelApi } from '@/api/hotel/hotel';
 
   const formRef = ref<FormInst | null>(null);
   const assignHotel: any = ref({});
@@ -151,8 +150,20 @@
     id: {
       type: Number,
     },
+    hotelData: {
+      type: Object,
+      default: () => ({}),
+    },
   });
-  console.log(props.id);
+
+  watchEffect(async () => {
+    if (props.hotelData) {
+      await findCityHotel(props.hotelData.city);
+      await findRoomByHotel(props.hotelData.hotel_id, props.hotelData.room_type, 1);
+      await findBedByRoom(props.hotelData.room_id, 'available');
+      assignHotel.value = { ...props.hotelData };
+    }
+  });
   const handleValidateClick = (e: MouseEvent) => {
     e.preventDefault();
     formRef.value?.validate((errors) => {

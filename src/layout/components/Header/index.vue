@@ -243,9 +243,9 @@
               router
                 .replace({
                   name: 'Login',
-                  query: {
-                    redirect: route.fullPath,
-                  },
+                  // query: {
+                  //   redirect: route.fullPath,
+                  // },
                 })
                 .finally(() => location.reload());
             });

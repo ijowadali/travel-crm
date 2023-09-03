@@ -1,5 +1,6 @@
 import { ref } from 'vue'; // Import necessary Composition API functions
 import { getBedsApi } from '@/api/hotel/bed/beds';
+import { isEmpty } from 'lodash';
 
 export function filterBed() {
   // Define reactive variables using ref
@@ -8,23 +9,23 @@ export function filterBed() {
   const bedsInitialized = ref(false);
 
   // Define methods using regular JavaScript functions
-  async function findBed(query) {
-    if (query !== '') {
+  async function findBed(query: string) {
+    if (isEmpty(query)) {
+      beds.value = [];
+    } else {
       bedLoading.value = true;
       const response = await getBedsApi({ name: query, pageSize: 1000 });
       beds.value = response.data;
       bedLoading.value = false;
-    } else {
-      beds.value = [];
     }
   }
 
-  async function findBedByRoom(roomId, status = 'available') {
+  async function findBedByRoom(roomId: any, status = 'available') {
     if (!roomId) {
       window['$message'].error('Please Select Room First');
       return;
     }
-    if (roomId !== '' || status !== '') {
+    if (!isEmpty(roomId) || !isEmpty(status)) {
       bedLoading.value = true;
       const response = await getBedsApi({
         room_id: roomId,

@@ -1,4 +1,5 @@
 import { ref, watch } from 'vue';
+
 /**
  * @description Paginated Data
  */
@@ -13,7 +14,6 @@ export function userPagination(api: Function) {
   const getList = () => {
     api({ ...params.value, page: page.value, pageSize: pageSize.value }).then((result: any) => {
       list.value = result.data;
-      console.log('Record list =>', result.data);
       itemCount.value = result.meta.total;
       if (result.meta.total === 0) {
         emptyState.value = true;

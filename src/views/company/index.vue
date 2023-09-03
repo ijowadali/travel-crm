@@ -1,14 +1,14 @@
 <template>
   <n-card title="Companies">
     <n-space :vertical="true">
-      <n-input
-        type="text"
-        size="small"
-        v-model:value="params.name"
-        @change="fetchList"
-        placeholder="Search by Name"
-      />
-      <n-table :bordered="true" :single-line="false" size="small" :striped="true">
+      <!--      <n-input-->
+      <!--        type="text"-->
+      <!--        size="small"-->
+      <!--        v-model:value="params.name"-->
+      <!--        @change="fetchList"-->
+      <!--        placeholder="Search by Name"-->
+      <!--      />-->
+      <n-table :bordered="true" :single-line="false" :striped="true" size="small">
         <thead>
           <tr>
             <th>S.no #</th>
@@ -23,13 +23,13 @@
         </thead>
         <tbody>
           <tr v-if="list.length === 0">
-            <td colspan="7" class="data_placeholder"> Record Not Exist </td>
+            <td class="data_placeholder" colspan="7"> Record Not Exist</td>
           </tr>
-          <tr v-else v-for="item in list" :key="item.id">
+          <tr v-for="item in list" v-else :key="item.id">
             <td>{{ item.id }}</td>
             <td>{{ item.company_name }}</td>
             <td>
-              <n-avatar round size="large" :src="`${imgUrl}${item.logo}`" />
+              <n-avatar :src="`${imgUrl}${item.logo}`" round size="large" />
             </td>
             <td>{{ item.user_id }}</td>
             <td> {{ item.phone }}</td>
@@ -37,12 +37,12 @@
             <td>{{ item.created_at }}</td>
             <td>
               <n-dropdown
-                @click="actionOperation(item)"
                 :onSelect="selectedAction"
-                trigger="click"
                 :options="moreOptions"
+                trigger="click"
+                @click="actionOperation(item)"
               >
-                <n-button size="small" :circle="true">
+                <n-button :circle="true" size="small">
                   <n-icon>
                     <more-outlined />
                   </n-icon>
@@ -58,16 +58,16 @@
           v-model:page-size="pageSize"
           :item-count="itemCount"
           :page-sizes="pageSizes"
-          size="small"
           :show-quick-jumper="true"
           :show-size-picker="true"
+          size="small"
         />
       </n-space>
       <n-button
-        type="primary"
-        size="large"
         :circle="true"
+        size="large"
         style="position: fixed; bottom: 30px; right: 40px"
+        type="primary"
         @click="showModal = true"
       >
         <template #icon>
@@ -76,7 +76,7 @@
           </n-icon>
         </template>
       </n-button>
-      <n-modal style="width: 70%" v-model:show="showModal" preset="dialog">
+      <n-modal v-model:show="showModal" preset="dialog" style="width: 70%">
         <template #header>
           <div>Create New Company</div>
         </template>
@@ -90,7 +90,7 @@
         </n-space>
       </n-modal>
 
-      <n-modal style="width: 70%" v-model:show="showEditModal" preset="dialog">
+      <n-modal v-model:show="showEditModal" preset="dialog" style="width: 70%">
         <template #header>
           <div>Update Company</div>
         </template>
@@ -109,13 +109,12 @@
 </template>
 
 <script lang="ts" setup>
-  import { getCompaniesApi, deleteCompanyApi } from '@/api/company/company';
+  import { deleteCompanyApi, getCompaniesApi } from '@/api/company/company';
   import { userPagination } from '@/hooks/userPagination';
-  import { ref, onMounted, h } from 'vue';
-  import { useDialog, useMessage } from 'naive-ui';
   import type { Component } from 'vue';
-  import { NIcon, NPagination } from 'naive-ui';
-  import { MoreOutlined, EditOutlined, DeleteOutlined, PlusOutlined } from '@vicons/antd';
+  import { h, onMounted, ref } from 'vue';
+  import { NIcon, NPagination, useDialog } from 'naive-ui';
+  import { DeleteOutlined, EditOutlined, MoreOutlined, PlusOutlined } from '@vicons/antd';
   import EditCompany from '@/components/company/EditCompany.vue';
   import AddCompany from '@/components/company/AddCompany.vue';
   import { useGlobSetting } from '@/hooks/setting';
@@ -127,7 +126,7 @@
   const showModal = ref(false);
   const showEditModal = ref(false);
   const selectedId = ref();
-  const message = useMessage();
+  const loading = ref(false);
   const { getList, list, page, pageSizes, itemCount, pageSize, params }: any =
     userPagination(getCompaniesApi);
   const renderIcon = (icon: Component) => {
@@ -162,18 +161,17 @@
   }
 
   function deleteOperation() {
-    const Loading = window['$loading'] || null;
-    Loading.start();
+    loading.value = true;
     deleteCompanyApi(selectedId.value)
-      .then((result) => {
-        message.success(result.message);
-        getList();
-        Loading.finish();
+      .then(async (result) => {
+        window['$message'].success(result.message);
+        await getList();
+        loading.value = false;
         dialog.destroyAll;
       })
       .catch((result) => {
-        message.error(result.message);
-        Loading.finish();
+        window['$message'].error(result.message);
+        loading.value = false;
         dialog.destroyAll;
       });
     selectedId.value = null;
@@ -193,11 +191,8 @@
   const selectedAction = (key: any) => {
     selectedOption.value = key;
   };
-  const fetchList = () => {
-    getList(params.value);
-  };
-  onMounted(() => {
-    getList(params.value);
+  onMounted(async () => {
+    await getList(params.value);
   });
 </script>
 <style lang="less" scoped>
