@@ -89,7 +89,7 @@
             <td>{{ item.customer_name }}</td>
             <td>
               <n-tag round size="small" type="success">
-                {{ item.booking_status }}
+                {{ item.booking_status.toUpperCase() }}
               </n-tag>
             </td>
             <td>{{ item.category }}</td>
