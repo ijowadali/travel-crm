@@ -130,7 +130,7 @@
       </n-space>
       <router-link to="/booking/add-booking">
         <n-button
-          v-if="permission.hasPermission(['can view add booking'])"
+          v-if="permission.hasPermission(['can add booking'])"
           :circle="true"
           size="large"
           style="position: fixed; bottom: 30px; right: 40px"
