@@ -1,46 +1,113 @@
 <template>
-  <n-card title="Bookings" v-permission="{ action: ['can view bookings'] }">
+  <n-card title="Bookings">
     <n-space :vertical="true">
-      <n-input
-        type="text"
-        size="small"
-        v-model:value="params.name"
-        @change="fetchList"
-        placeholder="Search by Name"
-      />
+      <n-row gutter="12">
+        <n-col :span="4">
+          <n-input
+            v-model:value="params.customer_name"
+            clearable
+            placeholder="Search by Name"
+            size="small"
+            type="text"
+          />
+        </n-col>
+        <n-col :span="4">
+          <n-select
+            v-model:value="params.booking_status"
+            :options="[
+              { label: 'Draft', value: 'draft' },
+              { label: 'Processing', value: 'processing' },
+              { label: 'Final', value: 'final' },
+            ]"
+            clearable
+            filterable
+            placeholder="Select Booking Status"
+            size="small"
+          />
+        </n-col>
+        <n-col :span="4">
+          <n-select
+            v-model:value="params.category"
+            :options="[
+              { label: 'Basic', value: 'basic' },
+              { label: 'Individual', value: 'individual' },
+              { label: 'Premium', value: 'premium' },
+              { label: 'VIP', value: 'vip' },
+            ]"
+            clearable
+            filterable
+            placeholder="Select Category"
+            size="small"
+          />
+        </n-col>
+        <n-col :span="4">
+          <n-select
+            v-model:value="params.confirmed_ticket"
+            :options="[
+              { label: 'Yes', value: 1 },
+              { label: 'No', value: 0 },
+            ]"
+            clearable
+            filterable
+            placeholder="Select Ticket Status"
+            size="small"
+          />
+        </n-col>
+        <n-col :span="4">
+          <n-input
+            v-model:value="params.group_name"
+            clearable
+            placeholder="Search by Group Name"
+            size="small"
+            type="text"
+            @change="fetchList"
+          />
+        </n-col>
+        <n-col :span="4">
+          <n-button secondary size="small" strong type="info" @click="fetchList"> Search</n-button>
+        </n-col>
+      </n-row>
+
       <n-table :striped="true">
         <thead>
           <tr>
-            <th>Name</th>
+            <th>Customer Name</th>
             <th>Booking Status</th>
             <th>Category</th>
             <th>Group No</th>
+            <th>Group Name</th>
+            <th>Ticket Confirmed</th>
             <th>Created At</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
           <tr v-if="list.length === 0">
-            <td colspan="7" class="data_placeholder"> Record Not Exist</td>
+            <td class="data_placeholder" colspan="7"> Record Not Exist</td>
           </tr>
-          <tr v-else v-for="item in list" :key="item.id">
+          <tr v-for="item in list" v-else :key="item.id">
             <td>{{ item.customer_name }}</td>
             <td>
-              <n-tag type="success" size="small" round>
+              <n-tag round size="small" type="success">
                 {{ item.booking_status }}
               </n-tag>
             </td>
             <td>{{ item.category }}</td>
             <td>{{ item.group_no }}</td>
+            <td>{{ item.group_name }}</td>
+            <td>
+              <n-tag v-if="item.confirmed_ticket" round size="small" type="success"> Yes</n-tag>
+              <n-tag v-else round size="small" type="error"> No</n-tag>
+            </td>
             <td>{{ item.created_at }}</td>
             <td>
               <n-dropdown
-                @click="actionOperation(item)"
                 :onSelect="selectedAction"
-                trigger="click"
                 :options="moreOptions"
+                trigger="click"
+                @click="actionOperation(item)"
               >
-                <n-button size="small" :circle="true">
+                <n-button :circle="true" size="small">
                   <n-icon>
                     <more-outlined />
                   </n-icon>
@@ -56,18 +123,18 @@
           v-model:page-size="pageSize"
           :item-count="itemCount"
           :page-sizes="pageSizes"
-          size="small"
           :show-quick-jumper="true"
           :show-size-picker="true"
+          size="small"
         />
       </n-space>
       <router-link to="/booking/add-booking">
         <n-button
           v-if="permission.hasPermission(['can view add booking'])"
-          type="primary"
-          size="large"
           :circle="true"
+          size="large"
           style="position: fixed; bottom: 30px; right: 40px"
+          type="primary"
         >
           <template #icon>
             <n-icon>
@@ -76,56 +143,23 @@
           </template>
         </n-button>
       </router-link>
-      <n-modal style="width: 70%" v-model:show="showModal" preset="dialog">
-        <template #header>
-          <div>Create New Role</div>
-        </template>
-        <n-space :vertical="true">
-          <add-role
-            @created="
-              getList();
-              showModal = false;
-            "
-          />
-        </n-space>
-      </n-modal>
-
-      <n-modal style="width: 70%" v-model:show="showEditModal" preset="dialog">
-        <template #header>
-          <div>Update Role</div>
-        </template>
-        <n-space :vertical="true">
-          <edit-role
-            :id="selectedId"
-            @updated="
-              getList();
-              showEditModal = false;
-            "
-          />
-        </n-space>
-      </n-modal>
     </n-space>
   </n-card>
 </template>
 
 <script lang="ts" setup>
-  import { getBookingsApi, deleteBookingApi } from '@/api/booking/booking';
+  import { deleteBookingApi, getBookingsApi } from '@/api/booking/booking';
   import { userPagination } from '@/hooks/userPagination';
-  import { ref, onMounted, h } from 'vue';
-  import { useDialog, useMessage } from 'naive-ui';
   import type { Component } from 'vue';
-  import { NIcon, NPagination } from 'naive-ui';
-  import { MoreOutlined, EditOutlined, DeleteOutlined, PlusOutlined } from '@vicons/antd';
+  import { h, onMounted, ref } from 'vue';
+  import { NIcon, NPagination, useDialog, useMessage } from 'naive-ui';
+  import { DeleteOutlined, EditOutlined, MoreOutlined, PlusOutlined } from '@vicons/antd';
   import { PrintAdd24Regular } from '@vicons/fluent';
-  import AddRole from '@/components/Role/AddRole.vue';
-  import EditRole from '@/components/Role/EditRole.vue';
   import { usePermission } from '@/hooks/web/usePermission';
   import router from '@/router';
 
   const dialog = useDialog();
   const selectedOption: any = ref(null);
-  const showModal = ref(false);
-  const showEditModal = ref(false);
   const selectedId = ref();
   const message = useMessage();
   const permission = usePermission();

@@ -19,7 +19,7 @@
                   :options="[
                     { label: 'Draft', value: 'draft' },
                     { label: 'Processing', value: 'processing' },
-                    { label: 'Final', value: 'Final' },
+                    { label: 'Final', value: 'final' },
                   ]"
                   filterable
                   placeholder="Search Status"
