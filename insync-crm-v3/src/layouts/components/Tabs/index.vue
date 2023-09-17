@@ -62,8 +62,11 @@ import { reactive, ref } from 'vue';
 import type { Tab } from '@src/types/tab';
 import { DashboardFilled } from '@vicons/material';
 import { ArrowsLeft } from '@vicons/tabler';
-import type { ScrollDirection, TabsOptionKey } from './private';
-import { tabsOptions } from './private';
+import {
+  type ScrollDirection,
+  type TabsOptionKey,
+  tabsOptions
+} from '@src/layouts/components/Tabs/private';
 import { useRoute, useRouter } from 'vue-router';
 import { useTabStore } from '@src/store/modules/tab';
 import { BrowserUtils } from '@src/utils/browser';
