@@ -117,7 +117,7 @@
           labelHeightMedium: '0'
         }"
       >
-        <n-button :loading="loading" type="success" @click="handleValidateClick">
+        <n-button :loading="loading" secondary type="info" @click="handleValidateClick">
           <template #icon>
             <n-icon>
               <SaveArrowRight20Filled />

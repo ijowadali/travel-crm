@@ -28,7 +28,7 @@
                     :options="[
                       { label: 'Draft', value: 'draft' },
                       { label: 'Processing', value: 'processing' },
-                      { label: 'Final', value: 'Final' },
+                      { label: 'Final', value: 'Final' }
                     ]"
                   />
                 </n-form-item>
@@ -60,7 +60,7 @@
                       { label: 'Basic', value: 'basic' },
                       { label: 'Individual', value: 'individual' },
                       { label: 'Premium', value: 'premium' },
-                      { label: 'VIP', value: 'vip' },
+                      { label: 'VIP', value: 'vip' }
                     ]"
                   />
                 </n-form-item>
@@ -115,7 +115,7 @@
                   :title="member.name"
                   :segmented="{
                     content: true,
-                    footer: 'soft',
+                    footer: 'soft'
                   }"
                 >
                   <template #header-extra>
@@ -212,7 +212,7 @@
                       placeholder="Select Option"
                       :options="[
                         { label: 'Male', value: 'male' },
-                        { label: 'Female', value: 'female' },
+                        { label: 'Female', value: 'female' }
                       ]"
                     />
                   </n-form-item>
@@ -261,7 +261,7 @@
                         { label: 'Basic', value: 'basic' },
                         { label: 'Individual', value: 'individual' },
                         { label: 'Premium', value: 'premium' },
-                        { label: 'VIP', value: 'vip' },
+                        { label: 'VIP', value: 'vip' }
                       ]"
                     />
                   </n-form-item>
@@ -284,7 +284,7 @@
                         { label: 'Basic', value: 'basic' },
                         { label: 'Individual', value: 'individual' },
                         { label: 'Premium', value: 'premium' },
-                        { label: 'VIP', value: 'vip' },
+                        { label: 'VIP', value: 'vip' }
                       ]"
                     />
                   </n-form-item>
@@ -328,90 +328,91 @@
 </template>
 
 <script lang="ts" setup>
-  import { onMounted, ref } from 'vue';
-  import {
-    SaveArrowRight20Filled,
-    TextBulletListSquareEdit24Regular,
-    Info16Filled,
-  } from '@vicons/fluent';
-  import { getBookingApi, updateBookingApi } from '@/api/booking/booking';
-  import { useRoute } from 'vue-router';
+import { onMounted, ref } from 'vue';
+import {
+  SaveArrowRight20Filled,
+  TextBulletListSquareEdit24Regular,
+  Info16Filled
+} from '@vicons/fluent';
+import { getRecordApi, updateRecordApi } from '@src/api/endpoints';
+// import { getBookingApi, updateBookingApi } from '@/api/booking/booking';
+import { useRoute } from 'vue-router';
 
-  const route = useRoute();
-  const newMember: any = ref({});
-  const showAssignModal: any = ref(false);
-  const showInfoModal: any = ref(false);
-  const selectedId: any = ref(null);
-  const members: any = ref([]);
-  const tabValue: any = ref('general');
-  const bookingGeneralDetails: any = ref({});
-  const loading = ref(false);
-  const rules = ref({
-    company_name: {
-      required: true,
-      message: 'Please Enter Name',
-      trigger: 'blur',
-    },
-  });
-  onMounted(async () => {
-    if (route.params.id) {
-      getBookingApi(1).then((result) => {
-        bookingGeneralDetails.value = {
-          customer_name: result.customer_name,
-          booking_status: result.booking_status,
-          group_no: result.group_no,
-          group_name: result.group_name,
-          category: result.category,
-          approval_date: result.approval_date,
-          expected_departure: result.expected_departure,
-          confirmed_ticket: result.confirmed_ticket,
-        };
-        if (result.members) {
-          members.value = result.members;
-        }
-      });
-    }
-  });
-
-  function saveGeneralBooking() {
-    loading.value = true;
-    updateBookingApi(parseInt(String(route.params.id)), {
-      ...bookingGeneralDetails.value,
-      type: 'general',
-    }).then((result) => {
-      window['$message'].success(result.message);
-      loading.value = false;
+const route = useRoute();
+const newMember: any = ref({});
+const showAssignModal: any = ref(false);
+const showInfoModal: any = ref(false);
+const selectedId: any = ref(null);
+const members: any = ref([]);
+const tabValue: any = ref('general');
+const bookingGeneralDetails: any = ref({});
+const loading = ref(false);
+const rules = ref({
+  company_name: {
+    required: true,
+    message: 'Please Enter Name',
+    trigger: 'blur'
+  }
+});
+onMounted(async () => {
+  if (route.params.id) {
+    getRecordApi(`/booking/${route.params.id}`).then((res: any) => {
+      bookingGeneralDetails.value = {
+        customer_name: res.result.customer_name,
+        booking_status: res.result.booking_status,
+        group_no: res.result.group_no,
+        group_name: res.result.group_name,
+        category: res.result.category,
+        approval_date: res.result.approval_date,
+        expected_departure: res.result.expected_departure,
+        confirmed_ticket: res.result.confirmed_ticket
+      };
+      if (res.result.members) {
+        members.value = res.result.members;
+      }
     });
   }
+});
 
-  function saveMemberDetails() {
-    loading.value = true;
-    updateBookingApi(parseInt(String(route.params.id)), {
-      ...newMember.value,
-      type: 'member',
-    }).then((result) => {
-      newMember.value = {};
-      window['$message'].success(result.message);
-      loading.value = false;
-    });
-  }
+function saveGeneralBooking() {
+  loading.value = true;
+  updateRecordApi('/bookings/' + parseInt(String(route.params.id)), {
+    ...bookingGeneralDetails.value,
+    type: 'general'
+  }).then((res: any) => {
+    window['$message'].success(res.result.message);
+    loading.value = false;
+  });
+}
 
-  const actionOperation = (id: any) => {
-    selectedId.value = id;
-    showAssignModal.value = true;
-  };
-  const showModel = (member: any) => {
-    selectedId.value = member;
-    showInfoModal.value = true;
-  };
-  // function saveMemberHotel() {
-  //   console.log(singleHotelDetail);
-  //   newMember.value.hotelDetails.push(singleHotelDetail.value);
-  //   singleHotelDetail.value = {};
-  //   hotel_city.value = null;
-  //   tabValue.value = 'members';
-  //   setTimeout(() => {
-  //     tabValue.value = 'add_members';
-  //   }, 100);
-  // }
+function saveMemberDetails() {
+  loading.value = true;
+  updateRecordApi('/bookings/' + parseInt(String(route.params.id)), {
+    ...newMember.value,
+    type: 'member'
+  }).then((res: any) => {
+    newMember.value = {};
+    window['$message'].success(res.result.message);
+    loading.value = false;
+  });
+}
+
+const actionOperation = (id: any) => {
+  selectedId.value = id;
+  showAssignModal.value = true;
+};
+const showModel = (member: any) => {
+  selectedId.value = member;
+  showInfoModal.value = true;
+};
+// function saveMemberHotel() {
+//   console.log(singleHotelDetail);
+//   newMember.value.hotelDetails.push(singleHotelDetail.value);
+//   singleHotelDetail.value = {};
+//   hotel_city.value = null;
+//   tabValue.value = 'members';
+//   setTimeout(() => {
+//     tabValue.value = 'add_members';
+//   }, 100);
+// }
 </script>

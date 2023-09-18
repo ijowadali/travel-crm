@@ -1,44 +1,84 @@
 <template>
-  <n-card title="Bookings" v-permission="{ action: ['can view bookings'] }">
-    <n-space :vertical="true">
-      <n-input
-        type="text"
-        size="small"
-        v-model:value="params.name"
-        @change="fetchList"
-        placeholder="Search by Name"
-      />
-      <n-table :striped="true">
-        <thead>
+  <DataTableLayout v-permission="{ action: ['can view bookings'] }">
+    <template #tableHeader>
+      <div class="flex flex-col items-center space-y-2 sm:flex-row sm:justify-between sm:space-y-0">
+        <div class="flex flex-col items-center space-y-2 sm:flex-row sm:space-x-3 sm:space-y-0">
+          <div class="flex w-full items-center !space-x-2 sm:w-fit">
+            <NInput
+              v-model:value="searchParams.name"
+              class="sm:!w-[200px]"
+              clearable
+              placeholder="Search by Name"
+              @keyup="fetchList"
+            >
+              <template #prefix>
+                <NIcon :component="SearchOutlined" class="mr-1" />
+              </template>
+            </NInput>
+          </div>
+        </div>
+        <div class="flex w-full items-center justify-between space-x-3 sm:justify-end">
+          <NButton
+            secondary
+            type="info"
+            :size="isMobile ? 'small' : 'medium'"
+            @click="router.push({ name: 'booking_add' })"
+            v-permission="{ action: ['can view booking create'] }"
+          >
+            Create
+          </NButton>
+        </div>
+      </div>
+    </template>
+
+    <template #tableContent>
+      <table class="table">
+        <thead class="head">
           <tr>
-            <th>Name</th>
-            <th>Booking Status</th>
-            <th>Category</th>
-            <th>Group No</th>
-            <th>Created At</th>
-            <th>Actions</th>
+            <th class="sticky_el left-0 z-20">ID</th>
+            <th class="th">Name</th>
+            <th class="th">Booking Status</th>
+            <th class="th">Category</th>
+            <th class="th">Group No</th>
+            <th class="th">Created At</th>
+            <th class="th">Updated At</th>
+            <th
+              class="sticky_el right-0 z-20"
+              v-permission="{
+                action: ['can view booking update', 'can view booking delete']
+              }"
+            >
+              Actions
+            </th>
           </tr>
         </thead>
         <tbody>
           <tr v-if="list.length === 0">
-            <td colspan="7" class="data_placeholder"> Record Not Exist</td>
+            <td colspan="8" class="data_placeholder">Record Not Exist</td>
           </tr>
-          <tr v-else v-for="item in list" :key="item.id">
-            <td>{{ item.customer_name }}</td>
-            <td>
-              <n-tag type="success" size="small" round>
-                {{ item.booking_status }}
-              </n-tag>
+          <tr v-else v-for="item in list" :key="item.id" class="body_tr">
+            <td class="sticky_el left-0 z-10">
+              {{ item.id }}
             </td>
-            <td>{{ item.category }}</td>
-            <td>{{ item.group_no }}</td>
-            <td>{{ item.created_at }}</td>
-            <td>
+            <td class="td">{{ item.customer_name }}</td>
+            <td class="text-center td">
+              <n-tag :bordered="false" type="info">{{ item.status }}</n-tag>
+            </td>
+            <td class="td">{{ item.category }}</td>
+            <td class="td">{{ item.group_no }}</td>
+            <td class="td">{{ item.created_at }}</td>
+            <td class="td">{{ item.updated_at }}</td>
+            <td
+              class="sticky_el right-0 z-10"
+              v-permission="{
+                action: ['can view booking update', 'can view booking delete']
+              }"
+            >
               <n-dropdown
                 @click="actionOperation(item)"
                 :onSelect="selectedAction"
                 trigger="click"
-                :options="moreOptions"
+                :options="filteredOptions"
               >
                 <n-button size="small" :circle="true">
                   <n-icon>
@@ -49,8 +89,11 @@
             </td>
           </tr>
         </tbody>
-      </n-table>
-      <n-space style="align-items: center; padding-top: 15px">
+      </table>
+    </template>
+
+    <template #tableFooter>
+      <div class="flex flex-col items-center space-y-2 sm:flex-row sm:justify-end sm:space-y-0">
         <n-pagination
           v-model:page="page"
           v-model:page-size="pageSize"
@@ -60,161 +103,147 @@
           :show-quick-jumper="true"
           :show-size-picker="true"
         />
-      </n-space>
-      <router-link to="/booking/add-booking">
-        <n-button
-          v-if="permission.hasPermission(['can view add booking'])"
-          type="primary"
-          size="large"
-          :circle="true"
-          style="position: fixed; bottom: 30px; right: 40px"
-        >
-          <template #icon>
-            <n-icon>
-              <plus-outlined />
-            </n-icon>
-          </template>
-        </n-button>
-      </router-link>
-      <n-modal style="width: 70%" v-model:show="showModal" preset="dialog">
-        <template #header>
-          <div>Create New Role</div>
-        </template>
-        <n-space :vertical="true">
-          <add-role
-            @created="
-              getList();
-              showModal = false;
-            "
-          />
-        </n-space>
-      </n-modal>
-
-      <n-modal style="width: 70%" v-model:show="showEditModal" preset="dialog">
-        <template #header>
-          <div>Update Role</div>
-        </template>
-        <n-space :vertical="true">
-          <edit-role
-            :id="selectedId"
-            @updated="
-              getList();
-              showEditModal = false;
-            "
-          />
-        </n-space>
-      </n-modal>
-    </n-space>
-  </n-card>
+      </div>
+    </template>
+  </DataTableLayout>
 </template>
 
 <script lang="ts" setup>
-  import { getBookingsApi, deleteBookingApi } from '@/api/booking/booking';
-  import { userPagination } from '@/hooks/userPagination';
-  import { ref, onMounted, h } from 'vue';
-  import { useDialog, useMessage } from 'naive-ui';
-  import type { Component } from 'vue';
-  import { NIcon, NPagination } from 'naive-ui';
-  import { MoreOutlined, EditOutlined, DeleteOutlined, PlusOutlined } from '@vicons/antd';
-  import { PrintAdd24Regular } from '@vicons/fluent';
-  import AddRole from '@/components/Role/AddRole.vue';
-  import EditRole from '@/components/Role/EditRole.vue';
-  import { usePermission } from '@/hooks/web/usePermission';
-  import router from '@/router';
+import { ref, onMounted, computed } from 'vue';
+import { useDialog, NIcon, NPagination } from 'naive-ui';
+import { useRouter } from 'vue-router';
+import {
+  MoreOutlined,
+  EditOutlined,
+  DeleteOutlined,
+  // PlusOutlined,
+  SearchOutlined
+} from '@vicons/antd';
+import { PrintAdd24Regular } from '@vicons/fluent';
+import { deleteRecordApi } from '@src/api/endpoints';
+import { usePermission } from '@src/utils/permission/usePermission';
+import { usePagination } from '@src/hooks/pagination/usePagination';
+import DataTableLayout from '@src/layouts/DataTableLayout/index.vue';
+// import { useLoading } from '@src/hooks/useLoading';
+import { useMobile } from '@src/hooks/useMediaQuery';
+import { renderIcon } from '@src/utils/renderIcon';
 
-  const dialog = useDialog();
-  const selectedOption: any = ref(null);
-  const showModal = ref(false);
-  const showEditModal = ref(false);
-  const selectedId = ref();
-  const message = useMessage();
-  const permission = usePermission();
-  const { getList, list, page, pageSizes, itemCount, pageSize, params }: any =
-    userPagination(getBookingsApi);
-  const renderIcon = (icon: Component) => {
-    return () => {
-      return h(NIcon, null, {
-        default: () => h(icon),
-      });
-    };
-  };
+const dialog = useDialog();
+const isMobile = useMobile();
+const router = useRouter();
+const selectedOption: any = ref(null);
+// const showModal = ref(false);
+// const showEditModal = ref(false);
+const selectedId = ref();
+const { hasPermission } = usePermission();
+// const [loading, loadingDispatcher] = useLoading(false);
+const { getList, list, page, pageSizes, itemCount, pageSize, searchParams }: any =
+  usePagination('/bookings');
 
-  const moreOptions = ref([
-    {
-      label: 'Print',
-      key: 'print',
-      icon: renderIcon(PrintAdd24Regular),
-    },
-    {
-      label: 'Edit',
-      key: 'edit',
-      icon: renderIcon(EditOutlined),
-    },
-    {
-      label: 'Delete',
-      key: 'delete',
-      icon: renderIcon(DeleteOutlined),
-    },
-  ]);
-
-  function confirmationDialog() {
-    dialog.error({
-      title: 'Confirmation',
-      content: () => 'Are you sure you want to delete?',
-      positiveText: 'Delete',
-      negativeText: 'Cancel',
-      onPositiveClick: deleteOperation,
-    });
+const moreOptions = ref([
+  {
+    label: 'Print',
+    key: 'print',
+    icon: renderIcon(PrintAdd24Regular),
+    permission: hasPermission(['can view booking print'])
+  },
+  {
+    label: 'Edit',
+    key: 'edit',
+    icon: renderIcon(EditOutlined),
+    permission: hasPermission(['can view booking update'])
+  },
+  {
+    label: 'Delete',
+    key: 'delete',
+    icon: renderIcon(DeleteOutlined),
+    permission: hasPermission(['can view booking delete'])
   }
+]);
 
-  function deleteOperation() {
-    const Loading = window['$loading'] || null;
-    Loading.start();
-    deleteBookingApi(selectedId.value)
-      .then((result) => {
-        message.success(result.message);
-        getList();
-        Loading.finish();
-        dialog.destroyAll;
-      })
-      .catch((result) => {
-        message.error(result.message);
-        Loading.finish();
-        dialog.destroyAll;
-      });
-    selectedId.value = null;
-    selectedOption.value = null;
-  }
+const filteredOptions = computed(() => {
+  return moreOptions.value.filter((option) => option.permission);
+});
 
-  const actionOperation = (item: any) => {
-    if (selectedOption.value === 'edit') {
-      // showEditModal.value = true;
-      // selectedId.value = item.id;
-      router.push(`/booking/edit-booking/${item.id}`);
-    } else if (selectedOption.value === 'delete') {
-      selectedId.value = item.id;
-      confirmationDialog();
-    } else if (selectedOption.value === 'print') {
-      selectedId.value = item.id;
-      router.push(`/booking/print-booking?booking_id=${item.id}`);
-    }
-  };
-  const selectedAction = (key: any) => {
-    selectedOption.value = key;
-  };
-  const fetchList = () => {
-    getList(params.value);
-  };
-  onMounted(() => {
-    getList();
+function confirmationDialog() {
+  dialog.error({
+    title: 'Confirmation',
+    content: () => 'Are you sure you want to delete?',
+    positiveText: 'Delete',
+    negativeText: 'Cancel',
+    onPositiveClick: deleteOperation
   });
-</script>
-<style lang="less" scoped>
-  .data_placeholder {
-    text-align: center;
-    color: gray;
-    padding: 20px 0;
-    font-size: 18px;
-    font-style: italic;
+}
+
+function deleteOperation() {
+  const Loading = window['$loading'] || null;
+  Loading.start();
+  deleteRecordApi(`/bookings/${selectedId.value}`)
+    .then((res: any) => {
+      window['$message'].success(res.result.message);
+      getList();
+      Loading.finish();
+      dialog.destroyAll;
+    })
+    .catch((res: any) => {
+      window['$message'].error(res.result.message);
+      Loading.finish();
+      dialog.destroyAll;
+    });
+  selectedId.value = null;
+  selectedOption.value = null;
+}
+
+const actionOperation = (item: any) => {
+  if (selectedOption.value === 'edit') {
+    // showEditModal.value = true;
+    // selectedId.value = item.id;
+    // router.push(`/booking/edit-booking/${item.id}`);
+    router.push({ name: 'booking_update', params: { id: item.id } });
+  } else if (selectedOption.value === 'delete') {
+    selectedId.value = item.id;
+    confirmationDialog();
+  } else if (selectedOption.value === 'print') {
+    selectedId.value = item.id;
+    // router.push(`/booking/print-booking?booking_id=${item.id}`);
+    router.push({ name: 'booking_print', params: { id: item.id } });
   }
+};
+const selectedAction = (key: any) => {
+  selectedOption.value = key;
+};
+const fetchList = () => {
+  getList(searchParams.value);
+};
+onMounted(() => {
+  getList();
+});
+</script>
+
+<style lang="scss" scoped>
+.table {
+  @apply w-full text-sm text-left text-gray-500 dark:text-gray-400;
+}
+.head {
+  @apply sticky top-0 text-xs text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400 z-20;
+}
+.th {
+  @apply px-6 py-3 border-r border-b border-gray-200 dark:border-gray-800 text-center whitespace-nowrap;
+}
+.body_tr {
+  @apply hover:bg-gray-50 dark:hover:bg-gray-600;
+}
+.td {
+  @apply px-3 border-r border-b border-gray-200 dark:border-gray-800 whitespace-nowrap;
+}
+.sticky_el {
+  @apply sticky bg-gray-50 dark:bg-gray-700 px-6 whitespace-nowrap text-center border border-gray-200 dark:border-gray-800;
+}
+.data_placeholder {
+  text-align: center;
+  color: gray;
+  padding: 20px 0;
+  font-size: 18px;
+  font-style: italic;
+}
 </style>

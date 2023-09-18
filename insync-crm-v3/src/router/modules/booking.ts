@@ -46,6 +46,16 @@ const routes: RouteRecordRaw[] = [
           hidden: true
         },
         component: () => import('@src/views/bookings/_id.vue')
+      },
+      {
+        path: 'print/:id',
+        name: `${routeName}_print`,
+        meta: {
+          title: 'Print booking',
+          permissions: ['can view booking print'],
+          hidden: true
+        },
+        component: () => import('@src/views/bookings/_id.vue')
       }
     ]
   }

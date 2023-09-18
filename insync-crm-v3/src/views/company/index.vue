@@ -144,16 +144,15 @@
 </template>
 
 <script lang="ts" setup>
+import { ref, onMounted, computed } from 'vue';
+import { useDialog, NIcon, NPagination } from 'naive-ui';
+import { MoreOutlined, EditOutlined, DeleteOutlined, SearchOutlined } from '@vicons/antd';
 import { deleteRecordApi } from '@src/api/endpoints';
 import { usePermission } from '@src/utils/permission/usePermission';
 import { usePagination } from '@src/hooks/pagination/usePagination';
 import { useLoading } from '@src/hooks/useLoading';
 import { useMobile } from '@src/hooks/useMediaQuery';
 import { useEnv } from '@src/hooks/useEnv';
-import { ref, onMounted, computed } from 'vue';
-import { useDialog } from 'naive-ui';
-import { NIcon, NPagination } from 'naive-ui';
-import { MoreOutlined, EditOutlined, DeleteOutlined, SearchOutlined } from '@vicons/antd';
 import DataTableLayout from '@src/layouts/DataTableLayout/index.vue';
 import AddCompany from '@src/components/company/AddCompany.vue';
 import EditCompany from '@src/components/company/EditCompany.vue';

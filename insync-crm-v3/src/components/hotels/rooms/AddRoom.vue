@@ -81,7 +81,7 @@
           labelHeightMedium: '0'
         }"
       >
-        <n-button type="success" @click="handleValidateClick"> Create</n-button>
+        <n-button secondary type="info" @click="handleValidateClick"> Create</n-button>
       </n-form-item>
     </n-space>
   </n-form>
