@@ -7,7 +7,7 @@ export function usefilterRole() {
   const roleLoading = ref(false);
   const rolesInitialized = ref(false);
 
-  async function getByRoleParams(query: any) {
+  async function getRoleByParams(query: any) {
     if (isEmpty(query)) {
       roles.value = [];
     } else {
@@ -39,7 +39,7 @@ export function usefilterRole() {
     roles,
     roleLoading,
     rolesInitialized,
-    getByRoleParams,
+    getRoleByParams,
     getRoles,
     getRolesOnFocus
   };

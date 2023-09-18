@@ -1,5 +1,5 @@
 <template>
-  <n-form ref="formRef" :label-width="80" :model="formValue" :rules="rules" size="small">
+  <n-form ref="formRef" :label-width="80" :model="formValue" size="small">
     <n-grid :span="24" :x-gap="24">
       <n-form-item-gi :span="12" label="Email" path="email">
         <n-input v-model:value="formValue.email" placeholder="Enter Email" />
@@ -16,12 +16,29 @@
           v-model:value="formValue.roles"
           clearable
           @focus="getRolesOnFocus"
+          @update:value="checkCompanyAdminRole"
           :remote="true"
           :clear-filter-after-select="false"
           label-field="name"
           value-field="id"
           :loading="roleLoading"
           :options="roles"
+        />
+      </n-form-item-gi>
+      <n-form-item-gi v-if="isCompanyAdmin" :span="12" label="Company Name" path="company_id">
+        <n-select
+          :filterable="true"
+          :tag="false"
+          placeholder="Select Company"
+          v-model:value="formValue.company_id"
+          clearable
+          @focus="getCompaniesOnFocus"
+          :remote="true"
+          :clear-filter-after-select="false"
+          label-field="company_name"
+          value-field="id"
+          :loading="companyLoading"
+          :options="companies"
         />
       </n-form-item-gi>
     </n-grid>
@@ -35,14 +52,34 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue';
-import { type FormInst, useMessage } from 'naive-ui';
+import { type FormInst } from 'naive-ui';
 import { getRecordApi, updateRecordApi } from '@src/api/endpoints';
 import { usefilterRole } from '@src/filters/roles';
+import { usefilterCompany } from '@src/filters/company';
 
 const { roles, roleLoading, getRoles, getRolesOnFocus } = usefilterRole();
+const { companies, companyLoading, getCompanies, getCompaniesOnFocus } = usefilterCompany();
 const formRef = ref<FormInst | null>(null);
-const formValue: any = ref({});
-const message: any = useMessage();
+const isCompanyAdmin: any = ref(false);
+const formValue: any = ref({
+  profile: {},
+  roles: []
+});
+
+const checkCompanyAdminRole = () => {
+  const names = formValue.value.roles
+    .map((val: any) => {
+      const found = roles.value.find((item: any) => item.id === val);
+      return found ? found.name : null;
+    })
+    .filter(Boolean);
+
+  if (names.includes('company admin')) {
+    isCompanyAdmin.value = true;
+  } else {
+    isCompanyAdmin.value = false;
+  }
+};
 
 const emits = defineEmits(['updated']);
 const props = defineProps({
@@ -55,6 +92,7 @@ getRecordApi(`/users/${props.id}`).then((res: any) => {
   formValue.value = res.result;
   formValue.value.roles = formValue.value.roles.map((v: any) => v.id);
   getRoles();
+  getCompanies();
 });
 
 const handleValidateClick = (e: MouseEvent) => {
@@ -63,12 +101,12 @@ const handleValidateClick = (e: MouseEvent) => {
     if (!errors) {
       console.log(formValue.value);
       updateRecordApi(`/users/${formValue.value.id}`, formValue.value).then((res: any) => {
-        message.success(res.message);
+        window['$message'].success(res.message);
         emits('updated', res.result);
       });
     } else {
       console.log(errors);
-      message.error('Invalid');
+      window['$message'].error('Please fill out required fields');
     }
   });
 };
@@ -83,29 +121,6 @@ const status = ref([
     value: 'disabled'
   }
 ]);
-
-const rules = ref({
-  first_name: {
-    required: true,
-    message: 'Please Enter First Name',
-    trigger: 'blur'
-  },
-  last_name: {
-    required: true,
-    message: 'Please Enter last Name',
-    trigger: 'blur'
-  },
-  email: {
-    required: true,
-    message: 'Please Enter email',
-    trigger: 'blur'
-  },
-  password: {
-    required: true,
-    message: 'Please Enter Password',
-    trigger: 'blur'
-  }
-});
 </script>
 
 <style lang="scss" scoped></style>

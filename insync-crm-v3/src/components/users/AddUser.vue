@@ -1,11 +1,11 @@
 <template>
-  <n-form ref="formRef" :label-width="80" :model="formValue" :rules="rules" size="small">
+  <n-form ref="formRef" :label-width="80" :model="formValue" size="small">
     <n-grid :span="24" :x-gap="24">
       <n-form-item-gi :span="12" label="First Name" path="first_name">
-        <n-input v-model:value="formValue.first_name" placeholder="Enter First Name" />
+        <n-input v-model:value="formValue.profile.first_name" placeholder="Enter First Name" />
       </n-form-item-gi>
       <n-form-item-gi :span="12" label="Last Name" path="last_name">
-        <n-input v-model:value="formValue.last_name" placeholder="Enter Last Name" />
+        <n-input v-model:value="formValue.profile.last_name" placeholder="Enter Last Name" />
       </n-form-item-gi>
       <n-form-item-gi :span="12" label="Email" path="email">
         <n-input v-model:value="formValue.email" placeholder="Enter Email" />
@@ -27,10 +27,10 @@
           multiple
           :tag="false"
           placeholder="Select Role"
-          v-model:value="formValue.role_id"
+          v-model:value="formValue.roles"
           clearable
           @focus="getRolesOnFocus"
-          @update:value="checkVendorRole"
+          @update:value="checkCompanyAdminRole"
           :remote="true"
           :clear-filter-after-select="false"
           label-field="name"
@@ -39,20 +39,20 @@
           :options="roles"
         />
       </n-form-item-gi>
-      <n-form-item-gi v-if="isVendor" :span="12" label="Shop Name" path="shop_id">
+      <n-form-item-gi v-if="isCompanyAdmin" :span="12" label="Company Name" path="company_id">
         <n-select
           :filterable="true"
           :tag="false"
-          placeholder="Select Shop"
-          v-model:value="formValue.shop_id"
+          placeholder="Select Company"
+          v-model:value="formValue.company_id"
           clearable
-          @focus="getShopsOnFocus"
+          @focus="getCompaniesOnFocus"
           :remote="true"
           :clear-filter-after-select="false"
-          label-field="shop_name"
+          label-field="company_name"
           value-field="id"
-          :loading="shopLoading"
-          :options="shops"
+          :loading="companyLoading"
+          :options="companies"
         />
       </n-form-item-gi>
     </n-grid>
@@ -66,30 +66,32 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue';
-import { type FormInst, useMessage } from 'naive-ui';
+import { type FormInst } from 'naive-ui';
 import { createRecordApi } from '@src/api/endpoints';
 import { usefilterRole } from '@src/filters/roles';
-import { usefilterShop } from '@src/filters/shops';
+import { usefilterCompany } from '@src/filters/company';
 
 const { roles, roleLoading, getRolesOnFocus } = usefilterRole();
-const { shops, shopLoading, getShopsOnFocus } = usefilterShop();
+const { companies, companyLoading, getCompaniesOnFocus } = usefilterCompany();
 const formRef = ref<FormInst | null>(null);
-const formValue: any = ref({});
-const message: any = useMessage();
-const isVendor: any = ref(false);
+const isCompanyAdmin: any = ref(false);
+const formValue: any = ref({
+  profile: {},
+  roles: []
+});
 
-const checkVendorRole = () => {
-  const names = formValue.value.role_id
+const checkCompanyAdminRole = () => {
+  const names = formValue.value.roles
     .map((val: any) => {
       const found = roles.value.find((item: any) => item.id === val);
       return found ? found.name : null;
     })
     .filter(Boolean);
 
-  if (names.includes('vendor')) {
-    isVendor.value = true;
+  if (names.includes('company admin')) {
+    isCompanyAdmin.value = true;
   } else {
-    isVendor.value = false;
+    isCompanyAdmin.value = false;
   }
 };
 
@@ -99,13 +101,14 @@ const handleValidateClick = (e: MouseEvent) => {
   e.preventDefault();
   formRef.value?.validate((errors) => {
     if (!errors) {
+      console.log('form response', formValue.value);
       createRecordApi('/users', formValue.value).then((res: any) => {
-        message.success(res.message);
+        window['$message'].success(res.message);
         emits('created', res.result);
       });
     } else {
       console.log(errors);
-      message.error('Please fill out required fields');
+      window['$message'].error('Please fill out required fields');
     }
   });
 };
@@ -120,29 +123,6 @@ const status = ref([
     value: 'disabled'
   }
 ]);
-
-const rules = ref({
-  first_name: {
-    required: true,
-    message: 'Please Enter First Name',
-    trigger: 'blur'
-  },
-  last_name: {
-    required: true,
-    message: 'Please Enter last Name',
-    trigger: 'blur'
-  },
-  email: {
-    required: true,
-    message: 'Please Enter email',
-    trigger: 'blur'
-  },
-  password: {
-    required: true,
-    message: 'Please Enter Password',
-    trigger: 'blur'
-  }
-});
 </script>
 
 <style lang="scss" scoped></style>

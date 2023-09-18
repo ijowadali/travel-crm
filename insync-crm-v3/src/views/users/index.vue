@@ -67,7 +67,7 @@
               {{ item?.profile?.first_name + ' ' + item?.profile?.last_name }}
             </td>
             <td class="td pt-2">
-              <n-avatar :size="50" :src="`${imgUrl}${item?.profile.profile_picture}`" />
+              <n-avatar :size="50" :src="`${imgUrl}${item?.profile?.profile_picture}`" />
             </td>
             <td class="td">{{ item?.email }}</td>
             <td class="td">
@@ -176,7 +176,7 @@ import { useEnv } from '@src/hooks/useEnv';
 import { useMobile } from '@src/hooks/useMediaQuery';
 import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
-import { useDialog, useMessage } from 'naive-ui';
+import { useDialog } from 'naive-ui';
 import { NIcon, NPagination } from 'naive-ui';
 import { MoreOutlined, EditOutlined, DeleteOutlined, SearchOutlined } from '@vicons/antd';
 import DataTableLayout from '@src/layouts/DataTableLayout/index.vue';
@@ -193,7 +193,6 @@ const showModal = ref(false);
 const showEditModal = ref(false);
 const selectedId = ref();
 const { hasPermission } = usePermission();
-const message: any = useMessage();
 const [loading, loadingDispatcher] = useLoading(false);
 
 // fetch all records
@@ -242,14 +241,14 @@ function confirmationDialog() {
 function deleteOperation() {
   loadingDispatcher.loading();
   deleteRecordApi(`/users/${selectedId.value}`)
-    .then((result: any) => {
-      message.success(result.message);
+    .then((res: any) => {
+      window['$message'].success(res.result.message);
       getList();
       loadingDispatcher.loaded();
       dialog.destroyAll;
     })
-    .catch((result: any) => {
-      message.error(result.message);
+    .catch((res: any) => {
+      window['$message'].error(res.result.message);
       loadingDispatcher.loaded();
       dialog.destroyAll;
     });
