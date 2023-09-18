@@ -1,5 +1,5 @@
 <template>
-  <DataTableLayout :loading="loading">
+  <DataTableLayout :loading="loading" v-permission="{ action: ['can view company'] }">
     <template #tableHeader>
       <div class="flex flex-col items-center space-y-2 sm:flex-row sm:justify-between sm:space-y-0">
         <div class="flex flex-col items-center space-y-2 sm:flex-row sm:space-x-3 sm:space-y-0">
@@ -8,7 +8,7 @@
               v-model:value="searchParams.name"
               class="sm:!w-[200px]"
               clearable
-              placeholder="Search by Email"
+              placeholder="Search by Name"
               @keyup="fetchList"
             >
               <template #prefix>
@@ -23,7 +23,7 @@
             type="info"
             :size="isMobile ? 'small' : 'medium'"
             @click="showModal = true"
-            v-permission="{ action: ['can view user create'] }"
+            v-permission="{ action: ['can view company create'] }"
           >
             Create
           </NButton>
@@ -32,17 +32,13 @@
     </template>
 
     <template #tableContent>
-      <table class="table" v-permission="{ action: ['can view users'] }">
+      <table class="table">
         <thead class="head">
           <tr>
             <th class="sticky_el left-0 z-20">ID</th>
+            <th class="th">Logo</th>
             <th class="th">Name</th>
-            <th class="th">Picture</th>
-            <th class="th">Email</th>
-            <th class="th">Role</th>
             <th class="th">Phone#</th>
-            <th class="th">Company</th>
-            <th class="th">Company Phone#</th>
             <th class="th">Status</th>
             <th class="th">Address</th>
             <th class="th">Created At</th>
@@ -50,7 +46,7 @@
             <th
               class="sticky_el right-0 z-20"
               v-permission="{
-                action: ['can view user update', 'can view user delete']
+                action: ['can view company update', 'can view company delete']
               }"
             >
               Actions
@@ -59,49 +55,29 @@
         </thead>
         <tbody>
           <tr v-if="list.length === 0">
-            <td colspan="15" class="data_placeholder">Record Not Exist</td>
+            <td colspan="9" class="data_placeholder">Record Not Exist</td>
           </tr>
           <tr v-else v-for="item in list" :key="item.id" class="body_tr">
-            <td class="sticky_el left-0 z-10">{{ item?.id }}</td>
-            <td class="td">
-              {{ item?.profile?.first_name + ' ' + item?.profile?.last_name }}
+            <td class="sticky_el left-0 z-10">
+              {{ item.id }}
             </td>
-            <td class="td pt-2">
-              <n-avatar :size="50" :src="`${imgUrl}${item?.profile.profile_picture}`" />
+            <td class="text-center td pt-2">
+              <n-avatar :size="50" :src="`${imgUrl}${item.logo}`" />
             </td>
-            <td class="td">{{ item?.email }}</td>
-            <td class="td">
-              <n-space>
-                <n-tag v-for="role in item.roles" :key="role.id" type="success" :bordered="false">
-                  {{ role?.name }}
-                </n-tag>
-              </n-space>
-            </td>
-            <td class="td">{{ item?.profile?.phone_number }}</td>
-            <td class="td">{{ item?.company?.company_name }}</td>
-            <td class="td">{{ item?.company?.phone }}</td>
-            <td class="td">
-              <n-tag :bordered="false" type="info">
-                {{ item.status }}
-              </n-tag>
+            <td class="td">{{ item.company_name }}</td>
+            <td class="td">{{ item.phone }}</td>
+            <td class="text-center td">
+              <n-tag :bordered="false" type="info">{{ item.status }}</n-tag>
             </td>
             <td class="td">
-              {{
-                item?.profile?.address +
-                ' ' +
-                item?.profile?.city +
-                ' ' +
-                item?.profile?.state +
-                ' ' +
-                item?.profile?.country
-              }}
+              {{ item.address + ' ' + item.city + ' ' + item?.state + ' ' + item.country }}
             </td>
             <td class="td">{{ item.created_at }}</td>
             <td class="td">{{ item.updated_at }}</td>
             <td
               class="sticky_el right-0 z-10"
               v-permission="{
-                action: ['can view user update', 'can view user delete']
+                action: ['can view company update', 'can view company delete']
               }"
             >
               <n-dropdown
@@ -136,12 +112,12 @@
       </div>
     </template>
 
-    <n-modal style="width: 70%" v-model:show="showModal" preset="dialog">
+    <n-modal style="width: 60%" v-model:show="showModal" preset="dialog">
       <template #header>
-        <div>Create New User</div>
+        <div>Create New Company</div>
       </template>
       <n-space :vertical="true">
-        <add-user
+        <add-company
           @created="
             getList();
             showModal = false;
@@ -150,12 +126,12 @@
       </n-space>
     </n-modal>
 
-    <n-modal style="width: 70%" v-model:show="showEditModal" preset="dialog">
+    <n-modal style="width: 60%" v-model:show="showEditModal" preset="dialog">
       <template #header>
-        <div>Update User</div>
+        <div>Update Company</div>
       </template>
       <n-space :vertical="true">
-        <edit-user
+        <edit-company
           :id="selectedId"
           @updated="
             getList();
@@ -172,20 +148,18 @@ import { deleteRecordApi } from '@src/api/endpoints';
 import { usePermission } from '@src/utils/permission/usePermission';
 import { usePagination } from '@src/hooks/pagination/usePagination';
 import { useLoading } from '@src/hooks/useLoading';
-import { useEnv } from '@src/hooks/useEnv';
 import { useMobile } from '@src/hooks/useMediaQuery';
+import { useEnv } from '@src/hooks/useEnv';
 import { ref, onMounted, computed } from 'vue';
-import { useRouter } from 'vue-router';
 import { useDialog, useMessage } from 'naive-ui';
 import { NIcon, NPagination } from 'naive-ui';
 import { MoreOutlined, EditOutlined, DeleteOutlined, SearchOutlined } from '@vicons/antd';
 import DataTableLayout from '@src/layouts/DataTableLayout/index.vue';
-import AddUser from '@src/components/users/AddUser.vue';
-import EditUser from '@src/components/users/EditUser.vue';
+import AddCompany from '@src/components/company/AddCompany.vue';
+import EditCompany from '@src/components/company/AddCompany.vue';
 import { renderIcon } from '@src/utils/renderIcon';
 
 const { imgUrl } = useEnv();
-const router = useRouter();
 const isMobile = useMobile();
 const dialog = useDialog();
 const selectedOption: any = ref(null);
@@ -198,7 +172,7 @@ const [loading, loadingDispatcher] = useLoading(false);
 
 // fetch all records
 const { getList, list, page, pageSizes, itemCount, pageSize, searchParams }: any =
-  usePagination('/users');
+  usePagination('/company');
 
 onMounted(() => {
   getList();
@@ -206,22 +180,16 @@ onMounted(() => {
 
 const moreOptions = ref([
   {
-    label: 'Assign Permission',
-    key: 'assign_permission',
-    icon: renderIcon(EditOutlined),
-    permission: hasPermission(['can view user update'])
-  },
-  {
     label: 'Edit',
     key: 'edit',
     icon: renderIcon(EditOutlined),
-    permission: hasPermission(['can view user update'])
+    permission: hasPermission(['can view company update'])
   },
   {
     label: 'Delete',
     key: 'delete',
     icon: renderIcon(DeleteOutlined),
-    permission: hasPermission(['can view user delete'])
+    permission: hasPermission(['can view company delete'])
   }
 ]);
 
@@ -241,7 +209,7 @@ function confirmationDialog() {
 
 function deleteOperation() {
   loadingDispatcher.loading();
-  deleteRecordApi(`/users/${selectedId.value}`)
+  deleteRecordApi(`/company/${selectedId.value}`)
     .then((result: any) => {
       message.success(result.message);
       getList();
@@ -258,14 +226,10 @@ function deleteOperation() {
 }
 
 const actionOperation = (item: any) => {
-  if (selectedOption.value === 'assign_permission') {
-    router.push({
-      name: 'system_assing_permission',
-      query: { userId: item.id }
-    });
-  } else if (selectedOption.value === 'edit') {
+  if (selectedOption.value === 'edit') {
     showEditModal.value = true;
     selectedId.value = item.id;
+    // router.push(`/roles/${item.id}`);
   } else if (selectedOption.value === 'delete') {
     selectedId.value = item.id;
     confirmationDialog();
@@ -298,7 +262,6 @@ const fetchList = () => {
 .sticky_el {
   @apply sticky bg-gray-50 dark:bg-gray-700 px-6 whitespace-nowrap text-center border border-gray-200 dark:border-gray-800;
 }
-
 .data_placeholder {
   text-align: center;
   color: gray;

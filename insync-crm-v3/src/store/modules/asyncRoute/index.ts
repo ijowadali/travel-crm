@@ -79,13 +79,13 @@ export const useAsyncRouteStore = defineStore('app-route', () => {
     const permissionsList = permissions ?? [];
     // check Role
     const userStore = useUserStore();
-    const role = userStore.currentUser?.roles?.find((item: any) => item.name === 'super admin');
+    // const role = userStore.currentUser?.roles?.find((item: any) => item.name === 'super admin');
 
     const routeFilter = (route: any) => {
       const { meta } = route;
       const { permissions } = meta || {};
       if (!permissions) return true;
-      if (role && role.name === 'super admin') {
+      if (userStore.currentUser?.user_type === 'super admin') {
         return true;
       } else {
         return permissionsList.some((item: any) => {
