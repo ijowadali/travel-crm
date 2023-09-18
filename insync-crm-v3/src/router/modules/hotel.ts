@@ -19,10 +19,10 @@ const routes: Array<RouteRecordRaw> = [
     },
     children: [
       {
-        path: 'list',
+        path: 'List',
         name: `${routeName}_list`,
         meta: {
-          title: 'Hotels',
+          title: 'List',
           permissions: ['can view hotels']
         },
         component: () => import('@src/views/hotels/index.vue')
