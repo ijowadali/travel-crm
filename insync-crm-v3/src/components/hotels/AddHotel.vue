@@ -50,7 +50,7 @@
           :theme-overrides="{
             feedbackHeightSmall: '0',
             feedbackHeightMedium: '0',
-            labelHeightMedium: '0',
+            labelHeightMedium: '0'
           }"
         >
           <n-button type="success" @click="handleValidateClick"> create</n-button>
@@ -61,71 +61,71 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref } from 'vue';
-  import { FormInst } from 'naive-ui';
-  import { createHotelApi } from '@/api/hotel/hotel';
+import { ref } from 'vue';
+import { type FormInst } from 'naive-ui';
+import { createRecordApi } from '@src/api/endpoints';
 
-  const formRef = ref<FormInst | null>(null);
-  const hotel: any = ref({});
-  const emits = defineEmits(['created']);
+const formRef = ref<FormInst | null>(null);
+const hotel: any = ref({});
+const emits = defineEmits(['created']);
 
-  const handleValidateClick = (e: MouseEvent) => {
-    e.preventDefault();
-    formRef.value?.validate((errors) => {
-      if (!errors) {
-        createHotelApi(hotel.value).then((result: any) => {
-          window['$message'].success(result.message);
-          emits('created', result.result);
-        });
-      } else {
-        console.log(errors);
-        window['$message'].error('Please fill out required fields');
-      }
-    });
-  };
-
-  const rules = ref({
-    name: {
-      required: true,
-      message: 'Please Enter name',
-      trigger: 'blur',
-    },
-    phone_number: {
-      required: true,
-      message: 'Please Select phone number',
-      trigger: 'blur',
-    },
-    owner: {
-      required: true,
-      message: 'Please Enter owner name',
-      trigger: 'blur',
-    },
-    owner_phone: {
-      required: true,
-      message: 'Please Enter owner phone number',
-      trigger: 'blur',
-    },
-    address: {
-      required: true,
-      message: 'Please Enter street no',
-      trigger: 'blur',
-    },
-    city: {
-      required: true,
-      message: 'Please Enter city',
-      trigger: 'blur',
-    },
-    state: {
-      required: true,
-      message: 'Please Enter state',
-      trigger: 'blur',
-    },
-    country: {
-      required: true,
-      message: 'Please Enter country',
-      trigger: 'blur',
-    },
+const handleValidateClick = (e: MouseEvent) => {
+  e.preventDefault();
+  formRef.value?.validate((errors) => {
+    if (!errors) {
+      createRecordApi('/hotels', hotel.value).then((res: any) => {
+        window['$message'].success(res.result.message);
+        emits('created', res.result.result);
+      });
+    } else {
+      console.log(errors);
+      window['$message'].error('Please fill out required fields');
+    }
   });
+};
+
+const rules = ref({
+  name: {
+    required: true,
+    message: 'Please Enter name',
+    trigger: 'blur'
+  },
+  phone_number: {
+    required: true,
+    message: 'Please Select phone number',
+    trigger: 'blur'
+  },
+  owner: {
+    required: true,
+    message: 'Please Enter owner name',
+    trigger: 'blur'
+  },
+  owner_phone: {
+    required: true,
+    message: 'Please Enter owner phone number',
+    trigger: 'blur'
+  },
+  address: {
+    required: true,
+    message: 'Please Enter street no',
+    trigger: 'blur'
+  },
+  city: {
+    required: true,
+    message: 'Please Enter city',
+    trigger: 'blur'
+  },
+  state: {
+    required: true,
+    message: 'Please Enter state',
+    trigger: 'blur'
+  },
+  country: {
+    required: true,
+    message: 'Please Enter country',
+    trigger: 'blur'
+  }
+});
 </script>
 
 <style lang="less" scoped></style>

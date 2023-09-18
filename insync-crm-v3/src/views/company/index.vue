@@ -151,12 +151,12 @@ import { useLoading } from '@src/hooks/useLoading';
 import { useMobile } from '@src/hooks/useMediaQuery';
 import { useEnv } from '@src/hooks/useEnv';
 import { ref, onMounted, computed } from 'vue';
-import { useDialog, useMessage } from 'naive-ui';
+import { useDialog } from 'naive-ui';
 import { NIcon, NPagination } from 'naive-ui';
 import { MoreOutlined, EditOutlined, DeleteOutlined, SearchOutlined } from '@vicons/antd';
 import DataTableLayout from '@src/layouts/DataTableLayout/index.vue';
 import AddCompany from '@src/components/company/AddCompany.vue';
-import EditCompany from '@src/components/company/AddCompany.vue';
+import EditCompany from '@src/components/company/EditCompany.vue';
 import { renderIcon } from '@src/utils/renderIcon';
 
 const { imgUrl } = useEnv();
@@ -167,7 +167,6 @@ const showModal = ref(false);
 const showEditModal = ref(false);
 const selectedId = ref();
 const { hasPermission } = usePermission();
-const message: any = useMessage();
 const [loading, loadingDispatcher] = useLoading(false);
 
 // fetch all records
@@ -210,14 +209,14 @@ function confirmationDialog() {
 function deleteOperation() {
   loadingDispatcher.loading();
   deleteRecordApi(`/company/${selectedId.value}`)
-    .then((result: any) => {
-      message.success(result.message);
+    .then((res: any) => {
+      window['$message'].success(res.result.message);
       getList();
       loadingDispatcher.loaded();
       dialog.destroyAll;
     })
-    .catch((result: any) => {
-      message.error(result.message);
+    .catch((res: any) => {
+      window['$message'].error(res.result.message);
       loadingDispatcher.loaded();
       dialog.destroyAll;
     });

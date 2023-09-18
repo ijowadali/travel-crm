@@ -32,7 +32,6 @@
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
-import { useMessage } from 'naive-ui';
 import { usefilterMenu } from '@src/filters/menus';
 import ContentLayout from '@src/layouts/ContentLayout/index.vue';
 import { getRecordApi, updateRecordApi } from '@src/api/endpoints';
@@ -40,7 +39,6 @@ import { getRecordApi, updateRecordApi } from '@src/api/endpoints';
 const { menus, getMenus } = usefilterMenu();
 const route = useRoute();
 const userData = ref({});
-const message: any = useMessage();
 const selectedPermissions = ref([]);
 const fetchEndpoint: any = ref();
 const updateEndpoint: any = ref();
@@ -59,7 +57,7 @@ onMounted(() => {
     selectedPermissions.value = res.result.permissions.map((item: any) => {
       return item.id;
     });
-    message.success(res.message);
+    window['$message'].success(res.message);
   });
 });
 
@@ -67,7 +65,7 @@ const handleAssignPermissions = () => {
   updateRecordApi(updateEndpoint.value, {
     permissions: selectedPermissions.value
   }).then((res: any) => {
-    message.success(res.message);
+    window['$message'].success(res.message);
   });
 };
 </script>

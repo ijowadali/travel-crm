@@ -134,14 +134,12 @@
 </template>
 
 <script lang="ts" setup>
+import { ref, onMounted, h, computed, type Component } from 'vue';
+import { useDialog, NIcon, NPagination } from 'naive-ui';
 import { deleteRecordApi } from '@src/api/endpoints';
 import { usePermission } from '@src/utils/permission/usePermission';
 import { usePagination } from '@src/hooks/pagination/usePagination';
 import { useLoading } from '@src/hooks/useLoading';
-import { ref, onMounted, h, computed } from 'vue';
-import type { Component } from 'vue';
-import { useDialog, useMessage } from 'naive-ui';
-import { NIcon, NPagination } from 'naive-ui';
 import { MoreOutlined, EditOutlined, DeleteOutlined, SearchOutlined } from '@vicons/antd';
 import AddPermission from '@src/components/permission/AddPermission.vue';
 import EditPermission from '@src/components/permission/EditPermission.vue';
@@ -155,7 +153,6 @@ const selectedOption: any = ref(null);
 const showEditModal = ref(false);
 const selectedId = ref();
 const { hasPermission } = usePermission();
-const message: any = useMessage();
 const [loading, loadingDispatcher] = useLoading(false);
 
 const { getList, list, page, pageSizes, itemCount, pageSize, searchParams }: any =
@@ -205,14 +202,14 @@ function confirmationDialog() {
 function deleteOperation() {
   loadingDispatcher.loading();
   deleteRecordApi(`/permissions/${selectedId.value}`)
-    .then((result: any) => {
-      message.success(result.message);
+    .then((res: any) => {
+      window['$message'].success(res.result.message);
       getList();
       loadingDispatcher.loaded();
       dialog.destroyAll;
     })
-    .catch((result) => {
-      message.error(result.message);
+    .catch((res) => {
+      window['$message'].error(res.result.message);
       loadingDispatcher.loaded();
       dialog.destroyAll;
     });

@@ -7,10 +7,10 @@
             <n-select
               v-model:value="assignHotel.city"
               placeholder="Select City"
-              @update:value="findCityHotel(city)"
+              @update:value="findCityHotel(assignHotel.city)"
               :options="[
                 { label: 'Madina', value: 'madina' },
-                { label: 'Makkah', value: 'makkah' },
+                { label: 'Makkah', value: 'makkah' }
               ]"
             />
           </n-form-item>
@@ -44,7 +44,7 @@
                 { label: 'Quint Bed', value: 'quint bed' },
                 { label: 'Sharing', value: 'sharing' },
                 { label: 'Six Bed', value: 'six bed' },
-                { label: 'Triple Bed', value: 'triple bed' },
+                { label: 'Triple Bed', value: 'triple bed' }
               ]"
             />
           </n-form-item>
@@ -114,7 +114,7 @@
         :theme-overrides="{
           feedbackHeightSmall: '0',
           feedbackHeightMedium: '0',
-          labelHeightMedium: '0',
+          labelHeightMedium: '0'
         }"
       >
         <n-button :loading="loading" type="success" @click="handleValidateClick">
@@ -131,85 +131,86 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref } from 'vue';
-  import { FormInst } from 'naive-ui';
-  import { filterHotel } from '@/filters/hotels';
-  import { filterRoom } from '@/filters/rooms';
-  import { filterBed } from '@/filters/beds';
-  import { SaveArrowRight20Filled } from '@vicons/fluent';
-  import { updateBookingApi } from '@/api/booking/booking';
-  // import { createHotelApi } from '@/api/hotel/hotel';
+import { ref } from 'vue';
+import { type FormInst } from 'naive-ui';
+import { usefilterHotel } from '@src/filters/hotels';
+import { usefilterRoom } from '@src/filters/rooms';
+import { usefilterBed } from '@src/filters/beds';
+import { SaveArrowRight20Filled } from '@vicons/fluent';
+import { updateRecordApi } from '@src/api/endpoints';
 
-  const formRef = ref<FormInst | null>(null);
-  const assignHotel: any = ref({});
-  const loading = ref(false);
-  const emits = defineEmits(['updated']);
-  const { hotels, hotelLoading, findCityHotel } = filterHotel();
-  const { rooms, roomLoading, findRoomByHotel } = filterRoom();
-  const { beds, bedLoading, findBedByRoom } = filterBed();
-  const props = defineProps({
-    id: {
-      type: Number,
-    },
-  });
-  console.log(props.id);
-  const handleValidateClick = (e: MouseEvent) => {
-    e.preventDefault();
-    formRef.value?.validate((errors) => {
-      if (!errors) {
-        updateBookingApi(props.id, { ...assignHotel.value, type: 'hotel' }).then((result: any) => {
-          window['$message'].success(result.message);
+const formRef = ref<FormInst | null>(null);
+const assignHotel: any = ref({});
+const loading = ref(false);
+const emits = defineEmits(['updated']);
+const { hotels, hotelLoading, findCityHotel } = usefilterHotel();
+const { rooms, roomLoading, findRoomByHotel } = usefilterRoom();
+const { beds, bedLoading, findBedByRoom } = usefilterBed();
+const props = defineProps({
+  id: {
+    type: Number
+  }
+});
+
+const handleValidateClick = (e: MouseEvent) => {
+  e.preventDefault();
+  formRef.value?.validate((errors) => {
+    if (!errors) {
+      updateRecordApi(`/hotels/${props.id}`, { ...assignHotel.value, type: 'hotel' }).then(
+        (res: any) => {
+          window['$message'].success(res.result.message);
           emits('updated');
-        });
-      } else {
-        console.log(errors);
-        window['$message'].error('Please fill out required fields');
-      }
-    });
-  };
-
-  const rules = ref({
-    name: {
-      required: true,
-      message: 'Please Enter name',
-      trigger: 'blur',
-    },
-    phone_number: {
-      required: true,
-      message: 'Please Select phone number',
-      trigger: 'blur',
-    },
-    owner: {
-      required: true,
-      message: 'Please Enter owner name',
-      trigger: 'blur',
-    },
-    owner_phone: {
-      required: true,
-      message: 'Please Enter owner phone number',
-      trigger: 'blur',
-    },
-    address: {
-      required: true,
-      message: 'Please Enter street no',
-      trigger: 'blur',
-    },
-    city: {
-      required: true,
-      message: 'Please Enter city',
-      trigger: 'blur',
-    },
-    state: {
-      required: true,
-      message: 'Please Enter state',
-      trigger: 'blur',
-    },
-    country: {
-      required: true,
-      message: 'Please Enter country',
-      trigger: 'blur',
-    },
+        }
+      );
+    } else {
+      console.log(errors);
+      window['$message'].error('Please fill out required fields');
+    }
   });
+};
+
+const rules = ref({
+  name: {
+    required: true,
+    message: 'Please Enter name',
+    trigger: 'blur'
+  },
+  phone_number: {
+    required: true,
+    message: 'Please Select phone number',
+    trigger: 'blur'
+  },
+  owner: {
+    required: true,
+    message: 'Please Enter owner name',
+    trigger: 'blur'
+  },
+  owner_phone: {
+    required: true,
+    message: 'Please Enter owner phone number',
+    trigger: 'blur'
+  },
+  address: {
+    required: true,
+    message: 'Please Enter street no',
+    trigger: 'blur'
+  },
+  city: {
+    required: true,
+    message: 'Please Enter city',
+    trigger: 'blur'
+  },
+  state: {
+    required: true,
+    message: 'Please Enter state',
+    trigger: 'blur'
+  },
+  country: {
+    required: true,
+    message: 'Please Enter country',
+    trigger: 'blur'
+  }
+});
 </script>
 
 <style lang="less" scoped></style>

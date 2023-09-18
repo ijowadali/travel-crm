@@ -12,7 +12,7 @@
               { label: 'Triple Bed', value: 'triple bed' },
               { label: 'Quad Bed', value: 'quad bed' },
               { label: 'Quint Bed', value: 'quint bed' },
-              { label: 'Six Bed', value: 'six bed' },
+              { label: 'Six Bed', value: 'six bed' }
             ]"
           />
         </n-form-item>
@@ -60,7 +60,7 @@
         :theme-overrides="{
           feedbackHeightSmall: '0',
           feedbackHeightMedium: '0',
-          labelHeightMedium: '0',
+          labelHeightMedium: '0'
         }"
       >
         <n-button type="success" @click="handleValidateClick">Update</n-button>
@@ -70,43 +70,43 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref } from 'vue';
-  import { FormInst } from 'naive-ui';
-  import { updateRoomApi, getRoomApi } from '@/api/hotel/room/rooms';
+import { ref } from 'vue';
+import { type FormInst } from 'naive-ui';
+import { updateRecordApi, getRecordApi } from '@src/api/endpoints';
 
-  const formRef = ref<FormInst | null>(null);
-  const rooms: any = ref({});
-  const emits = defineEmits(['updated']);
-  const props = defineProps({
-    id: {
-      type: Number,
-    },
+const formRef = ref<FormInst | null>(null);
+const rooms: any = ref({});
+const emits = defineEmits(['updated']);
+const props = defineProps({
+  id: {
+    type: Number
+  }
+});
+// get category for update
+getRecordApi(`/rooms/${props.id}`).then((result: any) => (rooms.value = result));
+
+const rules = ref({
+  name: {
+    required: true,
+    message: 'Please Enter Name',
+    trigger: 'blur'
+  }
+});
+
+const handleValidateClick = (e: MouseEvent) => {
+  e.preventDefault();
+  formRef.value?.validate((errors) => {
+    if (!errors) {
+      updateRecordApi(`/rooms/${rooms.value.id}`, rooms.value).then((result: any) => {
+        window['$message'].success(result.message);
+        emits('updated', result);
+      });
+    } else {
+      console.log(errors);
+      window['$message'].error('Invalid');
+    }
   });
-  // get category for update
-  getRoomApi(props.id).then((result: any) => (rooms.value = result));
-
-  const rules = ref({
-    name: {
-      required: true,
-      message: 'Please Enter Name',
-      trigger: 'blur',
-    },
-  });
-
-  const handleValidateClick = (e: MouseEvent) => {
-    e.preventDefault();
-    formRef.value?.validate((errors) => {
-      if (!errors) {
-        updateRoomApi(rooms.value.id, rooms.value).then((result: any) => {
-          window['$message'].success(result.message);
-          emits('updated', result);
-        });
-      } else {
-        console.log(errors);
-        window['$message'].error('Invalid');
-      }
-    });
-  };
+};
 </script>
 
 <style lang="less" scoped></style>

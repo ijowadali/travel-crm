@@ -42,14 +42,13 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue';
-import { type FormInst, useMessage } from 'naive-ui';
+import { type FormInst } from 'naive-ui';
 import { getRecordApi, updateRecordApi } from '@src/api/endpoints';
 import { usefilterMenu } from '@src/filters/menus';
 
 const { menus, menuLoading, getMenus, getMenusOnFocus } = usefilterMenu();
 const formValue: any = ref({});
 const formRef = ref<FormInst | null>(null);
-const message: any = useMessage();
 const emits = defineEmits(['updated']);
 const props = defineProps({
   id: {
@@ -62,25 +61,17 @@ getRecordApi(`/permissions/${props.id}`).then((res: any) => {
   getMenus();
 });
 
-const rules = ref({
-  name: {
-    required: true,
-    message: 'Please Enter Name',
-    trigger: 'blur'
-  }
-});
-
 const handleValidateClick = (e: MouseEvent) => {
   e.preventDefault();
   formRef.value?.validate((errors) => {
     if (!errors) {
       updateRecordApi(`/permissions/${formValue.value.id}`, formValue.value).then((res: any) => {
-        message.success(res.message);
+        window['$message'].success(res.message);
         emits('updated', res.result);
       });
     } else {
       console.log(errors);
-      message.error('Invalid');
+      window['$message'].error('Invalid');
     }
   });
 };
@@ -89,6 +80,14 @@ const permissionType = [
   { label: 'Public', key: 'public' },
   { label: 'Private', key: 'private' }
 ];
+
+const rules = ref({
+  name: {
+    required: true,
+    message: 'Please Enter Name',
+    trigger: 'blur'
+  }
+});
 </script>
 
 <style lang="scss" scoped></style>

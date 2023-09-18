@@ -1,11 +1,11 @@
 <template>
-  <n-form ref="formRef" :label-width="80" :model="formValue" :rules="rules" size="small">
+  <n-form ref="formRef" :label-width="80" :model="formValue" size="small">
     <n-grid x-gap="10">
       <n-form-item-gi :span="8" label="Name" path="company_name">
         <n-input v-model:value="formValue.company_name" placeholder="Enter Name" />
       </n-form-item-gi>
       <n-form-item-gi :span="8" label="Phone" path="phone">
-        <n-input v-model:value="formValue.shop_phone" placeholder="Enter Phone" />
+        <n-input v-model:value="formValue.phone" placeholder="Enter Phone" />
       </n-form-item-gi>
       <n-form-item-gi :span="8" label="Address" path="address">
         <n-input v-model:value="formValue.address" placeholder="Enter Address" />
@@ -13,13 +13,13 @@
       <n-form-item-gi :span="8" label="City" path="city">
         <n-input v-model:value="formValue.city" placeholder="Enter City" />
       </n-form-item-gi>
-      <n-form-item-gi :span="8" style="padding-top: 4px" label="State" path="state">
+      <n-form-item-gi :span="8" label="State" path="state">
         <n-input v-model:value="formValue.state" placeholder="Enter State" />
       </n-form-item-gi>
-      <n-form-item-gi :span="8" style="padding-top: 4px" label="Country" path="country">
+      <n-form-item-gi :span="8" label="Country" path="country">
         <n-input v-model:value="formValue.country" placeholder="Enter Country" />
       </n-form-item-gi>
-      <n-form-item-gi :span="12" label="Status" path="status">
+      <n-form-item-gi :span="8" label="Status" path="status">
         <n-select v-model:value="formValue.status" size="small" :options="status" />
       </n-form-item-gi>
     </n-grid>
@@ -62,7 +62,7 @@ const uploadChange = (list: string) => {
   formValue.value.logo = unref(list);
 };
 
-// fetch single Shop  using id
+// fetch single company  using id
 getRecordApi(`/company/${props.id}`).then((res: any) => {
   formValue.value = res.result;
 });
@@ -91,49 +91,6 @@ const status = ref([
     value: 'disabled'
   }
 ]);
-
-const rules = ref({
-  company_name: {
-    required: true,
-    message: 'Please Enter Name',
-    trigger: 'blur'
-  },
-  phone: {
-    required: true,
-    message: 'Please Enter Phone',
-    trigger: 'blur'
-  },
-  address: {
-    required: true,
-    message: 'Please Enter Address',
-    trigger: 'blur'
-  },
-  city: {
-    required: true,
-    message: 'Please Enter City',
-    trigger: 'blur'
-  },
-  state: {
-    required: true,
-    message: 'Please Enter State',
-    trigger: 'blur'
-  },
-  country: {
-    required: true,
-    message: 'Please Enter Country',
-    trigger: 'blur'
-  },
-  logo: {
-    required: true,
-    message: 'Please Upload Logo',
-    trigger: 'blur'
-  },
-  status: {
-    required: true,
-    message: 'Please select status',
-    trigger: 'blur'
-  }
-});
 </script>
 
 <style lang="scss" scoped></style>

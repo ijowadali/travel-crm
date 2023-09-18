@@ -1,13 +1,159 @@
 <template>
-  <n-card title="Hotels">
-    <n-space :vertical="true">
-      <n-input
-        type="text"
-        size="small"
-        v-model:value="params.name"
-        @change="fetchList"
-        placeholder="Email"
-      />
+  <DataTableLayout v-permission="{ action: ['can view hotels'] }">
+    <template #tableHeader>
+      <div class="flex flex-col items-center space-y-2 sm:flex-row sm:justify-between sm:space-y-0">
+        <div class="flex flex-col items-center space-y-2 sm:flex-row sm:space-x-3 sm:space-y-0">
+          <div class="flex w-full items-center !space-x-2 sm:w-fit">
+            <NInput
+              v-model:value="searchParams.name"
+              class="sm:!w-[250px]"
+              clearable
+              placeholder="Search by Permission Name"
+              @keyup="fetchList"
+            >
+              <template #prefix>
+                <NIcon :component="SearchOutlined" class="mr-1" />
+              </template>
+            </NInput>
+          </div>
+        </div>
+        <div class="flex w-full items-center justify-between space-x-3 sm:justify-end">
+          <NButton
+            secondary
+            type="info"
+            :size="isMobile ? 'small' : 'medium'"
+            @click="showModal = true"
+            v-permission="{ action: ['can view hotel create'] }"
+          >
+            Create
+          </NButton>
+        </div>
+      </div>
+    </template>
+
+    <template #tableContent>
+      <table class="table">
+        <thead class="head">
+          <tr>
+            <th class="sticky_el left-0 z-20">ID</th>
+            <th class="th">Hotel Name</th>
+            <th class="th">Hotel Phone</th>
+            <th class="th">Owner Name</th>
+            <th class="th">Owner Phone</th>
+            <th class="th">Address</th>
+            <th class="th">Created At</th>
+            <th class="th">Updated At</th>
+            <th
+              class="sticky_el right-0 z-20"
+              v-permission="{
+                action: ['can view hotel update', 'can view hotel delete']
+              }"
+            >
+              Actions
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-if="list.length === 0">
+            <td colspan="8" class="data_placeholder">Record Not Exist</td>
+          </tr>
+          <tr v-else v-for="item in list" :key="item.id">
+            <td class="sticky_el left-0 z-10">{{ item.id }}</td>
+            <td class="td">{{ item.name }}</td>
+            <td class="td">{{ item.phone_number }}</td>
+            <td class="td">{{ item.owner }}</td>
+            <td class="td">{{ item.owner_phone }}</td>
+            <td class="text-center td">
+              <n-tag :bordered="false" type="info">{{ item.status }}</n-tag>
+            </td>
+            <td class="td">
+              {{ item.address + ' ' + item.city + ' ' + item.state + ' ' + item.country }}
+            </td>
+            <td class="td">{{ item.created_at }}</td>
+            <td class="td">{{ item.updated_at }}</td>
+            <td
+              class="sticky_el right-0 z-10"
+              v-permission="{
+                action: ['can view hotel update', 'can view hotel delete']
+              }"
+            >
+              <n-dropdown
+                @click="actionOperation(item)"
+                :onSelect="selectedAction"
+                trigger="click"
+                :options="filteredOptions"
+              >
+                <n-button size="small" :circle="true">
+                  <n-icon>
+                    <more-outlined />
+                  </n-icon>
+                </n-button>
+              </n-dropdown>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </template>
+    <!-- <n-button
+      type="primary"
+      size="large"
+      :circle="true"
+      style="position: fixed; bottom: 30px; right: 40px"
+      @click="showModal = true"
+      v-permission="{ action: ['can view hotel create'] }"
+    >
+      <template #icon>
+        <n-icon>
+          <plus-outlined />
+        </n-icon>
+      </template>
+    </n-button> -->
+
+    <template #tableFooter>
+      <div class="flex flex-col items-center space-y-2 sm:flex-row sm:justify-end sm:space-y-0">
+        <n-pagination
+          v-model:page="page"
+          v-model:page-size="pageSize"
+          :item-count="itemCount"
+          :page-sizes="pageSizes"
+          size="small"
+          :show-quick-jumper="true"
+          :show-size-picker="true"
+        />
+      </div>
+    </template>
+
+    <n-modal style="width: 70%" v-model:show="showModal" preset="dialog">
+      <template #header>
+        <div>Create New Hotel</div>
+      </template>
+      <n-space :vertical="true">
+        <add-hotel
+          @created="
+            getList();
+            showModal = false;
+          "
+        />
+      </n-space>
+    </n-modal>
+    <n-modal style="width: 70%" v-model:show="showEditModal" preset="dialog">
+      <template #header>
+        <div>Update Hotel</div>
+      </template>
+      <n-space :vertical="true">
+        <edit-hotel
+          :id="selectedId"
+          @updated="
+            getList();
+            showEditModal = false;
+          "
+        />
+      </n-space>
+    </n-modal>
+  </DataTableLayout>
+
+  <!-- <n-card title="Hotels"> -->
+  <!-- <n-space :vertical="true">
       <n-table :bordered="true" :single-line="false" size="small" :striped="true">
         <thead>
           <tr>
@@ -23,7 +169,7 @@
         </thead>
         <tbody>
           <tr v-if="list.length === 0">
-            <td colspan="8" class="data_placeholder"> Record Not Exist </td>
+            <td colspan="8" class="data_placeholder">Record Not Exist</td>
           </tr>
           <tr v-else v-for="item in list" :key="item.id">
             <td>{{ item.id }}</td>
@@ -75,8 +221,9 @@
           <plus-outlined />
         </n-icon>
       </template>
-    </n-button>
-    <n-modal style="width: 70%" v-model:show="showModal" preset="dialog">
+    </n-button> -->
+
+  <!-- <n-modal style="width: 70%" v-model:show="showModal" preset="dialog">
       <template #header>
         <div>Create New Hotel</div>
       </template>
@@ -102,102 +249,142 @@
           "
         />
       </n-space>
-    </n-modal>
-  </n-card>
+    </n-modal> -->
+  <!-- </n-card> -->
 </template>
 <script lang="ts" setup>
-  import { getHotelsApi, deleteHotelApi } from '@/api/hotel/hotel';
-  import { userPagination } from '@/hooks/userPagination';
-  import { ref, onMounted, h } from 'vue';
-  import { useDialog, useMessage } from 'naive-ui';
-  import type { Component } from 'vue';
-  import { NIcon, NPagination } from 'naive-ui';
-  import { MoreOutlined, EditOutlined, DeleteOutlined, PlusOutlined } from '@vicons/antd';
-  import AddHotel from '@/components/hotels/AddHotel.vue';
-  import EditHotel from '@/components/hotels/EditHotel.vue';
+import { ref, onMounted, h, type Component, computed } from 'vue';
+import { NIcon, NPagination, useDialog } from 'naive-ui';
+import { deleteRecordApi } from '@src/api/endpoints';
+import { usePermission } from '@src/utils/permission/usePermission';
+import { usePagination } from '@src/hooks/pagination/usePagination';
+// import { useLoading } from '@src/hooks/useLoading';
+import { useMobile } from '@src/hooks/useMediaQuery';
+import {
+  MoreOutlined,
+  EditOutlined,
+  DeleteOutlined,
+  // PlusOutlined,
+  SearchOutlined
+} from '@vicons/antd';
+import AddHotel from '@src/components/hotels/AddHotel.vue';
+import EditHotel from '@src/components/hotels/EditHotel.vue';
+import DataTableLayout from '@src/layouts/DataTableLayout/index.vue';
 
-  const dialog = useDialog();
-  const showModal = ref(false);
-  const showEditModal = ref(false);
-  const selectedOption: any = ref(null);
-  const selectedId = ref();
-  const message = useMessage();
-  const { getList, list, page, pageSizes, itemCount, pageSize, params }: any =
-    userPagination(getHotelsApi);
-  const renderIcon = (icon: Component) => {
-    return () => {
-      return h(NIcon, null, {
-        default: () => h(icon),
-      });
-    };
-  };
+const dialog = useDialog();
+const isMobile = useMobile();
+const showModal = ref(false);
+const showEditModal = ref(false);
+const selectedOption: any = ref(null);
+const selectedId = ref();
+const { hasPermission } = usePermission();
+// const [loading, loadingDispatcher] = useLoading(false);
+const { getList, list, page, pageSizes, itemCount, pageSize, searchParams }: any =
+  usePagination('/hotels');
 
-  const moreOptions = ref([
-    {
-      label: 'Edit',
-      key: 'edit',
-      icon: renderIcon(EditOutlined),
-    },
-    {
-      label: 'Delete',
-      key: 'delete',
-      icon: renderIcon(DeleteOutlined),
-    },
-  ]);
-
-  function confirmationDialog() {
-    dialog.error({
-      title: 'Confirmation',
-      content: () => 'Are you sure you want to delete?',
-      positiveText: 'Delete',
-      negativeText: 'Cancel',
-      onPositiveClick: deleteOperation,
+const renderIcon = (icon: Component) => {
+  return () => {
+    return h(NIcon, null, {
+      default: () => h(icon)
     });
-  }
+  };
+};
 
-  function deleteOperation() {
-    const Loading = window['$loading'] || null;
-    Loading.start();
-    deleteHotelApi(selectedId.value)
-      .then((result: any) => {
-        message.success(result.message);
-        getList();
-        Loading.finish();
-        dialog.destroyAll;
-      })
-      .catch((result) => {
-        message.error(result.message);
-        Loading.finish();
-        dialog.destroyAll;
-      });
-    selectedId.value = null;
-    selectedOption.value = null;
+const moreOptions = ref([
+  {
+    label: 'Edit',
+    key: 'edit',
+    icon: renderIcon(EditOutlined),
+    permission: hasPermission(['can view hotel update'])
+  },
+  {
+    label: 'Delete',
+    key: 'delete',
+    icon: renderIcon(DeleteOutlined),
+    permission: hasPermission(['can view hotel update'])
   }
-  const actionOperation = (item: any) => {
-    if (selectedOption.value === 'edit') {
-      showEditModal.value = true;
-      selectedId.value = item.id;
-    } else if (selectedOption.value === 'delete') {
-      selectedId.value = item.id;
-      confirmationDialog();
-    }
-  };
-  const selectedAction = (key: any) => {
-    selectedOption.value = key;
-  };
-  const fetchList = () => {
-    getList(params.value);
-  };
-  onMounted(() => {
-    getList();
+]);
+
+const filteredOptions = computed(() => {
+  return moreOptions.value.filter((option) => option.permission);
+});
+
+function confirmationDialog() {
+  dialog.error({
+    title: 'Confirmation',
+    content: () => 'Are you sure you want to delete?',
+    positiveText: 'Delete',
+    negativeText: 'Cancel',
+    onPositiveClick: deleteOperation
   });
-</script>
-<style lang="less" scoped>
-  .data_placeholder {
-    text-align: center;
-    color: gray;
-    padding: 20px 0;
-    font-size: 18px;
-    font-style: italic;
+}
+
+function deleteOperation() {
+  const Loading = window['$loading'] || null;
+  Loading.start();
+  deleteRecordApi(`/hotels/${selectedId.value}`)
+    .then((result: any) => {
+      window['$message'].success(result.message);
+      getList();
+      Loading.finish();
+      dialog.destroyAll;
+    })
+    .catch((result) => {
+      window['$message'].error(result.message);
+      Loading.finish();
+      dialog.destroyAll;
+    });
+  selectedId.value = null;
+  selectedOption.value = null;
+}
+
+const actionOperation = (item: any) => {
+  if (selectedOption.value === 'edit') {
+    showEditModal.value = true;
+    selectedId.value = item.id;
+  } else if (selectedOption.value === 'delete') {
+    selectedId.value = item.id;
+    confirmationDialog();
   }
+};
+
+const selectedAction = (key: any) => {
+  selectedOption.value = key;
+};
+
+const fetchList = () => {
+  getList(searchParams.value);
+};
+
+onMounted(() => {
+  getList();
+});
+</script>
+
+<style lang="scss" scoped>
+.table {
+  @apply w-full text-sm text-left text-gray-500 dark:text-gray-400;
+}
+.head {
+  @apply sticky top-0 text-xs text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400 z-20;
+}
+.th {
+  @apply px-6 py-3 border-r border-b border-gray-200 dark:border-gray-800 text-center whitespace-nowrap;
+}
+.body_tr {
+  @apply hover:bg-gray-50 dark:hover:bg-gray-600;
+}
+.td {
+  @apply px-3 py-3 border-r border-b border-gray-200 dark:border-gray-800 whitespace-nowrap;
+}
+.sticky_el {
+  @apply sticky bg-gray-50 dark:bg-gray-700 px-6 whitespace-nowrap text-center border border-gray-200 dark:border-gray-800;
+}
+.data_placeholder {
+  text-align: center;
+  color: gray;
+  padding: 20px 0;
+  font-size: 18px;
+  font-style: italic;
+}
 </style>

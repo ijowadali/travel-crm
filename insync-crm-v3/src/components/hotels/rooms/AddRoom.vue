@@ -3,12 +3,6 @@
     <n-row :gutter="10">
       <n-col :span="12">
         <n-form-item label="Select Hotel" path="hotel_id">
-          <!--          <single-hotel-selector-->
-          <!--            v-model:value="rooms.hotel_id"-->
-          <!--            label-field="name"-->
-          <!--            value-field="id"-->
-          <!--            :tag="false"-->
-          <!--          />-->
           <n-select
             :filterable="true"
             :tag="false"
@@ -43,7 +37,7 @@
               { label: 'Triple Bed', value: 'triple bed' },
               { label: 'Quad Bed', value: 'quad bed' },
               { label: 'Quint Bed', value: 'quint bed' },
-              { label: 'Six Bed', value: 'six bed' },
+              { label: 'Six Bed', value: 'six bed' }
             ]"
           />
         </n-form-item>
@@ -84,7 +78,7 @@
         :theme-overrides="{
           feedbackHeightSmall: '0',
           feedbackHeightMedium: '0',
-          labelHeightMedium: '0',
+          labelHeightMedium: '0'
         }"
       >
         <n-button type="success" @click="handleValidateClick"> Create</n-button>
@@ -94,38 +88,38 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref } from 'vue';
-  import { FormInst } from 'naive-ui';
-  import { createRoomApi } from '@/api/hotel/room/rooms';
-  import { filterHotel } from '@/filters/hotels';
+import { ref } from 'vue';
+import { type FormInst } from 'naive-ui';
+import { createRecordApi } from '@src/api/endpoints';
+import { usefilterHotel } from '@src/filters/hotels';
 
-  const formRef = ref<FormInst | null>(null);
-  const rooms: any = ref({});
-  const { hotels, hotelLoading, getHotelsOnFocus } = filterHotel();
-  const emits = defineEmits(['created']);
+const formRef = ref<FormInst | null>(null);
+const rooms: any = ref({});
+const { hotels, hotelLoading, getHotelsOnFocus } = usefilterHotel();
+const emits = defineEmits(['created']);
 
-  const rules = ref({
-    name: {
-      required: true,
-      message: 'Please Enter Name',
-      trigger: 'blur',
-    },
+const rules = ref({
+  name: {
+    required: true,
+    message: 'Please Enter Name',
+    trigger: 'blur'
+  }
+});
+
+const handleValidateClick = (e: MouseEvent) => {
+  e.preventDefault();
+  formRef.value?.validate((errors) => {
+    if (!errors) {
+      createRecordApi('/rooms', rooms.value).then((res: any) => {
+        window['$message'].success(res.result.message);
+        emits('created', res.result);
+      });
+    } else {
+      console.log(errors);
+      window['$message'].error('Please fill out required fields');
+    }
   });
-
-  const handleValidateClick = (e: MouseEvent) => {
-    e.preventDefault();
-    formRef.value?.validate((errors) => {
-      if (!errors) {
-        createRoomApi(rooms.value).then((result: any) => {
-          window['$message'].success(result.message);
-          emits('created', result.result);
-        });
-      } else {
-        console.log(errors);
-        window['$message'].error('Please fill out required fields');
-      }
-    });
-  };
+};
 </script>
 
 <style lang="less" scoped></style>
