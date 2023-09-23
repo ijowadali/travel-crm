@@ -45,7 +45,7 @@
           </n-col>
         </n-row>
       </n-space>
-      <n-space justify="end" :size="0">
+      <n-space :size="0" justify="end">
         <n-form-item
           :theme-overrides="{
             feedbackHeightSmall: '0',
@@ -53,7 +53,7 @@
             labelHeightMedium: '0',
           }"
         >
-          <n-button type="success" @click="handleValidateClick"> create</n-button>
+          <n-button type="success" @click="handleValidateClick"> Create</n-button>
         </n-form-item>
       </n-space>
     </n-form>
@@ -64,6 +64,7 @@
   import { ref } from 'vue';
   import { FormInst } from 'naive-ui';
   import { createHotelApi } from '@/api/hotel/hotel';
+  import { hotelRules } from '@/rules/hotel';
 
   const formRef = ref<FormInst | null>(null);
   const hotel: any = ref({});
@@ -72,60 +73,18 @@
   const handleValidateClick = (e: MouseEvent) => {
     e.preventDefault();
     formRef.value?.validate((errors) => {
-      if (!errors) {
+      if (errors) {
+        console.log(errors);
+        window['$message'].error('Please fill out required fields');
+      } else {
         createHotelApi(hotel.value).then((result: any) => {
           window['$message'].success(result.message);
           emits('created', result.result);
         });
-      } else {
-        console.log(errors);
-        window['$message'].error('Please fill out required fields');
       }
     });
   };
-
-  const rules = ref({
-    name: {
-      required: true,
-      message: 'Please Enter name',
-      trigger: 'blur',
-    },
-    phone_number: {
-      required: true,
-      message: 'Please Select phone number',
-      trigger: 'blur',
-    },
-    owner: {
-      required: true,
-      message: 'Please Enter owner name',
-      trigger: 'blur',
-    },
-    owner_phone: {
-      required: true,
-      message: 'Please Enter owner phone number',
-      trigger: 'blur',
-    },
-    address: {
-      required: true,
-      message: 'Please Enter street no',
-      trigger: 'blur',
-    },
-    city: {
-      required: true,
-      message: 'Please Enter city',
-      trigger: 'blur',
-    },
-    state: {
-      required: true,
-      message: 'Please Enter state',
-      trigger: 'blur',
-    },
-    country: {
-      required: true,
-      message: 'Please Enter country',
-      trigger: 'blur',
-    },
-  });
+  const rules = hotelRules();
 </script>
 
 <style lang="less" scoped></style>

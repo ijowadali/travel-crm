@@ -3,25 +3,19 @@
     <n-row :gutter="10">
       <n-col :span="12">
         <n-form-item label="Select Hotel" path="hotel_id">
-          <!--          <single-hotel-selector-->
-          <!--            v-model:value="rooms.hotel_id"-->
-          <!--            label-field="name"-->
-          <!--            value-field="id"-->
-          <!--            :tag="false"-->
-          <!--          />-->
           <n-select
-            :filterable="true"
-            :tag="false"
-            placeholder="Select Hotel"
             v-model:value="rooms.hotel_id"
-            clearable
-            @focus="getHotelsOnFocus"
-            :remote="true"
             :clear-filter-after-select="false"
-            label-field="name"
-            value-field="id"
+            :filterable="true"
             :loading="hotelLoading"
             :options="hotels"
+            :remote="true"
+            :tag="false"
+            clearable
+            label-field="name"
+            placeholder="Select Hotel"
+            value-field="id"
+            @focus="getHotelsOnFocus"
           />
         </n-form-item>
       </n-col>
@@ -36,8 +30,6 @@
         <n-form-item label="Room Type" path="room_type">
           <n-select
             v-model:value="rooms.room_type"
-            filterable
-            placeholder="Select Option"
             :options="[
               { label: 'Double Bed', value: 'double bed' },
               { label: 'Triple Bed', value: 'triple bed' },
@@ -45,6 +37,8 @@
               { label: 'Quint Bed', value: 'quint bed' },
               { label: 'Six Bed', value: 'six bed' },
             ]"
+            filterable
+            placeholder="Select Option"
           />
         </n-form-item>
       </n-col>
@@ -79,7 +73,7 @@
         </n-form-item>
       </n-col>
     </n-row>
-    <n-space justify="end" :wrap="true" :size="0">
+    <n-space :size="0" :wrap="true" justify="end">
       <n-form-item
         :theme-overrides="{
           feedbackHeightSmall: '0',
@@ -98,19 +92,14 @@
   import { FormInst } from 'naive-ui';
   import { createRoomApi } from '@/api/hotel/room/rooms';
   import { filterHotel } from '@/filters/hotels';
+  import { roomRules } from '@/rules/room';
 
   const formRef = ref<FormInst | null>(null);
   const rooms: any = ref({});
   const { hotels, hotelLoading, getHotelsOnFocus } = filterHotel();
   const emits = defineEmits(['created']);
 
-  const rules = ref({
-    name: {
-      required: true,
-      message: 'Please Enter Name',
-      trigger: 'blur',
-    },
-  });
+  const rules = roomRules();
 
   const handleValidateClick = (e: MouseEvent) => {
     e.preventDefault();
