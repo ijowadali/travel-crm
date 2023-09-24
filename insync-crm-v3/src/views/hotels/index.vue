@@ -4,9 +4,9 @@
       <div class="flex flex-col items-center space-y-2 sm:flex-row sm:justify-between sm:space-y-0">
         <div class="flex flex-col items-center space-y-2 sm:flex-row sm:space-x-3 sm:space-y-0">
           <div class="flex w-full items-center !space-x-2 sm:w-fit">
-            <NInput
+            <!-- <NInput
               v-model:value="searchParams.name"
-              class="sm:!w-[250px]"
+              class="sm:!w-[240px]"
               clearable
               placeholder="Search by Permission Name"
               @keyup="fetchList"
@@ -14,8 +14,98 @@
               <template #prefix>
                 <NIcon :component="SearchOutlined" class="mr-1" />
               </template>
-            </NInput>
+            </NInput> -->
+            <n-select
+              class="sm:!w-[200px]"
+              v-model:value="searchParams.name"
+              :clear-filter-after-select="false"
+              :filterable="true"
+              :loading="hotelLoading"
+              :options="hotels"
+              :remote="true"
+              :tag="false"
+              clearable
+              label-field="name"
+              placeholder="Select Hotel"
+              size="small"
+              value-field="name"
+              @focus="getHotelsOnFocus"
+              @search="findHotel"
+            />
+            <n-input
+              class="sm:!w-[200px]"
+              v-model:value="searchParams.owner"
+              clearable
+              placeholder="Search By Owner Name"
+              size="small"
+              type="text"
+            />
+            <n-select
+              class="sm:!w-[200px]"
+              v-model:value="searchParams.status"
+              :options="status"
+              clearable
+              filterable
+              placeholder="Select Status"
+              size="small"
+            />
+            <n-button secondary size="small" strong type="info" @click="fetchList">
+              Search
+            </n-button>
           </div>
+          <!-- <n-row gutter="12">
+            <n-col :span="4">
+              <n-select
+                v-model:value="searchParams.name"
+                :clear-filter-after-select="false"
+                :filterable="true"
+                :loading="hotelLoading"
+                :options="hotels"
+                :remote="true"
+                :tag="false"
+                clearable
+                label-field="name"
+                placeholder="Select Hotel"
+                size="small"
+                value-field="name"
+                @focus="getHotelsOnFocus"
+                @search="findHotel"
+              />
+            </n-col>
+            <n-col :span="4">
+              <n-input
+                v-model:value="searchParams.owner"
+                clearable
+                placeholder="Search By Owner Name"
+                size="small"
+                type="text"
+              />
+            </n-col>
+            <n-col :span="4">
+              <n-input
+                v-model:value="searchParams.city"
+                clearable
+                placeholder="Search By City"
+                size="small"
+                type="text"
+              />
+            </n-col>
+            <n-col :span="4">
+              <n-select
+                v-model:value="searchParams.status"
+                :options="status"
+                clearable
+                filterable
+                placeholder="Select Status"
+                size="small"
+              />
+            </n-col>
+            <n-col :span="4">
+              <n-button secondary size="small" strong type="info" @click="fetchList">
+                Search
+              </n-button>
+            </n-col>
+          </n-row> -->
         </div>
         <div class="flex w-full items-center justify-between space-x-3 sm:justify-end">
           <NButton
@@ -167,13 +257,14 @@ import { useMobile } from '@src/hooks/useMediaQuery';
 import {
   MoreOutlined,
   EditOutlined,
-  DeleteOutlined,
+  DeleteOutlined
   // PlusOutlined,
-  SearchOutlined
+  // SearchOutlined
 } from '@vicons/antd';
 import DataTableLayout from '@src/layouts/DataTableLayout/index.vue';
 import AddHotel from '@src/components/hotels/AddHotel.vue';
 import EditHotel from '@src/components/hotels/EditHotel.vue';
+import { usefilterHotel } from '@src/filters/hotels';
 
 const dialog = useDialog();
 const isMobile = useMobile();
@@ -183,6 +274,7 @@ const selectedOption: any = ref(null);
 const selectedId = ref();
 const { hasPermission } = usePermission();
 // const [loading, loadingDispatcher] = useLoading(false);
+const { hotels, hotelLoading, findHotel, getHotelsOnFocus } = usefilterHotel();
 
 const { getList, list, page, pageSizes, itemCount, pageSize, searchParams }: any =
   usePagination('/hotels');
@@ -264,6 +356,17 @@ const fetchList = () => {
 onMounted(() => {
   getList();
 });
+
+const status = ref([
+  {
+    label: 'Active',
+    value: 'active'
+  },
+  {
+    label: 'Disabled',
+    value: 'disabled'
+  }
+]);
 </script>
 
 <style lang="scss" scoped>

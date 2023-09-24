@@ -1,5 +1,5 @@
 <template>
-  <n-card>
+  <ContentLayout>
     <n-card title="Booking Details" style="margin-bottom: 10px">
       <n-tabs ref="tabRef" v-model:value="tabValue" type="card">
         <n-tab-pane name="general" tab="General Details">
@@ -20,9 +20,9 @@
                 </n-form-item>
               </n-col>
               <n-col :span="6">
-                <n-form-item label="Booking Status" path="booking_status">
+                <n-form-item label="Booking Status" path="status">
                   <n-select
-                    v-model:value="bookingGeneralDetails.booking_status"
+                    v-model:value="bookingGeneralDetails.status"
                     filterable
                     placeholder="Search Status"
                     :options="[
@@ -94,8 +94,14 @@
               </n-col>
             </n-row>
             <n-space :vertical="true">
-              <n-form-item>
-                <n-button :loading="loading" type="success" @click="saveGeneralBooking">
+              <n-form-item
+                :theme-overrides="{
+                  feedbackHeightSmall: '0',
+                  feedbackHeightMedium: '0',
+                  labelHeightMedium: '0'
+                }"
+              >
+                <n-button :loading="loading" secondary type="info" @click="saveGeneralBooking">
                   <template #icon>
                     <n-icon>
                       <SaveArrowRight20Filled />
@@ -164,7 +170,7 @@
                       strong
                       secondary
                       round
-                      type="success"
+                      type="info"
                       @click="actionOperation(member.id)"
                     >
                       Assign More Hotel
@@ -175,7 +181,7 @@
                     strong
                     secondary
                     round
-                    type="success"
+                    type="info"
                     @click="actionOperation(member.id)"
                   >
                     Assign Hotel
@@ -292,8 +298,14 @@
               </n-row>
             </n-card>
             <n-space :vertical="true">
-              <n-form-item>
-                <n-button :loading="loading" type="success" @click="saveMemberDetails">
+              <n-form-item
+                :theme-overrides="{
+                  feedbackHeightSmall: '0',
+                  feedbackHeightMedium: '0',
+                  labelHeightMedium: '0'
+                }"
+              >
+                <n-button :loading="loading" secondary type="info" @click="saveMemberDetails">
                   <template #icon>
                     <n-icon>
                       <SaveArrowRight20Filled />
@@ -307,6 +319,7 @@
         </n-tab-pane>
       </n-tabs>
     </n-card>
+
     <n-modal style="width: 70%" v-model:show="showAssignModal" preset="dialog">
       <template #header>
         <div>Assign Hotel</div>
@@ -315,6 +328,7 @@
         <assign-hotel :id="selectedId" @updated="showAssignModal = false" />
       </n-space>
     </n-modal>
+
     <n-modal style="width: 40%" v-model:show="showInfoModal" preset="dialog">
       <template #header>
         <div>Member Info</div>
@@ -323,8 +337,7 @@
         <member-info :member="selectedId" />
       </n-space>
     </n-modal>
-    <!--    </n-space>-->
-  </n-card>
+  </ContentLayout>
 </template>
 
 <script lang="ts" setup>
@@ -334,9 +347,12 @@ import {
   TextBulletListSquareEdit24Regular,
   Info16Filled
 } from '@vicons/fluent';
-import { getRecordApi, updateRecordApi } from '@src/api/endpoints';
-// import { getBookingApi, updateBookingApi } from '@/api/booking/booking';
 import { useRoute } from 'vue-router';
+import { getRecordApi, updateRecordApi } from '@src/api/endpoints';
+import AssignHotel from '@src/components/hotels/AssignHotel.vue';
+import MemberInfo from '@src/components/Booking/memberInfo.vue';
+import ContentLayout from '@src/layouts/ContentLayout/index.vue';
+// import { getBookingApi, updateBookingApi } from '@/api/booking/booking';
 
 const route = useRoute();
 const newMember: any = ref({});
@@ -347,6 +363,7 @@ const members: any = ref([]);
 const tabValue: any = ref('general');
 const bookingGeneralDetails: any = ref({});
 const loading = ref(false);
+
 const rules = ref({
   company_name: {
     required: true,
@@ -354,12 +371,14 @@ const rules = ref({
     trigger: 'blur'
   }
 });
+
 onMounted(async () => {
   if (route.params.id) {
-    getRecordApi(`/booking/${route.params.id}`).then((res: any) => {
+    getRecordApi(`/bookings/${route.params.id}`).then((res: any) => {
+      console.log(res);
       bookingGeneralDetails.value = {
         customer_name: res.result.customer_name,
-        booking_status: res.result.booking_status,
+        status: res.result.status,
         group_no: res.result.group_no,
         group_name: res.result.group_name,
         category: res.result.category,
@@ -380,7 +399,7 @@ function saveGeneralBooking() {
     ...bookingGeneralDetails.value,
     type: 'general'
   }).then((res: any) => {
-    window['$message'].success(res.result.message);
+    window['$message'].success(res.message);
     loading.value = false;
   });
 }
@@ -392,7 +411,7 @@ function saveMemberDetails() {
     type: 'member'
   }).then((res: any) => {
     newMember.value = {};
-    window['$message'].success(res.result.message);
+    window['$message'].success(res.message);
     loading.value = false;
   });
 }

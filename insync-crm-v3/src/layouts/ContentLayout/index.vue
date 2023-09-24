@@ -8,7 +8,8 @@
         flex: '1 1 auto',
         flexDirection: 'column',
         padding: '16px',
-        height: '100%'
+        height: '100%',
+        overflow: 'scroll'
       }"
     >
       <slot name="contentHeader"></slot>

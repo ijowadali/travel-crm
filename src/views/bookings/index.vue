@@ -21,13 +21,13 @@
         </thead>
         <tbody>
           <tr v-if="list.length === 0">
-            <td colspan="7" class="data_placeholder"> Record Not Exist</td>
+            <td colspan="7" class="data_placeholder">Record Not Exist</td>
           </tr>
           <tr v-else v-for="item in list" :key="item.id">
             <td>{{ item.customer_name }}</td>
             <td>
               <n-tag type="success" size="small" round>
-                {{ item.booking_status }}
+                {{ item.status }}
               </n-tag>
             </td>
             <td>{{ item.category }}</td>
@@ -109,112 +109,112 @@
 </template>
 
 <script lang="ts" setup>
-  import { getBookingsApi, deleteBookingApi } from '@/api/booking/booking';
-  import { userPagination } from '@/hooks/userPagination';
-  import { ref, onMounted, h } from 'vue';
-  import { useDialog, useMessage } from 'naive-ui';
-  import type { Component } from 'vue';
-  import { NIcon, NPagination } from 'naive-ui';
-  import { MoreOutlined, EditOutlined, DeleteOutlined, PlusOutlined } from '@vicons/antd';
-  import { PrintAdd24Regular } from '@vicons/fluent';
-  import AddRole from '@/components/Role/AddRole.vue';
-  import EditRole from '@/components/Role/EditRole.vue';
-  import { usePermission } from '@/hooks/web/usePermission';
-  import router from '@/router';
+import { getBookingsApi, deleteBookingApi } from "@/api/booking/booking";
+import { userPagination } from "@/hooks/userPagination";
+import { ref, onMounted, h } from "vue";
+import { useDialog, useMessage } from "naive-ui";
+import type { Component } from "vue";
+import { NIcon, NPagination } from "naive-ui";
+import { MoreOutlined, EditOutlined, DeleteOutlined, PlusOutlined } from "@vicons/antd";
+import { PrintAdd24Regular } from "@vicons/fluent";
+import AddRole from "@/components/Role/AddRole.vue";
+import EditRole from "@/components/Role/EditRole.vue";
+import { usePermission } from "@/hooks/web/usePermission";
+import router from "@/router";
 
-  const dialog = useDialog();
-  const selectedOption: any = ref(null);
-  const showModal = ref(false);
-  const showEditModal = ref(false);
-  const selectedId = ref();
-  const message = useMessage();
-  const permission = usePermission();
-  const { getList, list, page, pageSizes, itemCount, pageSize, params }: any =
-    userPagination(getBookingsApi);
-  const renderIcon = (icon: Component) => {
-    return () => {
-      return h(NIcon, null, {
-        default: () => h(icon),
-      });
-    };
-  };
-
-  const moreOptions = ref([
-    {
-      label: 'Print',
-      key: 'print',
-      icon: renderIcon(PrintAdd24Regular),
-    },
-    {
-      label: 'Edit',
-      key: 'edit',
-      icon: renderIcon(EditOutlined),
-    },
-    {
-      label: 'Delete',
-      key: 'delete',
-      icon: renderIcon(DeleteOutlined),
-    },
-  ]);
-
-  function confirmationDialog() {
-    dialog.error({
-      title: 'Confirmation',
-      content: () => 'Are you sure you want to delete?',
-      positiveText: 'Delete',
-      negativeText: 'Cancel',
-      onPositiveClick: deleteOperation,
+const dialog = useDialog();
+const selectedOption: any = ref(null);
+const showModal = ref(false);
+const showEditModal = ref(false);
+const selectedId = ref();
+const message = useMessage();
+const permission = usePermission();
+const { getList, list, page, pageSizes, itemCount, pageSize, params }: any =
+  userPagination(getBookingsApi);
+const renderIcon = (icon: Component) => {
+  return () => {
+    return h(NIcon, null, {
+      default: () => h(icon),
     });
-  }
+  };
+};
 
-  function deleteOperation() {
-    const Loading = window['$loading'] || null;
-    Loading.start();
-    deleteBookingApi(selectedId.value)
-      .then((result) => {
-        message.success(result.message);
-        getList();
-        Loading.finish();
-        dialog.destroyAll;
-      })
-      .catch((result) => {
-        message.error(result.message);
-        Loading.finish();
-        dialog.destroyAll;
-      });
-    selectedId.value = null;
-    selectedOption.value = null;
-  }
+const moreOptions = ref([
+  {
+    label: "Print",
+    key: "print",
+    icon: renderIcon(PrintAdd24Regular),
+  },
+  {
+    label: "Edit",
+    key: "edit",
+    icon: renderIcon(EditOutlined),
+  },
+  {
+    label: "Delete",
+    key: "delete",
+    icon: renderIcon(DeleteOutlined),
+  },
+]);
 
-  const actionOperation = (item: any) => {
-    if (selectedOption.value === 'edit') {
-      // showEditModal.value = true;
-      // selectedId.value = item.id;
-      router.push(`/booking/edit-booking/${item.id}`);
-    } else if (selectedOption.value === 'delete') {
-      selectedId.value = item.id;
-      confirmationDialog();
-    } else if (selectedOption.value === 'print') {
-      selectedId.value = item.id;
-      router.push(`/booking/print-booking?booking_id=${item.id}`);
-    }
-  };
-  const selectedAction = (key: any) => {
-    selectedOption.value = key;
-  };
-  const fetchList = () => {
-    getList(params.value);
-  };
-  onMounted(() => {
-    getList();
+function confirmationDialog() {
+  dialog.error({
+    title: "Confirmation",
+    content: () => "Are you sure you want to delete?",
+    positiveText: "Delete",
+    negativeText: "Cancel",
+    onPositiveClick: deleteOperation,
   });
+}
+
+function deleteOperation() {
+  const Loading = window["$loading"] || null;
+  Loading.start();
+  deleteBookingApi(selectedId.value)
+    .then((result) => {
+      message.success(result.message);
+      getList();
+      Loading.finish();
+      dialog.destroyAll;
+    })
+    .catch((result) => {
+      message.error(result.message);
+      Loading.finish();
+      dialog.destroyAll;
+    });
+  selectedId.value = null;
+  selectedOption.value = null;
+}
+
+const actionOperation = (item: any) => {
+  if (selectedOption.value === "edit") {
+    // showEditModal.value = true;
+    // selectedId.value = item.id;
+    router.push(`/booking/edit-booking/${item.id}`);
+  } else if (selectedOption.value === "delete") {
+    selectedId.value = item.id;
+    confirmationDialog();
+  } else if (selectedOption.value === "print") {
+    selectedId.value = item.id;
+    router.push(`/booking/print-booking?booking_id=${item.id}`);
+  }
+};
+const selectedAction = (key: any) => {
+  selectedOption.value = key;
+};
+const fetchList = () => {
+  getList(params.value);
+};
+onMounted(() => {
+  getList();
+});
 </script>
 <style lang="less" scoped>
-  .data_placeholder {
-    text-align: center;
-    color: gray;
-    padding: 20px 0;
-    font-size: 18px;
-    font-style: italic;
-  }
+.data_placeholder {
+  text-align: center;
+  color: gray;
+  padding: 20px 0;
+  font-size: 18px;
+  font-style: italic;
+}
 </style>

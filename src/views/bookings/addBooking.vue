@@ -13,9 +13,9 @@
               </n-form-item>
             </n-col>
             <n-col :span="6">
-              <n-form-item label="Booking Status" path="booking_status">
+              <n-form-item label="Booking Status" path="status">
                 <n-select
-                  v-model:value="formValue.booking_status"
+                  v-model:value="formValue.status"
                   filterable
                   placeholder="Search Status"
                   :options="[
@@ -280,7 +280,7 @@
                 <SaveArrowRight20Filled />
               </n-icon>
             </template>
-            {{ route.query.booking_id ? 'Update Booking' : 'Save Booking' }}
+            {{ route.query.booking_id ? "Update Booking" : "Save Booking" }}
           </n-button>
         </n-form-item>
       </n-space>
@@ -448,79 +448,79 @@
 </template>
 
 <script lang="ts" setup>
-  import { onMounted, ref } from 'vue';
-  import { SaveArrowRight20Filled, Delete20Filled, NotepadEdit20Filled } from '@vicons/fluent';
-  import { createBookingApi, getBookingApi, updateBookingApi } from '@/api/booking/booking';
-  import { useRoute } from 'vue-router';
-  import { getHotelsApi } from '@/api/hotel/hotel';
+import { onMounted, ref } from "vue";
+import { SaveArrowRight20Filled, Delete20Filled, NotepadEdit20Filled } from "@vicons/fluent";
+import { createBookingApi, getBookingApi, updateBookingApi } from "@/api/booking/booking";
+import { useRoute } from "vue-router";
+import { getHotelsApi } from "@/api/hotel/hotel";
 
-  const formValue: any = ref({
-    visaDetails: {},
-    hotelDetails: {},
-    members: [],
-  });
-  const route = useRoute();
-  const hotels_dropdown = ref([]);
-  const bookingMember: any = ref({});
-  const showMemberModal = ref(false);
-  const modelTitle = ref('Add Member');
-  const loading = ref(false);
-  const rules = ref({
-    company_name: {
-      required: true,
-      message: 'Please Enter Name',
-      trigger: 'blur',
-    },
-  });
+const formValue: any = ref({
+  visaDetails: {},
+  hotelDetails: {},
+  members: [],
+});
+const route = useRoute();
+const hotels_dropdown = ref([]);
+const bookingMember: any = ref({});
+const showMemberModal = ref(false);
+const modelTitle = ref("Add Member");
+const loading = ref(false);
+const rules = ref({
+  company_name: {
+    required: true,
+    message: "Please Enter Name",
+    trigger: "blur",
+  },
+});
 
-  onMounted(async () => {
-    if (route.query.booking_id) {
-      getBookingApi(parseInt(String(route.query.booking_id))).then((result) => {
-        formValue.value = result;
-      });
-    }
-    getHotelsApi({ pageSize: 1000 }).then((result: any) => {
-      hotels_dropdown.value = result.data;
+onMounted(async () => {
+  if (route.query.booking_id) {
+    getBookingApi(parseInt(String(route.query.booking_id))).then((result) => {
+      formValue.value = result;
     });
+  }
+  getHotelsApi({ pageSize: 1000 }).then((result: any) => {
+    hotels_dropdown.value = result.data;
   });
+});
 
-  function addMemberToBooking() {
-    showMemberModal.value = false;
-    formValue.value.members.push(bookingMember.value);
-    bookingMember.value = {};
-    modelTitle.value = 'Add Member';
-  }
+function addMemberToBooking() {
+  showMemberModal.value = false;
+  formValue.value.members.push(bookingMember.value);
+  bookingMember.value = {};
+  modelTitle.value = "Add Member";
+}
 
-  function editMember(item, index) {
-    bookingMember.value = item;
-    formValue.value.members.splice(index, 1);
-    modelTitle.value = 'Update Member';
-    showMemberModal.value = true;
-  }
+function editMember(item, index) {
+  bookingMember.value = item;
+  formValue.value.members.splice(index, 1);
+  modelTitle.value = "Update Member";
+  showMemberModal.value = true;
+}
 
-  function saveBooking() {
-    loading.value = true;
-    // formValue.value.members.map((member) => {
-    //   if (member.dob instanceof Date) {
-    //     member.dob = member.dob.toDateString().format('yyyy-M-dd');
-    //   } else if (typeof member.dob === 'number') {
-    //     const dateObj = new Date(member.dob);
-    //     member.dob = dateObj.toLocaleDateString();
-    //   }
-    //   return member;
-    // });
-    if (route.query.booking_id) {
-      updateBookingApi(parseInt(String(route.query.booking_id)), { ...formValue.value }).then(
-        (result) => {
-          window['$message'].success(result.message);
-          loading.value = false;
-        }
-      );
-    } else {
-      createBookingApi({ ...formValue.value }).then((result) => {
-        window['$message'].success(result.message);
+function saveBooking() {
+  loading.value = true;
+  // formValue.value.members.map((member) => {
+  //   if (member.dob instanceof Date) {
+  //     member.dob = member.dob.toDateString().format('yyyy-M-dd');
+  //   } else if (typeof member.dob === 'number') {
+  //     const dateObj = new Date(member.dob);
+  //     member.dob = dateObj.toLocaleDateString();
+  //   }
+  //   return member;
+  // });
+  if (route.query.booking_id) {
+    updateBookingApi(parseInt(String(route.query.booking_id)), { ...formValue.value }).then(
+      (result) => {
+        window["$message"].success(result.message);
         loading.value = false;
-      });
-    }
+      }
+    );
+  } else {
+    createBookingApi({ ...formValue.value }).then((result) => {
+      window["$message"].success(result.message);
+      loading.value = false;
+    });
   }
+}
 </script>

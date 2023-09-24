@@ -1,5 +1,5 @@
 <template>
-  <n-card>
+  <ContentLayout>
     <n-form ref="formRef" :label-width="80" :model="formValue" :rules="rules" size="small">
       <n-space style="display: block" vertical>
         <n-card title="Booking Details" style="margin-bottom: 10px">
@@ -13,9 +13,9 @@
               </n-form-item>
             </n-col>
             <n-col :span="6">
-              <n-form-item label="Booking Status" path="booking_status">
+              <n-form-item label="Booking Status" path="status">
                 <n-select
-                  v-model:value="formValue.booking_status"
+                  v-model:value="formValue.status"
                   filterable
                   placeholder="Search Status"
                   :options="[
@@ -306,15 +306,16 @@
         </n-row>
       </n-space>
     </n-modal>
-  </n-card>
+  </ContentLayout>
 </template>
 
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import { SaveArrowRight20Filled, Delete20Filled, NotepadEdit20Filled } from '@vicons/fluent';
 import { createRecordApi, getRecordApi, updateRecordApi, getRecordsApi } from '@src/api/endpoints';
+import ContentLayout from '@src/layouts/ContentLayout/index.vue';
 // import { createBookingApi, getBookingApi, updateBookingApi } from '@/api/booking/booking';
-import { useRoute } from 'vue-router';
 // import { getHotelsApi } from '@/api/hotel/hotel';
 
 const formValue: any = ref({
@@ -323,6 +324,7 @@ const formValue: any = ref({
   members: []
 });
 const route = useRoute();
+const router = useRouter();
 const hotels_dropdown = ref([]);
 const bookingMember: any = ref({});
 const showMemberModal = ref(false);
@@ -343,7 +345,7 @@ onMounted(async () => {
     });
   }
   getRecordsApi('/hotels', { pageSize: 1000 }).then((res: any) => {
-    hotels_dropdown.value = res.result.data;
+    hotels_dropdown.value = res.result;
   });
 });
 
@@ -376,12 +378,13 @@ function saveBooking() {
     updateRecordApi('/bookings/' + parseInt(String(route.query.booking_id)), {
       ...formValue.value
     }).then((res: any) => {
-      window['$message'].success(res.result.message);
+      window['$message'].success(res.message);
       loading.value = false;
     });
   } else {
     createRecordApi('/bookings', { ...formValue.value }).then((res: any) => {
-      window['$message'].success(res.result.message);
+      window['$message'].success(res.message);
+      router.replace({ name: 'booking' });
       loading.value = false;
     });
   }

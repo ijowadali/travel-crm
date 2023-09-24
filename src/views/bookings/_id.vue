@@ -20,9 +20,9 @@
                 </n-form-item>
               </n-col>
               <n-col :span="6">
-                <n-form-item label="Booking Status" path="booking_status">
+                <n-form-item label="Booking Status" path="status">
                   <n-select
-                    v-model:value="bookingGeneralDetails.booking_status"
+                    v-model:value="bookingGeneralDetails.status"
                     filterable
                     placeholder="Search Status"
                     :options="[
@@ -328,90 +328,90 @@
 </template>
 
 <script lang="ts" setup>
-  import { onMounted, ref } from 'vue';
-  import {
-    SaveArrowRight20Filled,
-    TextBulletListSquareEdit24Regular,
-    Info16Filled,
-  } from '@vicons/fluent';
-  import { getBookingApi, updateBookingApi } from '@/api/booking/booking';
-  import { useRoute } from 'vue-router';
+import { onMounted, ref } from "vue";
+import {
+  SaveArrowRight20Filled,
+  TextBulletListSquareEdit24Regular,
+  Info16Filled,
+} from "@vicons/fluent";
+import { getBookingApi, updateBookingApi } from "@/api/booking/booking";
+import { useRoute } from "vue-router";
 
-  const route = useRoute();
-  const newMember: any = ref({});
-  const showAssignModal: any = ref(false);
-  const showInfoModal: any = ref(false);
-  const selectedId: any = ref(null);
-  const members: any = ref([]);
-  const tabValue: any = ref('general');
-  const bookingGeneralDetails: any = ref({});
-  const loading = ref(false);
-  const rules = ref({
-    company_name: {
-      required: true,
-      message: 'Please Enter Name',
-      trigger: 'blur',
-    },
-  });
-  onMounted(async () => {
-    if (route.params.id) {
-      getBookingApi(1).then((result) => {
-        bookingGeneralDetails.value = {
-          customer_name: result.customer_name,
-          booking_status: result.booking_status,
-          group_no: result.group_no,
-          group_name: result.group_name,
-          category: result.category,
-          approval_date: result.approval_date,
-          expected_departure: result.expected_departure,
-          confirmed_ticket: result.confirmed_ticket,
-        };
-        if (result.members) {
-          members.value = result.members;
-        }
-      });
-    }
-  });
-
-  function saveGeneralBooking() {
-    loading.value = true;
-    updateBookingApi(parseInt(String(route.params.id)), {
-      ...bookingGeneralDetails.value,
-      type: 'general',
-    }).then((result) => {
-      window['$message'].success(result.message);
-      loading.value = false;
+const route = useRoute();
+const newMember: any = ref({});
+const showAssignModal: any = ref(false);
+const showInfoModal: any = ref(false);
+const selectedId: any = ref(null);
+const members: any = ref([]);
+const tabValue: any = ref("general");
+const bookingGeneralDetails: any = ref({});
+const loading = ref(false);
+const rules = ref({
+  company_name: {
+    required: true,
+    message: "Please Enter Name",
+    trigger: "blur",
+  },
+});
+onMounted(async () => {
+  if (route.params.id) {
+    getBookingApi(1).then((result) => {
+      bookingGeneralDetails.value = {
+        customer_name: result.customer_name,
+        status: result.status,
+        group_no: result.group_no,
+        group_name: result.group_name,
+        category: result.category,
+        approval_date: result.approval_date,
+        expected_departure: result.expected_departure,
+        confirmed_ticket: result.confirmed_ticket,
+      };
+      if (result.members) {
+        members.value = result.members;
+      }
     });
   }
+});
 
-  function saveMemberDetails() {
-    loading.value = true;
-    updateBookingApi(parseInt(String(route.params.id)), {
-      ...newMember.value,
-      type: 'member',
-    }).then((result) => {
-      newMember.value = {};
-      window['$message'].success(result.message);
-      loading.value = false;
-    });
-  }
+function saveGeneralBooking() {
+  loading.value = true;
+  updateBookingApi(parseInt(String(route.params.id)), {
+    ...bookingGeneralDetails.value,
+    type: "general",
+  }).then((result) => {
+    window["$message"].success(result.message);
+    loading.value = false;
+  });
+}
 
-  const actionOperation = (id: any) => {
-    selectedId.value = id;
-    showAssignModal.value = true;
-  };
-  const showModel = (member: any) => {
-    selectedId.value = member;
-    showInfoModal.value = true;
-  };
-  // function saveMemberHotel() {
-  //   console.log(singleHotelDetail);
-  //   newMember.value.hotelDetails.push(singleHotelDetail.value);
-  //   singleHotelDetail.value = {};
-  //   hotel_city.value = null;
-  //   tabValue.value = 'members';
-  //   setTimeout(() => {
-  //     tabValue.value = 'add_members';
-  //   }, 100);
-  // }
+function saveMemberDetails() {
+  loading.value = true;
+  updateBookingApi(parseInt(String(route.params.id)), {
+    ...newMember.value,
+    type: "member",
+  }).then((result) => {
+    newMember.value = {};
+    window["$message"].success(result.message);
+    loading.value = false;
+  });
+}
+
+const actionOperation = (id: any) => {
+  selectedId.value = id;
+  showAssignModal.value = true;
+};
+const showModel = (member: any) => {
+  selectedId.value = member;
+  showInfoModal.value = true;
+};
+// function saveMemberHotel() {
+//   console.log(singleHotelDetail);
+//   newMember.value.hotelDetails.push(singleHotelDetail.value);
+//   singleHotelDetail.value = {};
+//   hotel_city.value = null;
+//   tabValue.value = 'members';
+//   setTimeout(() => {
+//     tabValue.value = 'add_members';
+//   }, 100);
+// }
 </script>

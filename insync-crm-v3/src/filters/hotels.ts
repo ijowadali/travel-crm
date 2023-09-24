@@ -10,7 +10,7 @@ export function usefilterHotel() {
     if (query !== '') {
       hotelLoading.value = true;
       const response: any = await getRecordsApi('/hotels', { name: query });
-      hotels.value = response.data;
+      hotels.value = response.result;
       hotelLoading.value = false;
     } else {
       hotels.value = [];
