@@ -2,7 +2,7 @@
   <n-card title="Company Setting">
     <n-row>
       <n-col :span="8" class="text-center">
-        <n-avatar round :size="200" :src="`${imgUrl}${companyData.logo}`" />
+        <n-avatar round :size="200" :src="`${imgUrl}${companyData?.logo}`" />
       </n-col>
       <n-col :span="16">
         <n-space style="display: block" vertical>
@@ -81,7 +81,7 @@
         <div>Edit Company</div>
       </template>
       <n-space :vertical="true">
-        <edit-shop @updated="showEditModal = false" />
+        <edit-company @updated="showEditModal = false" />
       </n-space>
     </n-modal>
   </n-card>
@@ -91,7 +91,7 @@
 import { onMounted, ref } from 'vue';
 import { useUserStore } from '@src/store/modules/user';
 import { useEnv } from '@src/hooks/useEnv';
-import EditShop from '@src/views/users/EditShop.vue';
+import EditCompany from '@src/views/users/EditCompany.vue';
 
 const { imgUrl } = useEnv();
 const userStore = useUserStore();

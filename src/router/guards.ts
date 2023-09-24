@@ -6,6 +6,7 @@ import { PageEnum } from '@src/enums/pageEnum';
 import { ErrorPageRoute } from '@src/router/base';
 import { ACCESS_TOKEN } from '@src/utils/storage/variables';
 import { storage } from '@src/utils/storage';
+import { processRouteTag } from '@src/router/tabs';
 
 const LOGIN_PATH = PageEnum.BASE_LOGIN;
 
@@ -79,6 +80,7 @@ export function createRouterGuards(router: Router) {
 
   router.afterEach((to, _, failure) => {
     document.title = (to?.meta?.title as string) || document.title;
+    processRouteTag(to);
     if (isNavigationFailure(failure)) {
       //console.log('failed navigation', failure)
     }

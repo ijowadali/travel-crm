@@ -137,7 +137,7 @@ const selectUserOption = (key: UserOptionKey) => {
       router.push('/change-password');
       break;
     case 'shop_setting':
-      router.push({ name: 'system_shop' });
+      router.push({ name: 'system_company' });
       break;
     default:
       break;

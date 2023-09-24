@@ -21,9 +21,9 @@
         @dragenter="setReplace(index)"
       >
         {{ tagItem.label }}
-        <template #icon>
+        <!-- <template #icon>
           <NIcon :component="tagItem.icon" />
-        </template>
+        </template> -->
       </NTag>
     </div>
 
