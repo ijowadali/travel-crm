@@ -4,22 +4,11 @@
       <div class="flex flex-col items-center space-y-2 sm:flex-row sm:justify-between sm:space-y-0">
         <div class="flex flex-col items-center space-y-2 sm:flex-row sm:space-x-3 sm:space-y-0">
           <div class="flex w-full items-center !space-x-2 sm:w-fit">
-            <!-- <NInput
-              v-model:value="searchParams.name"
-              class="sm:!w-[200px]"
-              clearable
-              placeholder="Search by Name"
-              @keyup="fetchList"
-            >
-              <template #prefix>
-                <NIcon :component="SearchOutlined" class="mr-1" />
-              </template>
-            </NInput> -->
             <n-input
               v-model:value="searchParams.customer_name"
-              class="sm:!w-[150px]"
+              class="sm:!w-[215px]"
               clearable
-              placeholder="Search by Name"
+              placeholder="Search by Customer Name"
               size="small"
               type="text"
             />
@@ -247,6 +236,7 @@ function deleteOperation() {
   // Loading.start();
   deleteRecordApi(`/bookings/${selectedId.value}`)
     .then((res: any) => {
+      console.log('first', res);
       window['$message'].success(res.message);
       getList();
       // Loading.finish();
