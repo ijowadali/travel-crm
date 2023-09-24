@@ -80,7 +80,7 @@ const handleValidateClick = (e: MouseEvent) => {
     if (!errors) {
       createRecordApi('/hotels', hotel.value).then((res: any) => {
         window['$message'].success(res.message);
-        emits('created', res.result);
+        emits('created');
       });
     } else {
       console.log(errors);

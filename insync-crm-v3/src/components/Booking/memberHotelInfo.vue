@@ -1,75 +1,67 @@
 <template>
   <n-card
-    :title="member.name"
+    :title="String(hotelInfo.hotel?.name)"
     :segmented="{
       content: true,
       footer: 'soft',
     }"
   >
     <template #header-extra>
-      <n-tag v-if="member.family_head" type="success" size="large" round> Family Head</n-tag>
+      <n-tag type="success" size="large" round>{{ hotelInfo?.city }}</n-tag>
     </template>
     <n-row class="flex justify-between items-center pb-1">
-      <n-col :span="18">Date Of Birth</n-col>
+      <n-col :span="18">Room Type</n-col>
       <n-col :span="6">
         <n-tag type="info" size="small" round>
-          {{ member.dob }}
+          {{ hotelInfo.room_type }}
         </n-tag>
       </n-col>
     </n-row>
     <n-row class="flex justify-between items-center pb-1">
-      <n-col :span="18">Gender</n-col>
+      <n-col :span="18">Floor</n-col>
       <n-col :span="6">
         <n-tag type="info" size="small" round>
-          {{ member.gender }}
+          {{ hotelInfo.room?.floor_no }}
         </n-tag>
       </n-col>
     </n-row>
     <n-row class="flex justify-between items-center pb-1">
-      <n-col :span="18">Passport No</n-col>
+      <n-col :span="18">Room</n-col>
       <n-col :span="6">
         <n-tag type="info" size="small" round>
-          {{ member.passport }}
+          {{ hotelInfo.room?.room_no }}
         </n-tag>
       </n-col>
     </n-row>
     <n-row class="flex justify-between items-center pb-1">
-      <n-col :span="18">Passport Issue Date</n-col>
+      <n-col :span="18">Bed</n-col>
       <n-col :span="6">
         <n-tag type="info" size="small" round>
-          {{ member.issue_date }}
+          {{ hotelInfo.bed?.name }}
         </n-tag>
       </n-col>
     </n-row>
     <n-row class="flex justify-between items-center pb-1">
-      <n-col :span="18">Passport Expiry Date</n-col>
+      <n-col :span="18">No of Nights</n-col>
       <n-col :span="6">
         <n-tag type="info" size="small" round>
-          {{ member.expiry_date }}
+          {{ hotelInfo.nights }}
         </n-tag>
       </n-col>
     </n-row>
     <n-row class="flex justify-between items-center pb-1">
-      <n-col :span="18">IATA</n-col>
+      <n-col :span="18">CheckIn Date</n-col>
       <n-col :span="6">
         <n-tag type="info" size="small" round>
-          {{ member.iata }}
+          {{ hotelInfo.check_in_date }}
         </n-tag>
       </n-col>
     </n-row>
     <n-row class="flex justify-between items-center pb-1">
-      <n-col :span="18">Visa Company</n-col>
+      <n-col :span="18">CheckOut Date</n-col>
       <n-col :span="6">
         <n-tag type="info" size="small" round>
-          {{ member.visa_company }}
-        </n-tag>
-      </n-col>
-    </n-row>
-    <n-row class="flex justify-between items-center pb-1">
-      <n-col :span="18">Visa Status</n-col>
-      <n-col :span="6">
-        <n-tag type="info" size="small" round>
-          {{ member.visa_status }}
+          {{ hotelInfo.check_out_date }}
         </n-tag>
       </n-col>
     </n-row>
@@ -78,8 +70,11 @@
 
 <script lang="ts" setup>
   defineProps({
-    member: {
+    hotelInfo: {
       type: Object,
+      default: () => ({
+        check_out_date: null,
+      }),
     },
   });
 </script>

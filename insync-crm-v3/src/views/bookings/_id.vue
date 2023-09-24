@@ -1,13 +1,13 @@
 <template>
-  <ContentLayout>
-    <n-card title="Booking Details" style="margin-bottom: 10px">
-      <n-tabs ref="tabRef" v-model:value="tabValue" type="card">
+  <n-card>
+    <n-card style="margin-bottom: 10px" title="Booking Details">
+      <n-tabs ref="tabRef" type="card">
         <n-tab-pane name="general" tab="General Details">
           <n-form
             ref="generalForm"
             :label-width="80"
             :model="bookingGeneralDetails"
-            :rules="rules"
+            :rules="rulesGeneralForm"
             size="small"
           >
             <n-row gutter="12">
@@ -20,24 +20,24 @@
                 </n-form-item>
               </n-col>
               <n-col :span="6">
-                <n-form-item label="Booking Status" path="status">
+                <n-form-item label="Booking Status" path="booking_status">
                   <n-select
-                    v-model:value="bookingGeneralDetails.status"
-                    filterable
-                    placeholder="Search Status"
+                    v-model:value="bookingGeneralDetails.booking_status"
                     :options="[
                       { label: 'Draft', value: 'draft' },
                       { label: 'Processing', value: 'processing' },
-                      { label: 'Final', value: 'Final' }
+                      { label: 'Final', value: 'Final' },
                     ]"
+                    filterable
+                    placeholder="Search Status"
                   />
                 </n-form-item>
               </n-col>
               <n-col :span="6">
                 <n-form-item label="Group No" path="group_no">
                   <n-input-number
-                    class="w-full"
                     v-model:value="bookingGeneralDetails.group_no"
+                    class="w-full"
                     min="0"
                   />
                 </n-form-item>
@@ -54,36 +54,36 @@
                 <n-form-item label="Category" path="category">
                   <n-select
                     v-model:value="bookingGeneralDetails.category"
-                    filterable
-                    placeholder="Search Category"
                     :options="[
                       { label: 'Basic', value: 'basic' },
                       { label: 'Individual', value: 'individual' },
                       { label: 'Premium', value: 'premium' },
-                      { label: 'VIP', value: 'vip' }
+                      { label: 'VIP', value: 'vip' },
                     ]"
+                    filterable
+                    placeholder="Search Category"
                   />
                 </n-form-item>
               </n-col>
               <n-col :span="6">
                 <n-form-item label="Approval Date" path="approval_date">
                   <n-date-picker
-                    style="width: 100%"
                     v-model:formatted-value="bookingGeneralDetails.approval_date"
-                    value-format="yyyy-MM-dd HH:mm:ss"
-                    type="datetime"
                     clearable
+                    style="width: 100%"
+                    type="datetime"
+                    value-format="yyyy-MM-dd HH:mm:ss"
                   />
                 </n-form-item>
               </n-col>
               <n-col :span="6">
                 <n-form-item label="Expected Departure" path="expected_departure">
                   <n-date-picker
-                    style="width: 100%"
                     v-model:formatted-value="bookingGeneralDetails.expected_departure"
-                    value-format="yyyy-MM-dd HH:mm:ss"
-                    type="datetime"
                     clearable
+                    style="width: 100%"
+                    type="datetime"
+                    value-format="yyyy-MM-dd HH:mm:ss"
                   />
                 </n-form-item>
               </n-col>
@@ -94,14 +94,8 @@
               </n-col>
             </n-row>
             <n-space :vertical="true">
-              <n-form-item
-                :theme-overrides="{
-                  feedbackHeightSmall: '0',
-                  feedbackHeightMedium: '0',
-                  labelHeightMedium: '0'
-                }"
-              >
-                <n-button :loading="loading" secondary type="info" @click="saveGeneralBooking">
+              <n-form-item>
+                <n-button :loading="loading" type="success" @click="saveGeneralBooking">
                   <template #icon>
                     <n-icon>
                       <SaveArrowRight20Filled />
@@ -114,25 +108,37 @@
           </n-form>
         </n-tab-pane>
         <n-tab-pane name="members" tab="List Members">
-          <n-card title="Members Details" class="flex w-full mb-1">
+          <n-card class="flex w-full mb-1" title="Members Details">
             <n-row gutter="12">
               <n-col v-for="member of members" :key="member" :span="6">
                 <n-card
-                  :title="member.name"
                   :segmented="{
                     content: true,
-                    footer: 'soft'
+                    footer: 'soft',
                   }"
+                  :title="member.name"
                 >
                   <template #header-extra>
-                    <n-button strong secondary circle type="primary" @click="showModel(member)">
+                    <n-button
+                      circle
+                      secondary
+                      strong
+                      type="primary"
+                      @click="showModel(member, 'info')"
+                    >
                       <template #icon>
                         <n-icon>
                           <Info16Filled />
                         </n-icon>
                       </template>
                     </n-button>
-                    <n-button strong secondary circle type="success">
+                    <n-button
+                      circle
+                      secondary
+                      strong
+                      type="success"
+                      @click="showModel(member, 'edit')"
+                    >
                       <template #icon>
                         <n-icon>
                           <TextBulletListSquareEdit24Regular />
@@ -140,23 +146,35 @@
                       </template>
                     </n-button>
                   </template>
-                  <n-row v-if="member.hotelDetails.length">
+                  <n-row v-if="member.hotelDetails?.length">
                     <n-row
                       v-for="hotel in member.hotelDetails"
                       :key="hotel.id"
-                      class="flex justify-between items-center"
                       :span="24"
+                      class="flex justify-between items-center"
                     >
                       <span>{{ hotel.city }}</span>
                       <span>
-                        <n-button strong secondary circle type="primary">
+                        <n-button
+                          circle
+                          secondary
+                          strong
+                          type="primary"
+                          @click="showInfoModel(hotel)"
+                        >
                           <template #icon>
                             <n-icon>
                               <Info16Filled />
                             </n-icon>
                           </template>
                         </n-button>
-                        <n-button strong secondary circle type="success">
+                        <n-button
+                          circle
+                          secondary
+                          strong
+                          type="success"
+                          @click="actionOperation(member.id, hotel)"
+                        >
                           <template #icon>
                             <n-icon>
                               <TextBulletListSquareEdit24Regular />
@@ -167,10 +185,10 @@
                     </n-row>
                     <n-button
                       v-if="member.hotelDetails.length < 3"
-                      strong
-                      secondary
                       round
-                      type="info"
+                      secondary
+                      strong
+                      type="success"
                       @click="actionOperation(member.id)"
                     >
                       Assign More Hotel
@@ -178,10 +196,10 @@
                   </n-row>
                   <n-button
                     v-else
-                    strong
-                    secondary
                     round
-                    type="info"
+                    secondary
+                    strong
+                    type="success"
                     @click="actionOperation(member.id)"
                   >
                     Assign Hotel
@@ -192,144 +210,23 @@
           </n-card>
         </n-tab-pane>
         <n-tab-pane name="add_members" tab="Add Members">
-          <n-form ref="memberForm" :label-width="80" :model="newMember" :rules="rules" size="small">
-            <n-card title="General Details" class="flex w-full mb-1">
-              <n-row gutter="12">
-                <n-col :span="6">
-                  <n-form-item label="First Name" path="name">
-                    <n-input v-model:value="newMember.name" placeholder="Enter First Name" />
-                  </n-form-item>
-                </n-col>
-                <n-col :span="6">
-                  <n-form-item label="DOB" path="dob">
-                    <n-date-picker
-                      format="yyyy-MM-dd"
-                      class="w-full"
-                      v-model:formatted-value="newMember.dob"
-                      type="date"
-                    />
-                  </n-form-item>
-                </n-col>
-                <n-col :span="6">
-                  <n-form-item label="Gender" path="gender">
-                    <n-select
-                      v-model:value="newMember.gender"
-                      filterable
-                      placeholder="Select Option"
-                      :options="[
-                        { label: 'Male', value: 'male' },
-                        { label: 'Female', value: 'female' }
-                      ]"
-                    />
-                  </n-form-item>
-                </n-col>
-                <n-col :span="6">
-                  <n-form-item label="Family Head" path="family_head">
-                    <n-switch v-model:value="newMember.family_head" />
-                  </n-form-item>
-                </n-col>
-                <n-col :span="6">
-                  <n-form-item label="Passport" path="passport">
-                    <n-input v-model:value="newMember.passport" placeholder="Enter Passport" />
-                  </n-form-item>
-                </n-col>
-                <n-col :span="6">
-                  <n-form-item label="Issue Date" path="issue_date">
-                    <n-date-picker
-                      value-format="yyyy-MM-dd"
-                      class="w-full"
-                      v-model:formatted-value="newMember.issue_date"
-                      type="date"
-                    />
-                  </n-form-item>
-                </n-col>
-                <n-col :span="6">
-                  <n-form-item label="Expiry Date" path="expiry_date">
-                    <n-date-picker
-                      value-format="yyyy-MM-dd"
-                      class="w-full"
-                      v-model:formatted-value="newMember.expiry_date"
-                      type="date"
-                    />
-                  </n-form-item>
-                </n-col>
-              </n-row>
-            </n-card>
-            <n-card title="Visa Details" style="display: flex; width: 100%; margin-bottom: 10px">
-              <n-row gutter="12">
-                <n-col :span="8">
-                  <n-form-item label="IATA" path="iata">
-                    <n-select
-                      v-model:value="newMember.iata"
-                      filterable
-                      placeholder="Select Option"
-                      :options="[
-                        { label: 'Basic', value: 'basic' },
-                        { label: 'Individual', value: 'individual' },
-                        { label: 'Premium', value: 'premium' },
-                        { label: 'VIP', value: 'vip' }
-                      ]"
-                    />
-                  </n-form-item>
-                </n-col>
-                <n-col :span="8">
-                  <n-form-item label="Visa Company" path="visa_company">
-                    <n-input
-                      v-model:value="newMember.visa_company"
-                      placeholder="Enter Visa Company"
-                    />
-                  </n-form-item>
-                </n-col>
-                <n-col :span="8">
-                  <n-form-item label="Visa Status" path="visa_status">
-                    <n-select
-                      v-model:value="newMember.visa_status"
-                      filterable
-                      placeholder="Select Option"
-                      :options="[
-                        { label: 'Basic', value: 'basic' },
-                        { label: 'Individual', value: 'individual' },
-                        { label: 'Premium', value: 'premium' },
-                        { label: 'VIP', value: 'vip' }
-                      ]"
-                    />
-                  </n-form-item>
-                </n-col>
-              </n-row>
-            </n-card>
-            <n-space :vertical="true">
-              <n-form-item
-                :theme-overrides="{
-                  feedbackHeightSmall: '0',
-                  feedbackHeightMedium: '0',
-                  labelHeightMedium: '0'
-                }"
-              >
-                <n-button :loading="loading" secondary type="info" @click="saveMemberDetails">
-                  <template #icon>
-                    <n-icon>
-                      <SaveArrowRight20Filled />
-                    </n-icon>
-                  </template>
-                  Save Member
-                </n-button>
-              </n-form-item>
-            </n-space>
-          </n-form>
+          <add-member :booking-id="parseInt(route.params.id)" />
         </n-tab-pane>
       </n-tabs>
     </n-card>
-
-    <n-modal style="width: 70%" v-model:show="showAssignModal" preset="dialog">
+    <n-modal v-model:show="showAssignModal" preset="dialog" style="width: 70%">
       <template #header>
         <div>Assign Hotel</div>
       </template>
       <n-space :vertical="true">
-        <assign-hotel :id="selectedId" @updated="showAssignModal = false" />
+        <assign-hotel
+          :id="parseInt(selectedId)"
+          :hotel-data="selectedHotel"
+          @updated="showAssignModal = false"
+        />
       </n-space>
     </n-modal>
-
-    <n-modal style="width: 40%" v-model:show="showInfoModal" preset="dialog">
+    <n-modal v-model:show="showInfoModal" preset="dialog" style="width: 40%">
       <template #header>
         <div>Member Info</div>
       </template>
@@ -337,101 +234,113 @@
         <member-info :member="selectedId" />
       </n-space>
     </n-modal>
-  </ContentLayout>
+    <n-modal v-model:show="showHotelInfoModal" preset="dialog" style="width: 40%">
+      <template #header>
+        <div>Hotel Info</div>
+      </template>
+      <n-space :vertical="true">
+        <member-hotel-info :hotel-info="selectedHotel" />
+      </n-space>
+    </n-modal>
+    <n-modal v-model:show="showAddMemberModal" preset="dialog" style="width: 60%">
+      <template #header>
+        <div>Member Info</div>
+      </template>
+      <n-space :vertical="true">
+        <add-member
+          :booking-id="parseInt(route.params.id)"
+          :member-data="selectedId"
+          @operation="
+            showAddMemberModal = false;
+            getBookingData();
+          "
+        />
+      </n-space>
+    </n-modal>
+    <!--    </n-space>-->
+  </n-card>
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue';
-import {
-  SaveArrowRight20Filled,
-  TextBulletListSquareEdit24Regular,
-  Info16Filled
-} from '@vicons/fluent';
-import { useRoute } from 'vue-router';
-import { getRecordApi, updateRecordApi } from '@src/api/endpoints';
-import AssignHotel from '@src/components/hotels/AssignHotel.vue';
-import MemberInfo from '@src/components/Booking/memberInfo.vue';
-import ContentLayout from '@src/layouts/ContentLayout/index.vue';
-// import { getBookingApi, updateBookingApi } from '@/api/booking/booking';
+  import { onMounted, ref } from 'vue';
+  import {
+    Info16Filled,
+    SaveArrowRight20Filled,
+    TextBulletListSquareEdit24Regular,
+  } from '@vicons/fluent';
+  import { getBookingApi, updateBookingApi } from '@/api/booking/booking';
+  import { useRoute } from 'vue-router';
+  import MemberHotelInfo from '@/components/Booking/memberHotelInfo.vue';
+  import { FormInst } from 'naive-ui';
+  import { generalFormRules } from '@/rules/booking';
 
-const route = useRoute();
-const newMember: any = ref({});
-const showAssignModal: any = ref(false);
-const showInfoModal: any = ref(false);
-const selectedId: any = ref(null);
-const members: any = ref([]);
-const tabValue: any = ref('general');
-const bookingGeneralDetails: any = ref({});
-const loading = ref(false);
+  const route = useRoute();
+  const generalForm = ref<FormInst | null>(null);
+  const showAssignModal: any = ref(false);
+  const showInfoModal: any = ref(false);
+  const showAddMemberModal: any = ref(false);
+  const showHotelInfoModal: any = ref(false);
+  const selectedId = ref(null);
+  const selectedHotel: any = ref({});
+  const members: any = ref([]);
+  const bookingGeneralDetails: any = ref({});
+  const loading = ref(false);
+  const rulesGeneralForm = generalFormRules();
+  onMounted(async () => {
+    await getBookingData();
+  });
 
-const rules = ref({
-  company_name: {
-    required: true,
-    message: 'Please Enter Name',
-    trigger: 'blur'
-  }
-});
-
-onMounted(async () => {
-  if (route.params.id) {
-    getRecordApi(`/bookings/${route.params.id}`).then((res: any) => {
-      console.log(res);
-      bookingGeneralDetails.value = {
-        customer_name: res.result.customer_name,
-        status: res.result.status,
-        group_no: res.result.group_no,
-        group_name: res.result.group_name,
-        category: res.result.category,
-        approval_date: res.result.approval_date,
-        expected_departure: res.result.expected_departure,
-        confirmed_ticket: res.result.confirmed_ticket
-      };
-      if (res.result.members) {
-        members.value = res.result.members;
+  async function getBookingData() {
+    if (route.params.id) {
+      const result = await getBookingApi(parseInt(route.params.id));
+      if (result) {
+        bookingGeneralDetails.value = {
+          customer_name: result.customer_name,
+          booking_status: result.booking_status,
+          group_no: result.group_no,
+          group_name: result.group_name,
+          category: result.category,
+          approval_date: result.approval_date,
+          expected_departure: result.expected_departure,
+          confirmed_ticket: result.confirmed_ticket,
+        };
+        if (result.members) {
+          members.value = result.members;
+        }
       }
-    });
+    }
   }
-});
 
-function saveGeneralBooking() {
-  loading.value = true;
-  updateRecordApi('/bookings/' + parseInt(String(route.params.id)), {
-    ...bookingGeneralDetails.value,
-    type: 'general'
-  }).then((res: any) => {
-    window['$message'].success(res.message);
+  async function saveGeneralBooking() {
+    loading.value = true;
+    const result = await updateBookingApi(parseInt(String(route.params.id)), {
+      ...bookingGeneralDetails.value,
+      type: 'general',
+    });
+    if (result.code === 200) {
+      window['$message'].success(result.message);
+    } else {
+      window['$message'].error(result.message);
+    }
+
     loading.value = false;
-  });
-}
+  }
 
-function saveMemberDetails() {
-  loading.value = true;
-  updateRecordApi('/bookings/' + parseInt(String(route.params.id)), {
-    ...newMember.value,
-    type: 'member'
-  }).then((res: any) => {
-    newMember.value = {};
-    window['$message'].success(res.message);
-    loading.value = false;
-  });
-}
-
-const actionOperation = (id: any) => {
-  selectedId.value = id;
-  showAssignModal.value = true;
-};
-const showModel = (member: any) => {
-  selectedId.value = member;
-  showInfoModal.value = true;
-};
-// function saveMemberHotel() {
-//   console.log(singleHotelDetail);
-//   newMember.value.hotelDetails.push(singleHotelDetail.value);
-//   singleHotelDetail.value = {};
-//   hotel_city.value = null;
-//   tabValue.value = 'members';
-//   setTimeout(() => {
-//     tabValue.value = 'add_members';
-//   }, 100);
-// }
+  const showInfoModel = (hotel = null) => {
+    selectedHotel.value = hotel;
+    showHotelInfoModal.value = true;
+  };
+  const actionOperation = (id: any, hotel = null) => {
+    selectedId.value = id;
+    selectedHotel.value = hotel;
+    showAssignModal.value = true;
+  };
+  const showModel = (member: any, type: string) => {
+    selectedId.value = member;
+    if (type === 'info') {
+      showInfoModal.value = true;
+    } else if (type === 'edit') {
+      showAddMemberModal.value = true;
+    }
+  };
 </script>

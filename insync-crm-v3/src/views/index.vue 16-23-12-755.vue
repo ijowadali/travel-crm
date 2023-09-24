@@ -15,62 +15,6 @@
                 <NIcon :component="SearchOutlined" class="mr-1" />
               </template>
             </NInput>
-            <n-input
-              v-model:value="searchParams.customer_name"
-              class="sm:!w-[200px]"
-              clearable
-              placeholder="Search by Name"
-              size="small"
-              type="text"
-            />
-            <n-select
-              v-model:value="searchParams.status"
-              class="sm:!w-[200px]"
-              :options="[
-                { label: 'Draft', value: 'draft' },
-                { label: 'Processing', value: 'processing' },
-                { label: 'Final', value: 'final' }
-              ]"
-              clearable
-              filterable
-              placeholder="Select Booking Status"
-              size="small"
-            />
-            <n-select
-              v-model:value="searchParams.category"
-              class="sm:!w-[200px]"
-              :options="[
-                { label: 'Basic', value: 'basic' },
-                { label: 'Individual', value: 'individual' },
-                { label: 'Premium', value: 'premium' },
-                { label: 'VIP', value: 'vip' }
-              ]"
-              clearable
-              filterable
-              placeholder="Select Category"
-              size="small"
-            />
-            <n-select
-              v-model:value="searchParams.confirmed_ticket"
-              class="sm:!w-[200px]"
-              :options="[
-                { label: 'Yes', value: 1 },
-                { label: 'No', value: 0 }
-              ]"
-              clearable
-              filterable
-              placeholder="Select Ticket Status"
-              size="small"
-            />
-            <n-input
-              v-model:value="searchParams.group_name"
-              clearable
-              placeholder="Search by Group Name"
-              size="small"
-              type="text"
-              @change="fetchList"
-            />
-            <n-button secondary size="small" type="info" @click="fetchList"> Search </n-button>
           </div>
         </div>
         <div class="flex w-full items-center justify-between space-x-3 sm:justify-end">
@@ -91,6 +35,7 @@
       <table class="table">
         <thead class="head">
           <tr>
+            <th class="sticky_el left-0 z-20">ID</th>
             <th class="th">Name</th>
             <th class="th">Booking Status</th>
             <th class="th">Category</th>
@@ -112,6 +57,9 @@
             <td colspan="8" class="data_placeholder">Record Not Exist</td>
           </tr>
           <tr v-else v-for="item in list" :key="item.id" class="body_tr">
+            <td class="sticky_el left-0 z-10">
+              {{ item.id }}
+            </td>
             <td class="td">{{ item.customer_name }}</td>
             <td class="text-center td">
               <n-tag :bordered="false" type="info">{{ item.status }}</n-tag>
@@ -157,31 +105,17 @@
         />
       </div>
     </template>
-    <!-- <router-link to="/booking/add-booking">
-      <n-button
-        :circle="true"
-        size="large"
-        style="position: fixed; bottom: 30px; right: 40px"
-        type="primary"
-      >
-        <template #icon>
-          <n-icon>
-            <plus-outlined />
-          </n-icon>
-        </template>
-      </n-button>
-    </router-link> -->
   </DataTableLayout>
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref, computed } from 'vue';
+import { ref, onMounted, computed } from 'vue';
+import { useDialog, NIcon, NPagination } from 'naive-ui';
 import { useRouter } from 'vue-router';
-import { NIcon, NPagination, useDialog } from 'naive-ui';
 import {
-  DeleteOutlined,
-  EditOutlined,
   MoreOutlined,
+  EditOutlined,
+  DeleteOutlined,
   // PlusOutlined,
   SearchOutlined
 } from '@vicons/antd';
@@ -195,9 +129,11 @@ import { useMobile } from '@src/hooks/useMediaQuery';
 import { renderIcon } from '@src/utils/renderIcon';
 
 const dialog = useDialog();
-const router = useRouter();
 const isMobile = useMobile();
+const router = useRouter();
 const selectedOption: any = ref(null);
+// const showModal = ref(false);
+// const showEditModal = ref(false);
 const selectedId = ref();
 const { hasPermission } = usePermission();
 // const [loading, loadingDispatcher] = useLoading(false);
@@ -240,18 +176,18 @@ function confirmationDialog() {
 }
 
 function deleteOperation() {
-  // const Loading = window['$loading'] || null;
-  // Loading.start();
+  const Loading = window['$loading'] || null;
+  Loading.start();
   deleteRecordApi(`/bookings/${selectedId.value}`)
     .then((res: any) => {
       window['$message'].success(res.message);
       getList();
-      // Loading.finish();
+      Loading.finish();
       dialog.destroyAll;
     })
     .catch((res: any) => {
       window['$message'].error(res.message);
-      // Loading.finish();
+      Loading.finish();
       dialog.destroyAll;
     });
   selectedId.value = null;
@@ -260,15 +196,17 @@ function deleteOperation() {
 
 const actionOperation = (item: any) => {
   if (selectedOption.value === 'edit') {
-    router.push({ name: 'booking_update', params: { id: item.id } });
+    // showEditModal.value = true;
+    // selectedId.value = item.id;
     // router.push(`/booking/edit-booking/${item.id}`);
+    router.push({ name: 'booking_update', params: { id: item.id } });
   } else if (selectedOption.value === 'delete') {
     selectedId.value = item.id;
     confirmationDialog();
   } else if (selectedOption.value === 'print') {
-    // selectedId.value = item.id;
-    router.push({ name: 'booking_print', params: { id: item.id } });
+    selectedId.value = item.id;
     // router.push(`/booking/print-booking?booking_id=${item.id}`);
+    router.push({ name: 'booking_print', params: { id: item.id } });
   }
 };
 const selectedAction = (key: any) => {

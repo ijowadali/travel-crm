@@ -91,7 +91,7 @@
           <n-form-item label="CheckIn Date" path="checkIn_date">
             <n-date-picker
               style="width: 100%"
-              v-model:formatted-value="assignHotel.checkIn_date"
+              v-model:formatted-value="assignHotel.check_in_date"
               value-format="yyyy-MM-dd HH:mm:ss"
               type="datetime"
               clearable
@@ -102,7 +102,7 @@
           <n-form-item label="CheckOut Date" path="checkOut_date">
             <n-date-picker
               style="width: 100%"
-              v-model:formatted-value="assignHotel.checkOut_date"
+              v-model:formatted-value="assignHotel.check_out_date"
               value-format="yyyy-MM-dd HH:mm:ss"
               type="datetime"
               clearable
@@ -117,7 +117,7 @@
           labelHeightMedium: '0'
         }"
       >
-        <n-button :loading="loading" secondary type="info" @click="handleValidateClick">
+        <n-button :loading="loading" type="success" @click="handleValidateClick">
           <template #icon>
             <n-icon>
               <SaveArrowRight20Filled />
@@ -131,7 +131,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, watchEffect } from 'vue';
 import { type FormInst } from 'naive-ui';
 import { usefilterHotel } from '@src/filters/hotels';
 import { usefilterRoom } from '@src/filters/rooms';
@@ -149,6 +149,19 @@ const { beds, bedLoading, findBedByRoom } = usefilterBed();
 const props = defineProps({
   id: {
     type: Number
+  },
+  hotelData: {
+    type: Object,
+    default: () => ({})
+  }
+});
+
+watchEffect(async () => {
+  if (props.hotelData) {
+    await findCityHotel(props.hotelData.city);
+    await findRoomByHotel(props.hotelData.hotel_id, props.hotelData.room_type, 'active');
+    await findBedByRoom(props.hotelData.room_id, 'available');
+    assignHotel.value = { ...props.hotelData };
   }
 });
 
