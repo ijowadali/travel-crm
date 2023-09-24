@@ -31,34 +31,39 @@
 </template>
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { usefilterMenu } from '@src/filters/menus';
 import ContentLayout from '@src/layouts/ContentLayout/index.vue';
 import { getRecordApi, updateRecordApi } from '@src/api/endpoints';
 
 const { menus, getMenus } = usefilterMenu();
 const route = useRoute();
+const router = useRouter();
 const userData = ref({});
 const selectedPermissions = ref([]);
 const fetchEndpoint: any = ref();
 const updateEndpoint: any = ref();
 
 onMounted(() => {
-  getMenus();
-  if (route.query.roleId) {
-    fetchEndpoint.value = `/roles/${route.query.roleId}`;
-    updateEndpoint.value = '/roles/assign-permission/' + route.query.roleId;
-  } else if (route.query.userId) {
-    fetchEndpoint.value = `/users/${route.query.userId}`;
-    updateEndpoint.value = '/users/assign-permission/' + route.query.userId;
-  }
-  getRecordApi(fetchEndpoint.value).then((res: any) => {
-    userData.value = res.result;
-    selectedPermissions.value = res.result.permissions.map((item: any) => {
-      return item.id;
+  if (route.query && (route.query.roleId || route.query.userId)) {
+    getMenus();
+    if (route.query.roleId) {
+      fetchEndpoint.value = `/roles/${route.query.roleId}`;
+      updateEndpoint.value = '/roles/assign-permission/' + route.query.roleId;
+    } else if (route.query.userId) {
+      fetchEndpoint.value = `/users/${route.query.userId}`;
+      updateEndpoint.value = '/users/assign-permission/' + route.query.userId;
+    }
+    getRecordApi(fetchEndpoint.value).then((res: any) => {
+      userData.value = res.result;
+      selectedPermissions.value = res.result.permissions.map((item: any) => {
+        return item.id;
+      });
+      window['$message'].success(res.message);
     });
-    window['$message'].success(res.message);
-  });
+  } else {
+    router.replace({ name: 'ErrorPageSon' });
+  }
 });
 
 const handleAssignPermissions = () => {

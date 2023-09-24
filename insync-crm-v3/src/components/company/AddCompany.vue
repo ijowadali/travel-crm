@@ -75,11 +75,11 @@ const handleValidateClick = (e: MouseEvent) => {
 
 const status = ref([
   {
-    label: 'active',
+    label: 'Active',
     value: 'active'
   },
   {
-    label: 'disabled',
+    label: 'Disabled',
     value: 'disabled'
   }
 ]);

@@ -25,6 +25,7 @@ const asyncRouteStore = useAsyncRouteStore();
 const sidebarStore = useSidebarStore();
 const menuItemList = ref<any[]>([]);
 const selectedKeys = ref<string>(currentRoute.name as string);
+
 const emit = defineEmits(['clickMenuItem']);
 const matched = currentRoute.matched;
 const getOpenKeys: any = matched && matched.length ? matched.map((item) => item.name) : [];

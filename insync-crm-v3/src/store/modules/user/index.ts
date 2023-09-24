@@ -5,6 +5,18 @@ import { storage } from '@src/utils/storage';
 import { loginApi, getUserInfoApi } from '@src/api/auth';
 import _ from 'lodash';
 
+export const useUserStore1 = defineStore('app-user', () => {
+  return {};
+});
+
+export const useUserStore2 = defineStore('app-user', {
+  state: () => {
+    return {};
+  },
+  getters: {},
+  actions: {}
+});
+
 export const useUserStore = defineStore('app-user', () => {
   const token = ref(storage.get(ACCESS_TOKEN, ''));
   const permissions = ref([]);

@@ -67,7 +67,9 @@
             <td class="td">{{ item.company_name }}</td>
             <td class="td">{{ item.phone }}</td>
             <td class="text-center td">
-              <n-tag :bordered="false" type="info">{{ item.status }}</n-tag>
+              <n-tag :bordered="false" :type="item.status === 'disabled' ? 'error' : 'info'">
+                {{ item.status }}
+              </n-tag>
             </td>
             <td class="td">
               {{ item.address + ' ' + item.city + ' ' + item?.state + ' ' + item.country }}

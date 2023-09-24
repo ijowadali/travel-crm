@@ -17,7 +17,7 @@ export function usefilterRoom() {
     }
   }
 
-  async function findRoomByHotel(hotelId: any, roomType: any, is_active = 1) {
+  async function findRoomByHotel(hotelId: any, roomType: any, status = 'active') {
     if (!hotelId) {
       window['$message'].error('Please Select Hotel First');
       return;
@@ -27,9 +27,9 @@ export function usefilterRoom() {
       const response: any = await getRecordsApi('/rooms', {
         hotel_id: hotelId,
         room_type: roomType,
-        is_active: is_active
+        status: status
       });
-      rooms.value = response.data;
+      rooms.value = response.result;
       roomLoading.value = false;
     } else {
       rooms.value = [];

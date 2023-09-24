@@ -65,7 +65,9 @@
             <td class="td">{{ item.owner }}</td>
             <td class="td">{{ item.owner_phone }}</td>
             <td class="text-center td">
-              <n-tag :bordered="false" type="info">{{ item.status }}</n-tag>
+              <n-tag :bordered="false" :type="item.status === 'disabled' ? 'error' : 'info'">
+                {{ item.status }}
+              </n-tag>
             </td>
             <td class="td">
               {{ item.address + ' ' + item.city + ' ' + item.state + ' ' + item.country }}

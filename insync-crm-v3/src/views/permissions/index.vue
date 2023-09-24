@@ -59,7 +59,9 @@
             <td class="sticky_el left-0 z-10">{{ item.id }}</td>
             <td class="td">{{ item.name }}</td>
             <td class="text-center td">
-              <n-tag :bordered="false" type="info">{{ item.type }}</n-tag>
+              <n-tag :bordered="false" :type="item.type === 'private' ? 'error' : 'info'">{{
+                item.type
+              }}</n-tag>
             </td>
             <td class="td">{{ item.menus.menu_name }}</td>
             <td class="td">{{ item.created_at }}</td>

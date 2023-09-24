@@ -35,14 +35,16 @@
       <table class="table">
         <thead class="head">
           <tr>
-            <th class="sticky_el left-0 z-20">Hotel</th>
-            <th class="th">Room Type</th>
-            <th class="th">Room No</th>
+            <th class="th">Hotel Name</th>
             <th class="th">Floor No</th>
+            <th class="th">Room No</th>
+            <th class="th">Room Type</th>
+            <th class="th">No of Beds</th>
+            <th class="th">Beds</th>
+            <th class="th">Status</th>
             <th class="th">Price Type</th>
             <th class="th">Purchase Price</th>
             <th class="th">Sale Price</th>
-            <th class="th">Status</th>
             <th class="th">Created At</th>
             <th class="th">Updated At</th>
             <th
@@ -60,19 +62,24 @@
             <td colspan="11" class="data_placeholder">Record Not Exist</td>
           </tr>
           <tr v-else v-for="item in list" :key="item.id">
-            <td class="sticky_el left-0 z-10">{{ item.id }}</td>
             <td class="td">{{ item.hotels.name }}</td>
-            <td class="td">{{ item.room_type }}</td>
-            <td class="td">{{ item.room_no }}</td>
             <td class="td">{{ item.floor_no }}</td>
+            <td class="td">{{ item.room_no }}</td>
+            <td class="td">{{ item.room_type }}</td>
+            <td class="td">{{ item.no_of_bed }}</td>
+            <td class="td">
+              <n-button size="small" secondary type="info" @click="handleViewBeds(item)"
+                >View Beds</n-button
+              >
+            </td>
+            <td class="text-center td">
+              <n-tag :bordered="false" :type="item.status === 'disabled' ? 'error' : 'success'">
+                {{ item.status }}
+              </n-tag>
+            </td>
             <td class="td">{{ item.price_type }}</td>
             <td class="td">{{ item.purchase_price }}</td>
             <td class="td">{{ item.sale_price }}</td>
-            <td>
-              <n-tag size="small" type="success" round>
-                {{ item.is_active === 1 ? 'active' : 'Not active' }}
-              </n-tag>
-            </td>
             <td class="td">{{ item.created_at }}</td>
             <td class="td">{{ item.updated_at }}</td>
             <td
@@ -128,7 +135,7 @@
       </template>
     </n-button> -->
 
-    <n-modal style="width: 70%" v-model:show="showModal" preset="dialog">
+    <n-modal style="width: 60%" v-model:show="showModal" preset="dialog">
       <template #header>
         <div>Create New Room</div>
       </template>
@@ -142,7 +149,7 @@
       </n-space>
     </n-modal>
 
-    <n-modal style="width: 70%" v-model:show="showEditModal" preset="dialog">
+    <n-modal style="width: 60%" v-model:show="showEditModal" preset="dialog">
       <template #header>
         <div>Update Room</div>
       </template>
@@ -154,6 +161,15 @@
             showEditModal = false;
           "
         />
+      </n-space>
+    </n-modal>
+
+    <n-modal style="width: 40%" v-model:show="showViewBedsModal" preset="dialog">
+      <template #header>
+        <div>View Beds</div>
+      </template>
+      <n-space :vertical="true">
+        <view-beds :bedsData="bedsData" />
       </n-space>
     </n-modal>
   </DataTableLayout>
@@ -177,13 +193,16 @@ import {
 import DataTableLayout from '@src/layouts/DataTableLayout/index.vue';
 import AddRoom from '@src/components/hotels/rooms/AddRoom.vue';
 import EditRoom from '@src/components/hotels/rooms/EditRoom.vue';
+import ViewBeds from '@src/components/hotels/rooms/ViewBeds.vue';
 
 const dialog = useDialog();
 const isMobile = useMobile();
-const showModal = ref(false);
-const selectedOption: any = ref(null);
-const showEditModal = ref(false);
 const selectedId = ref();
+const selectedOption: any = ref(null);
+const showModal = ref(false);
+const showEditModal = ref(false);
+const showViewBedsModal = ref(false);
+const bedsData = ref([]);
 const { hasPermission } = usePermission();
 // const [loading, loadingDispatcher] = useLoading(false);
 
@@ -252,6 +271,11 @@ const actionOperation = (item: any) => {
     selectedId.value = item.id;
     confirmationDialog();
   }
+};
+
+const handleViewBeds = (item: any) => {
+  bedsData.value = item.beds;
+  showViewBedsModal.value = true;
 };
 
 const selectedAction = (key: any) => {
