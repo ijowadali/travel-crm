@@ -1,5 +1,5 @@
 <template>
-  <n-card>
+  <ContentLayout>
     <n-card style="margin-bottom: 10px" title="Booking Details">
       <n-tabs ref="tabRef" type="card">
         <n-tab-pane name="general" tab="General Details">
@@ -26,7 +26,7 @@
                     :options="[
                       { label: 'Draft', value: 'draft' },
                       { label: 'Processing', value: 'processing' },
-                      { label: 'Final', value: 'Final' },
+                      { label: 'Final', value: 'Final' }
                     ]"
                     filterable
                     placeholder="Search Status"
@@ -58,7 +58,7 @@
                       { label: 'Basic', value: 'basic' },
                       { label: 'Individual', value: 'individual' },
                       { label: 'Premium', value: 'premium' },
-                      { label: 'VIP', value: 'vip' },
+                      { label: 'VIP', value: 'vip' }
                     ]"
                     filterable
                     placeholder="Search Category"
@@ -95,7 +95,7 @@
             </n-row>
             <n-space :vertical="true">
               <n-form-item>
-                <n-button :loading="loading" type="success" @click="saveGeneralBooking">
+                <n-button :loading="loading" secondary type="info" @click="saveGeneralBooking">
                   <template #icon>
                     <n-icon>
                       <SaveArrowRight20Filled />
@@ -114,7 +114,7 @@
                 <n-card
                   :segmented="{
                     content: true,
-                    footer: 'soft',
+                    footer: 'soft'
                   }"
                   :title="member.name"
                 >
@@ -187,21 +187,13 @@
                       v-if="member.hotelDetails.length < 3"
                       round
                       secondary
-                      strong
-                      type="success"
+                      type="info"
                       @click="actionOperation(member.id)"
                     >
                       Assign More Hotel
                     </n-button>
                   </n-row>
-                  <n-button
-                    v-else
-                    round
-                    secondary
-                    strong
-                    type="success"
-                    @click="actionOperation(member.id)"
-                  >
+                  <n-button v-else round secondary type="info" @click="actionOperation(member.id)">
                     Assign Hotel
                   </n-button>
                 </n-card>
@@ -210,7 +202,7 @@
           </n-card>
         </n-tab-pane>
         <n-tab-pane name="add_members" tab="Add Members">
-          <add-member :booking-id="parseInt(route.params.id)" />
+          <add-member :booking-id="route.params.id" />
         </n-tab-pane>
       </n-tabs>
     </n-card>
@@ -244,11 +236,11 @@
     </n-modal>
     <n-modal v-model:show="showAddMemberModal" preset="dialog" style="width: 60%">
       <template #header>
-        <div>Member Info</div>
+        <div>Add New Member</div>
       </template>
       <n-space :vertical="true">
         <add-member
-          :booking-id="parseInt(route.params.id)"
+          :booking-id="route.params.id"
           :member-data="selectedId"
           @operation="
             showAddMemberModal = false;
@@ -257,90 +249,94 @@
         />
       </n-space>
     </n-modal>
-    <!--    </n-space>-->
-  </n-card>
+  </ContentLayout>
 </template>
 
 <script lang="ts" setup>
-  import { onMounted, ref } from 'vue';
-  import {
-    Info16Filled,
-    SaveArrowRight20Filled,
-    TextBulletListSquareEdit24Regular,
-  } from '@vicons/fluent';
-  import { getBookingApi, updateBookingApi } from '@/api/booking/booking';
-  import { useRoute } from 'vue-router';
-  import MemberHotelInfo from '@/components/Booking/memberHotelInfo.vue';
-  import { FormInst } from 'naive-ui';
-  import { generalFormRules } from '@/rules/booking';
+import { onMounted, ref } from 'vue';
+import { useRoute } from 'vue-router';
+import { type FormInst } from 'naive-ui';
+import {
+  Info16Filled,
+  SaveArrowRight20Filled,
+  TextBulletListSquareEdit24Regular
+} from '@vicons/fluent';
+import ContentLayout from '@src/layouts/ContentLayout/index.vue';
+import { getRecordApi, updateRecordApi } from '@src/api/endpoints';
+import MemberHotelInfo from '@src/components/Booking/memberHotelInfo.vue';
+import AssignHotel from '@src/components/hotels/AssignHotel.vue';
+import addMember from '@src/components/Booking/addMember.vue';
+import MemberInfo from '@src/components/Booking/memberInfo.vue';
+import { generalFormRules } from '@src/rules/booking';
 
-  const route = useRoute();
-  const generalForm = ref<FormInst | null>(null);
-  const showAssignModal: any = ref(false);
-  const showInfoModal: any = ref(false);
-  const showAddMemberModal: any = ref(false);
-  const showHotelInfoModal: any = ref(false);
-  const selectedId = ref(null);
-  const selectedHotel: any = ref({});
-  const members: any = ref([]);
-  const bookingGeneralDetails: any = ref({});
-  const loading = ref(false);
-  const rulesGeneralForm = generalFormRules();
-  onMounted(async () => {
-    await getBookingData();
-  });
+const route: any = useRoute();
+const generalForm = ref<FormInst | null>(null);
+const showAssignModal: any = ref(false);
+const showInfoModal: any = ref(false);
+const showAddMemberModal: any = ref(false);
+const showHotelInfoModal: any = ref(false);
+const selectedId: any = ref(null);
+const selectedHotel: any = ref({});
+const members: any = ref([]);
+const bookingGeneralDetails: any = ref({});
+const loading = ref(false);
+const rulesGeneralForm = generalFormRules();
 
-  async function getBookingData() {
-    if (route.params.id) {
-      const result = await getBookingApi(parseInt(route.params.id));
-      if (result) {
-        bookingGeneralDetails.value = {
-          customer_name: result.customer_name,
-          booking_status: result.booking_status,
-          group_no: result.group_no,
-          group_name: result.group_name,
-          category: result.category,
-          approval_date: result.approval_date,
-          expected_departure: result.expected_departure,
-          confirmed_ticket: result.confirmed_ticket,
-        };
-        if (result.members) {
-          members.value = result.members;
-        }
+onMounted(async () => {
+  await getBookingData();
+});
+
+async function getBookingData() {
+  if (route.params.id) {
+    const res: any = await getRecordApi(`/bookings/${route.params.id}`);
+    if (res) {
+      bookingGeneralDetails.value = {
+        customer_name: res.customer_name,
+        booking_status: res.booking_status,
+        group_no: res.group_no,
+        group_name: res.group_name,
+        category: res.category,
+        approval_date: res.approval_date,
+        expected_departure: res.expected_departure,
+        confirmed_ticket: res.confirmed_ticket
+      };
+      if (res.members) {
+        members.value = res.members;
       }
     }
   }
+}
 
-  async function saveGeneralBooking() {
-    loading.value = true;
-    const result = await updateBookingApi(parseInt(String(route.params.id)), {
-      ...bookingGeneralDetails.value,
-      type: 'general',
-    });
-    if (result.code === 200) {
-      window['$message'].success(result.message);
-    } else {
-      window['$message'].error(result.message);
-    }
-
-    loading.value = false;
+async function saveGeneralBooking() {
+  loading.value = true;
+  const res: any = await updateRecordApi(`/bookings/${route.params.id}`, {
+    ...bookingGeneralDetails.value,
+    type: 'general'
+  });
+  if (res.code === 200) {
+    window['$message'].success(res.message);
+  } else {
+    window['$message'].error(res.message);
   }
 
-  const showInfoModel = (hotel = null) => {
-    selectedHotel.value = hotel;
-    showHotelInfoModal.value = true;
-  };
-  const actionOperation = (id: any, hotel = null) => {
-    selectedId.value = id;
-    selectedHotel.value = hotel;
-    showAssignModal.value = true;
-  };
-  const showModel = (member: any, type: string) => {
-    selectedId.value = member;
-    if (type === 'info') {
-      showInfoModal.value = true;
-    } else if (type === 'edit') {
-      showAddMemberModal.value = true;
-    }
-  };
+  loading.value = false;
+}
+
+const showInfoModel = (hotel = null) => {
+  selectedHotel.value = hotel;
+  showHotelInfoModal.value = true;
+};
+const actionOperation = (id: any, hotel = null) => {
+  selectedId.value = id;
+  selectedHotel.value = hotel;
+  showAssignModal.value = true;
+};
+const showModel = (member: any, type: string) => {
+  selectedId.value = member;
+  if (type === 'info') {
+    showInfoModal.value = true;
+  } else if (type === 'edit') {
+    showAddMemberModal.value = true;
+  }
+};
 </script>

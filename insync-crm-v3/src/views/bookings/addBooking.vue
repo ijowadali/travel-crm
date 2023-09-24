@@ -1,5 +1,5 @@
 <template>
-  <n-card>
+  <ContentLayout>
     <n-form ref="formRef" :label-width="80" :model="formValue" :rules="rules" size="small">
       <n-space style="display: block" vertical>
         <n-card style="margin-bottom: 10px" title="Booking Details">
@@ -89,19 +89,20 @@
         </n-form-item>
       </n-space>
     </n-form>
-  </n-card>
+  </ContentLayout>
 </template>
 
 <script lang="ts" setup>
-import { createRecordApi } from '@src/api/endpoints';
 import { ref } from 'vue';
 import { type FormInst } from 'naive-ui';
-// import { generalFormRules } from '@src/rules/booking';
+import ContentLayout from '@src/layouts/ContentLayout/index.vue';
+import { createRecordApi } from '@src/api/endpoints';
+import { generalFormRules } from '@src/rules/booking';
 
 const formRef = ref<FormInst | null>(null);
 const formValue: any = ref({});
 const loading = ref(false);
-// const rules = generalFormRules();
+const rules = generalFormRules();
 
 async function saveBooking() {
   formRef.value?.validate(async (errors) => {

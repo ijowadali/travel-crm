@@ -1,5 +1,5 @@
 <template>
-  <n-card class="flex w-full mb-1">
+  <ContentLayout>
     <n-form ref="memberForm" :label-width="80" :model="newMember" :rules="rules" size="small">
       <n-card class="flex w-full mb-1" title="General Details">
         <n-row gutter="12">
@@ -24,7 +24,7 @@
                 v-model:value="newMember.gender"
                 :options="[
                   { label: 'Male', value: 'male' },
-                  { label: 'Female', value: 'female' },
+                  { label: 'Female', value: 'female' }
                 ]"
                 filterable
                 placeholder="Select Option"
@@ -77,7 +77,7 @@
                   { label: 'Basic', value: 'basic' },
                   { label: 'Individual', value: 'individual' },
                   { label: 'Premium', value: 'premium' },
-                  { label: 'VIP', value: 'vip' },
+                  { label: 'VIP', value: 'vip' }
                 ]"
                 filterable
                 placeholder="Select Option"
@@ -97,7 +97,7 @@
                   { label: 'Basic', value: 'basic' },
                   { label: 'Individual', value: 'individual' },
                   { label: 'Premium', value: 'premium' },
-                  { label: 'VIP', value: 'vip' },
+                  { label: 'VIP', value: 'vip' }
                 ]"
                 filterable
                 placeholder="Select Option"
@@ -114,62 +114,66 @@
         </n-form-item>
       </n-space>
     </n-form>
-  </n-card>
+  </ContentLayout>
 </template>
 
 <script lang="ts" setup>
-  import { ref, watchEffect } from 'vue';
-  import { FormInst } from 'naive-ui';
-  import { updateBookingApi } from '@/api/booking/booking';
-  import { mRules } from '@/rules/booking';
+import { ref, watchEffect } from 'vue';
+import { type FormInst } from 'naive-ui';
+import { updateRecordApi } from '@src/api/endpoints';
+import { mRules } from '@src/rules/booking';
+import ContentLayout from '@src/layouts/ContentLayout/index.vue';
 
-  const memberForm = ref<FormInst | null>(null);
-  const loading = ref(false);
-  const newMember: any = ref({});
-  const emits = defineEmits(['operation']);
-  const props = defineProps({
-    bookingId: {
-      type: Number,
-    },
-    memberData: {
-      type: Object,
-      default: () => ({
-        dob: null,
-        gender: '',
-        family_head: 0,
-        passport: '',
-        issue_date: null,
-        expiry_date: null,
-        iata: '',
-        visa_company: '',
-        visa_status: '',
-      }),
-    },
-  });
-  watchEffect(() => {
-    if (props.memberData) {
-      newMember.value = { ...props.memberData };
+const memberForm = ref<FormInst | null>(null);
+const loading = ref(false);
+const newMember: any = ref({});
+const emits = defineEmits(['operation']);
+
+const props = defineProps({
+  bookingId: {
+    type: Number
+  },
+  memberData: {
+    type: Object,
+    default: () => ({
+      dob: null,
+      gender: '',
+      family_head: 0,
+      passport: '',
+      issue_date: null,
+      expiry_date: null,
+      iata: '',
+      visa_company: '',
+      visa_status: ''
+    })
+  }
+});
+
+watchEffect(() => {
+  if (props.memberData) {
+    newMember.value = { ...props.memberData };
+  }
+});
+
+const handleValidateClick = (e: MouseEvent) => {
+  e.preventDefault();
+  memberForm.value?.validate((errors) => {
+    if (!errors) {
+      updateRecordApi('/bookings/' + props.bookingId, {
+        ...newMember.value,
+        type: 'member'
+      }).then((res: any) => {
+        window['$message'].success(res.message);
+        emits('operation');
+      });
+    } else {
+      console.log(errors);
+      window['$message'].error('Please fill out required fields');
     }
   });
-  const handleValidateClick = (e: MouseEvent) => {
-    e.preventDefault();
-    memberForm.value?.validate((errors) => {
-      if (!errors) {
-        updateBookingApi(props.bookingId, {
-          ...newMember.value,
-          type: 'member',
-        }).then((result: any) => {
-          window['$message'].success(result.message);
-          emits('operation');
-        });
-      } else {
-        console.log(errors);
-        window['$message'].error('Please fill out required fields');
-      }
-    });
-  };
+};
 
-  const rules = mRules();
+const rules = mRules();
 </script>
 
-<style lang="less" scoped></style>
+<style lang="scss" scoped></style>

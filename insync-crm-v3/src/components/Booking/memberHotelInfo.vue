@@ -3,7 +3,7 @@
     :title="String(hotelInfo.hotel?.name)"
     :segmented="{
       content: true,
-      footer: 'soft',
+      footer: 'soft'
     }"
   >
     <template #header-extra>
@@ -69,14 +69,14 @@
 </template>
 
 <script lang="ts" setup>
-  defineProps({
-    hotelInfo: {
-      type: Object,
-      default: () => ({
-        check_out_date: null,
-      }),
-    },
-  });
+defineProps({
+  hotelInfo: {
+    type: Object,
+    default: () => ({
+      check_out_date: null
+    })
+  }
+});
 </script>
 
-<style lang="less" scoped></style>
+<style lang="scss" scoped></style>
