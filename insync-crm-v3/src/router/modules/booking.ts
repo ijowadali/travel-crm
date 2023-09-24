@@ -15,14 +15,14 @@ const routes: RouteRecordRaw[] = [
       title: 'Bookings',
       icon: renderIcon(CartOutline),
       permissions: ['can view bookings'],
-      sort: 3
+      sort: 4
     },
     children: [
       {
         path: 'list',
         name: `${routeName}_list`,
         meta: {
-          title: 'Bookings List',
+          title: 'Booking List',
           permissions: ['can view bookings']
         },
         component: () => import('@src/views/bookings/index.vue')
@@ -32,8 +32,7 @@ const routes: RouteRecordRaw[] = [
         name: `${routeName}_add`,
         meta: {
           title: 'Add booking',
-          permissions: ['can view booking create'],
-          hidden: true
+          permissions: ['can view booking create']
         },
         component: () => import('@src/views/bookings/addBooking.vue')
       },

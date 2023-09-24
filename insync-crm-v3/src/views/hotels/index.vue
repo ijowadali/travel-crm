@@ -40,6 +40,7 @@
             <th class="th">Hotel Phone</th>
             <th class="th">Owner Name</th>
             <th class="th">Owner Phone</th>
+            <th class="th">Status</th>
             <th class="th">Address</th>
             <th class="th">Created At</th>
             <th class="th">Updated At</th>

@@ -43,6 +43,11 @@
               <n-input v-model:value="hotel.country" placeholder="Enter Country" />
             </n-form-item>
           </n-col>
+          <n-col :span="12">
+            <n-form-item label="Status" path="status">
+              <n-select v-model:value="hotel.status" size="small" :options="status" />
+            </n-form-item>
+          </n-col>
         </n-row>
       </n-space>
       <n-space justify="end" :size="0">
@@ -85,7 +90,7 @@ const handleValidateClick = (e: MouseEvent) => {
   formRef.value?.validate((errors) => {
     if (!errors) {
       updateRecordApi(`/hotels/${hotel.value.id}`, hotel.value).then((res: any) => {
-        window['$message'].success(res.result.message);
+        window['$message'].success(res.message);
         emits('updated', res.result);
       });
     } else {
@@ -94,6 +99,17 @@ const handleValidateClick = (e: MouseEvent) => {
     }
   });
 };
+
+const status = ref([
+  {
+    label: 'active',
+    value: 'active'
+  },
+  {
+    label: 'disabled',
+    value: 'disabled'
+  }
+]);
 
 const rules = ref({
   name: {
