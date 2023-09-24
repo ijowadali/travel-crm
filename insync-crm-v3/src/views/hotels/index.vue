@@ -43,7 +43,10 @@
             <n-select
               class="sm:!w-[200px]"
               v-model:value="searchParams.status"
-              :options="status"
+              :options="[
+                { label: 'Active', value: 'active' },
+                { label: 'Disabled', value: 'disabled' }
+              ]"
               clearable
               filterable
               placeholder="Select Status"
@@ -53,59 +56,6 @@
               Search
             </n-button>
           </div>
-          <!-- <n-row gutter="12">
-            <n-col :span="4">
-              <n-select
-                v-model:value="searchParams.name"
-                :clear-filter-after-select="false"
-                :filterable="true"
-                :loading="hotelLoading"
-                :options="hotels"
-                :remote="true"
-                :tag="false"
-                clearable
-                label-field="name"
-                placeholder="Select Hotel"
-                size="small"
-                value-field="name"
-                @focus="getHotelsOnFocus"
-                @search="findHotel"
-              />
-            </n-col>
-            <n-col :span="4">
-              <n-input
-                v-model:value="searchParams.owner"
-                clearable
-                placeholder="Search By Owner Name"
-                size="small"
-                type="text"
-              />
-            </n-col>
-            <n-col :span="4">
-              <n-input
-                v-model:value="searchParams.city"
-                clearable
-                placeholder="Search By City"
-                size="small"
-                type="text"
-              />
-            </n-col>
-            <n-col :span="4">
-              <n-select
-                v-model:value="searchParams.status"
-                :options="status"
-                clearable
-                filterable
-                placeholder="Select Status"
-                size="small"
-              />
-            </n-col>
-            <n-col :span="4">
-              <n-button secondary size="small" strong type="info" @click="fetchList">
-                Search
-              </n-button>
-            </n-col>
-          </n-row> -->
         </div>
         <div class="flex w-full items-center justify-between space-x-3 sm:justify-end">
           <NButton
@@ -212,7 +162,9 @@
           size="small"
           :show-quick-jumper="true"
           :show-size-picker="true"
-        />
+        >
+          <template #prefix="{ itemCount }"> Total: {{ itemCount }} </template>
+        </n-pagination>
       </div>
     </template>
 
@@ -357,16 +309,16 @@ onMounted(() => {
   getList();
 });
 
-const status = ref([
-  {
-    label: 'Active',
-    value: 'active'
-  },
-  {
-    label: 'Disabled',
-    value: 'disabled'
-  }
-]);
+// const status = ref([
+//   {
+//     label: 'Active',
+//     value: 'active'
+//   },
+//   {
+//     label: 'Disabled',
+//     value: 'disabled'
+//   }
+// ]);
 </script>
 
 <style lang="scss" scoped>

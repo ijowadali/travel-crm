@@ -4,7 +4,7 @@
       <div class="flex flex-col items-center space-y-2 sm:flex-row sm:justify-between sm:space-y-0">
         <div class="flex flex-col items-center space-y-2 sm:flex-row sm:space-x-3 sm:space-y-0">
           <div class="flex w-full items-center !space-x-2 sm:w-fit">
-            <NInput
+            <!-- <NInput
               v-model:value="searchParams.name"
               class="sm:!w-[200px]"
               clearable
@@ -14,10 +14,10 @@
               <template #prefix>
                 <NIcon :component="SearchOutlined" class="mr-1" />
               </template>
-            </NInput>
+            </NInput> -->
             <n-input
               v-model:value="searchParams.customer_name"
-              class="sm:!w-[200px]"
+              class="sm:!w-[150px]"
               clearable
               placeholder="Search by Name"
               size="small"
@@ -38,7 +38,7 @@
             />
             <n-select
               v-model:value="searchParams.category"
-              class="sm:!w-[200px]"
+              class="sm:!w-[150px]"
               :options="[
                 { label: 'Basic', value: 'basic' },
                 { label: 'Individual', value: 'individual' },
@@ -64,6 +64,7 @@
             />
             <n-input
               v-model:value="searchParams.group_name"
+              class="sm:!w-[150px]"
               clearable
               placeholder="Search by Group Name"
               size="small"
@@ -154,7 +155,9 @@
           size="small"
           :show-quick-jumper="true"
           :show-size-picker="true"
-        />
+        >
+          <template #prefix="{ itemCount }"> Total: {{ itemCount }} </template>
+        </n-pagination>
       </div>
     </template>
     <!-- <router-link to="/booking/add-booking">
@@ -181,9 +184,9 @@ import { NIcon, NPagination, useDialog } from 'naive-ui';
 import {
   DeleteOutlined,
   EditOutlined,
-  MoreOutlined,
+  MoreOutlined
   // PlusOutlined,
-  SearchOutlined
+  // SearchOutlined
 } from '@vicons/antd';
 import { PrintAdd24Regular } from '@vicons/fluent';
 import { deleteRecordApi } from '@src/api/endpoints';

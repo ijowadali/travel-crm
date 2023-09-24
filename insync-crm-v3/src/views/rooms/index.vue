@@ -116,7 +116,9 @@
           size="small"
           :show-quick-jumper="true"
           :show-size-picker="true"
-        />
+        >
+          <template #prefix="{ itemCount }"> Total: {{ itemCount }} </template>
+        </n-pagination>
       </div>
     </template>
 

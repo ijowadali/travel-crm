@@ -94,7 +94,7 @@
               </n-col>
             </n-row>
             <n-space :vertical="true">
-              <n-form-item>
+              <n-form-item :theme-overrides="{ labelHeightSmall: '0', feedbackHeightSmall: '0' }">
                 <n-button :loading="loading" secondary type="info" @click="saveGeneralBooking">
                   <template #icon>
                     <n-icon>
@@ -238,16 +238,17 @@
       <template #header>
         <div>Add New Member</div>
       </template>
-      <n-space :vertical="true">
-        <add-member
-          :booking-id="route.params.id"
-          :member-data="selectedId"
-          @operation="
-            showAddMemberModal = false;
-            getBookingData();
-          "
-        />
-      </n-space>
+      <add-member
+        :booking-id="route.params.id"
+        :member-data="selectedId"
+        @operation="
+          showAddMemberModal = false;
+          getBookingData();
+        "
+      />
+      <!-- <n-space :vertical="true">
+        
+      </n-space> -->
     </n-modal>
   </ContentLayout>
 </template>
@@ -289,19 +290,20 @@ onMounted(async () => {
 async function getBookingData() {
   if (route.params.id) {
     const res: any = await getRecordApi(`/bookings/${route.params.id}`);
+    console.log('res ==>', res);
     if (res) {
       bookingGeneralDetails.value = {
-        customer_name: res.customer_name,
-        booking_status: res.booking_status,
-        group_no: res.group_no,
-        group_name: res.group_name,
-        category: res.category,
-        approval_date: res.approval_date,
-        expected_departure: res.expected_departure,
-        confirmed_ticket: res.confirmed_ticket
+        customer_name: res.result.customer_name,
+        booking_status: res.result.status,
+        group_no: res.result.group_no,
+        group_name: res.result.group_name,
+        category: res.result.category,
+        approval_date: res.result.approval_date,
+        expected_departure: res.result.expected_departure,
+        confirmed_ticket: res.result.confirmed_ticket
       };
-      if (res.members) {
-        members.value = res.members;
+      if (res.result.members) {
+        members.value = res.result.members;
       }
     }
   }
