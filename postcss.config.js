@@ -5,8 +5,3 @@ module.exports = {
     autoprefixer: {}
   }
 };
-
-// export default {
-//   tailwindcss: {},
-//   autoprefixer: {}
-// };

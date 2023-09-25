@@ -2,7 +2,7 @@
   <n-card title="Company Setting">
     <n-row>
       <n-col :span="8" class="text-center">
-        <n-avatar round :size="200" :src="`${imgUrl}${companyData?.logo}`" />
+        <n-avatar round :size="200" :src="`${imgUrl}${companyData.logo}`" />
       </n-col>
       <n-col :span="16">
         <n-space style="display: block" vertical>
