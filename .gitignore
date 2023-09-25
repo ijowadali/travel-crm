@@ -4,10 +4,11 @@ node_modules
 /dist
 dist.zip
 dist_electron
+.vscode
 yarn.lock
 # local env files
-.env.local
-.env.*.local
+.env
+package-lock.json
 
 # Log files
 npm-debug.log*
@@ -23,5 +24,4 @@ pnpm-debug.log*
 *.njsproj
 *.sln
 *.sw?
-/components.d.ts
-/components.d.ts
+
