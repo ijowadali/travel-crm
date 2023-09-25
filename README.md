@@ -1,4 +1,4 @@
-# InSync Ecommerce CRM
+# Travel CRM
 
 ## Environments
 
@@ -17,8 +17,8 @@
 
 ```sh
 
-git clone https://github.com/abendsoft/insync-crm.git
-cd insync-crm
+git clone https://github.com/jawad2020-web/travel-crm.git
+cd travel-crm
 npm install
 ```
 
