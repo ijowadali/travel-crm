@@ -19,7 +19,14 @@
         />
       </n-form-item-gi>
       <n-form-item-gi :span="12" label="Status" path="status">
-        <n-select v-model:value="formValue.status" size="small" :options="status" />
+        <n-select
+          v-model:value="formValue.status"
+          size="small"
+          :options="[
+            { label: 'Active', value: 'active' },
+            { label: 'Disabled', value: 'disabled' }
+          ]"
+        />
       </n-form-item-gi>
       <n-form-item-gi :span="12" label="User Role" path="role_id">
         <n-select
@@ -112,17 +119,6 @@ const handleValidateClick = (e: MouseEvent) => {
     }
   });
 };
-
-const status = ref([
-  {
-    label: 'Active',
-    value: 'active'
-  },
-  {
-    label: 'Disabled',
-    value: 'disabled'
-  }
-]);
 </script>
 
 <style lang="scss" scoped></style>

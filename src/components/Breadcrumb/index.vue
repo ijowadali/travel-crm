@@ -22,7 +22,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
-import { MenuOption } from 'naive-ui';
+import { type MenuOption } from 'naive-ui';
 import { menuOptions } from '@src/constants/sidebarItems';
 import { router } from '@src/router';
 

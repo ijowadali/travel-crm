@@ -5,23 +5,23 @@ export function roomRules() {
     hotel_id: {
       required: true,
       message: 'Please Select Hotel',
-      trigger: 'blur',
+      trigger: 'blur'
     },
     room_type: {
       required: true,
       message: 'Please Select Room Type',
-      trigger: 'blur',
+      trigger: 'blur'
     },
     room_no: {
       required: true,
       message: 'Please Enter Room Number',
-      trigger: 'blur',
+      trigger: 'blur'
     },
     floor_no: {
       required: true,
       message: 'Please Enter Floor Number',
-      trigger: 'blur',
-    },
+      trigger: 'blur'
+    }
   });
 }
 
@@ -30,17 +30,17 @@ export function roomEditRules() {
     room_type: {
       required: true,
       message: 'Please Select Room Type',
-      trigger: 'blur',
+      trigger: 'blur'
     },
     room_no: {
       required: true,
       message: 'Please Enter Room Number',
-      trigger: 'blur',
+      trigger: 'blur'
     },
     floor_no: {
       required: true,
       message: 'Please Enter Floor Number',
-      trigger: 'blur',
-    },
+      trigger: 'blur'
+    }
   });
 }

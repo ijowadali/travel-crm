@@ -1,7 +1,5 @@
 <template>
-  <main
-    class="bg-default-light dark:bg-default-dark flex h-12 w-full items-center justify-between border-b border-gray-300 px-2 py-1 shadow dark:border-gray-800 sm:px-4"
-  >
+  <main class="tabs_container">
     <div
       ref="scrollbarRef"
       class="global_hide-scrollbar flex w-full items-center space-x-2 overflow-x-auto"
@@ -21,9 +19,9 @@
         @dragenter="setReplace(index)"
       >
         {{ tagItem.label }}
-        <template #icon>
+        <!-- <template #icon>
           <NIcon :component="tagItem.icon" />
-        </template>
+        </template> -->
       </NTag>
     </div>
 
@@ -182,3 +180,9 @@ const setReplace = (index: number) => {
   record.replace = index;
 };
 </script>
+
+<style lang="scss" scoped>
+.tabs_container {
+  @apply bg-default-light dark:bg-default-dark flex h-12 w-full items-center justify-between border-b border-gray-300 px-2 py-1 shadow dark:border-gray-800 sm:px-4;
+}
+</style>

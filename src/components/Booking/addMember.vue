@@ -1,5 +1,4 @@
 <template>
-  <!-- <ContentLayout> -->
   <n-form ref="memberForm" :label-width="80" :model="newMember" :rules="rules" size="small">
     <n-card class="flex w-full mb-1" title="General Details">
       <n-row gutter="12">
@@ -106,17 +105,12 @@
         </n-col>
       </n-row>
     </n-card>
-
     <n-form-item :theme-overrides="{ labelHeightSmall: '0', feedbackHeightSmall: '0' }">
       <n-button :loading="loading" secondary type="info" @click="handleValidateClick">
         Save Member
       </n-button>
     </n-form-item>
-    <!-- <n-space :vertical="true">
-      
-    </n-space> -->
   </n-form>
-  <!-- </ContentLayout> -->
 </template>
 
 <script lang="ts" setup>
@@ -124,7 +118,6 @@ import { ref, watchEffect } from 'vue';
 import { type FormInst } from 'naive-ui';
 import { updateRecordApi } from '@src/api/endpoints';
 import { mRules } from '@src/rules/booking';
-// import ContentLayout from '@src/layouts/ContentLayout/index.vue';
 
 const memberForm = ref<FormInst | null>(null);
 const loading = ref(false);

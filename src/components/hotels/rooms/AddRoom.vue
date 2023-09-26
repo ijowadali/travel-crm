@@ -67,7 +67,14 @@
       </n-col>
       <n-col :span="8">
         <n-form-item label="Status" path="status">
-          <n-select v-model:value="rooms.status" size="small" :options="status" />
+          <n-select
+            v-model:value="rooms.status"
+            size="small"
+            :options="[
+              { label: 'Active', value: 'active' },
+              { label: 'Disabled', value: 'disabled' }
+            ]"
+          />
         </n-form-item>
       </n-col>
     </n-row>
@@ -110,17 +117,6 @@ const handleValidateClick = (e: MouseEvent) => {
     }
   });
 };
-
-const status = ref([
-  {
-    label: 'Active',
-    value: 'active'
-  },
-  {
-    label: 'Disabled',
-    value: 'disabled'
-  }
-]);
 
 const rules = ref({
   name: {
