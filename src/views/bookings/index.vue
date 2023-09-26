@@ -3,7 +3,7 @@
     <template #tableHeader>
       <div class="flex flex-col items-center space-y-2 sm:flex-row sm:justify-between sm:space-y-0">
         <div class="flex flex-col items-center space-y-2 sm:flex-row sm:space-x-3 sm:space-y-0">
-          <div class="flex w-full items-center !space-x-2 sm:w-fit">
+          <div class="flex w-full flex-col sm:flex-row items-center !space-x-2 sm:w-fit">
             <n-input
               v-model:value="searchParams.customer_name"
               class="sm:!w-[215px]"
@@ -179,7 +179,7 @@ import {
 } from '@vicons/antd';
 import { PrintAdd24Regular } from '@vicons/fluent';
 import { deleteRecordApi } from '@src/api/endpoints';
-import { usePermission } from '@src/utils/permission/usePermission';
+import { usePermission } from '@src/hooks/permission/usePermission';
 import { usePagination } from '@src/hooks/pagination/usePagination';
 import DataTableLayout from '@src/layouts/DataTableLayout/index.vue';
 // import { useLoading } from '@src/hooks/useLoading';

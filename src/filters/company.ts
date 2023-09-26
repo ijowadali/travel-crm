@@ -21,6 +21,7 @@ export function usefilterCompany() {
   async function getCompanies() {
     companyLoading.value = true;
     const response: any = await getRecordsApi('/company');
+    console.log('companies ==>', response);
     companies.value = response.result;
     companyLoading.value = false;
   }

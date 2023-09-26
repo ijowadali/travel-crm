@@ -3,21 +3,72 @@
     <template #tableHeader>
       <div class="flex flex-col items-center space-y-2 sm:flex-row sm:justify-between sm:space-y-0">
         <div class="flex flex-col items-center space-y-2 sm:flex-row sm:space-x-3 sm:space-y-0">
-          <div class="flex w-full items-center !space-x-2 sm:w-fit">
-            <NInput
+          <div class="flex gap-3 flex-col sm:flex-row flex-wrap w-full items-center sm:w-fit">
+            <n-select
+              class="sm:!w-[230px]"
               v-model:value="searchParams.name"
-              class="sm:!w-[250px]"
+              :clear-filter-after-select="false"
+              :filterable="true"
+              :loading="hotelLoading"
+              :options="hotels"
+              :remote="true"
+              :tag="false"
               clearable
-              placeholder="Search by Room Name"
-              @keyup="fetchList"
+              label-field="name"
+              placeholder="Search By Hotel"
+              size="small"
+              value-field="name"
+              @focus="getHotelsOnFocus"
+              @search="findHotel"
+            />
+            <n-input
+              class="sm:!w-[230px]"
+              v-model:value="searchParams.floor_no"
+              clearable
+              placeholder="Search By Floor"
+              size="small"
+              type="text"
             >
-              <template #prefix>
-                <NIcon :component="SearchOutlined" class="mr-1" />
-              </template>
-            </NInput>
+              <template #prefix> <NIcon :component="SearchOutlined" class="mr-1" /> </template>
+            </n-input>
+            <n-input
+              class="sm:!w-[230px]"
+              v-model:value="searchParams.room_no"
+              clearable
+              placeholder="Search By Room"
+              size="small"
+              type="text"
+            >
+              <template #prefix> <NIcon :component="SearchOutlined" class="mr-1" /> </template>
+            </n-input>
+            <n-input
+              class="sm:!w-[230px]"
+              v-model:value="searchParams.room_type"
+              clearable
+              placeholder="Search By Room Type"
+              size="small"
+              type="text"
+            >
+              <template #prefix> <NIcon :component="SearchOutlined" class="mr-1" /> </template>
+            </n-input>
+            <n-select
+              class="sm:!w-[230px]"
+              v-model:value="searchParams.status"
+              :options="[
+                { label: 'Active', value: 'active' },
+                { label: 'Disabled', value: 'disabled' }
+              ]"
+              clearable
+              filterable
+              placeholder="Search By Status"
+              size="small"
+            />
+            <n-button secondary size="small" strong type="info" @click="fetchList">
+              Search
+            </n-button>
           </div>
         </div>
-        <div class="flex w-full items-center justify-between space-x-3 sm:justify-end">
+        <div class="flex flex-1 w-full items-center justify-between space-x-3 sm:justify-end">
           <NButton
             secondary
             type="info"
@@ -116,6 +167,7 @@
           size="small"
           :show-quick-jumper="true"
           :show-size-picker="true"
+          class="mobile_design"
         >
           <template #prefix="{ itemCount }"> Total: {{ itemCount }} </template>
         </n-pagination>
@@ -178,10 +230,10 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, h, type Component, computed } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useDialog, NIcon, NPagination } from 'naive-ui';
 import { deleteRecordApi } from '@src/api/endpoints';
-import { usePermission } from '@src/utils/permission/usePermission';
+import { usePermission } from '@src/hooks/permission/usePermission';
 import { usePagination } from '@src/hooks/pagination/usePagination';
 import { useMobile } from '@src/hooks/useMediaQuery';
 // import { useLoading } from '@src/hooks/useLoading';
@@ -196,6 +248,8 @@ import DataTableLayout from '@src/layouts/DataTableLayout/index.vue';
 import AddRoom from '@src/components/hotels/rooms/AddRoom.vue';
 import EditRoom from '@src/components/hotels/rooms/EditRoom.vue';
 import ViewBeds from '@src/components/hotels/rooms/ViewBeds.vue';
+import { usefilterHotel } from '@src/filters/hotels';
+import { renderIcon } from '@src/utils/renderIcon';
 
 const dialog = useDialog();
 const isMobile = useMobile();
@@ -206,18 +260,11 @@ const showEditModal = ref(false);
 const showViewBedsModal = ref(false);
 const bedsData = ref([]);
 const { hasPermission } = usePermission();
+const { hotels, hotelLoading, findHotel, getHotelsOnFocus } = usefilterHotel();
 // const [loading, loadingDispatcher] = useLoading(false);
 
 const { getList, list, page, pageSizes, itemCount, pageSize, searchParams }: any =
   usePagination('/rooms');
-
-const renderIcon = (icon: Component) => {
-  return () => {
-    return h(NIcon, null, {
-      default: () => h(icon)
-    });
-  };
-};
 
 const moreOptions = ref([
   {
@@ -309,6 +356,10 @@ onMounted(() => {
 }
 .sticky_el {
   @apply sticky bg-gray-50 dark:bg-gray-700 px-6 whitespace-nowrap text-center border border-gray-200 dark:border-gray-800;
+}
+
+.mobile_design {
+  @apply gap-3 flex-wrap;
 }
 .data_placeholder {
   text-align: center;

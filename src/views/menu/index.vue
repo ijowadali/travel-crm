@@ -3,18 +3,32 @@
     <template #tableHeader>
       <div class="flex flex-col items-center space-y-2 sm:flex-row sm:justify-between sm:space-y-0">
         <div class="flex flex-col items-center space-y-2 sm:flex-row sm:space-x-3 sm:space-y-0">
-          <div class="flex w-full items-center !space-x-2 sm:w-fit">
-            <NInput
-              v-model:value="searchParams.name"
+          <div class="flex flex-col sm:flex-row w-full items-center !space-x-2 sm:w-fit">
+            <n-input
               class="sm:!w-[200px]"
+              v-model:value="searchParams.name"
               clearable
-              placeholder="Search by Name"
-              @keyup="fetchList"
+              placeholder="Search By Name"
+              size="small"
+              type="text"
             >
-              <template #prefix>
-                <NIcon :component="SearchOutlined" class="mr-1" />
-              </template>
-            </NInput>
+              <template #prefix> <NIcon :component="SearchOutlined" class="mr-1" /> </template>
+            </n-input>
+            <n-select
+              class="sm:!w-[200px]"
+              v-model:value="searchParams.status"
+              :options="[
+                { label: 'Active', value: 'active' },
+                { label: 'Disabled', value: 'disabled' }
+              ]"
+              clearable
+              filterable
+              placeholder="Search By Status"
+              size="small"
+            />
+            <n-button secondary size="small" strong type="info" @click="fetchList">
+              Search
+            </n-button>
           </div>
         </div>
         <div class="flex w-full items-center justify-between space-x-3 sm:justify-end">
@@ -131,7 +145,7 @@
 
 <script lang="ts" setup>
 import { deleteRecordApi } from '@src/api/endpoints';
-import { usePermission } from '@src/utils/permission/usePermission';
+import { usePermission } from '@src/hooks/permission/usePermission';
 import { usePagination } from '@src/hooks/pagination/usePagination';
 import { useLoading } from '@src/hooks/useLoading';
 import { useMobile } from '@src/hooks/useMediaQuery';
