@@ -3,18 +3,42 @@
     <template #tableHeader>
       <div class="flex flex-col items-center space-y-2 sm:flex-row sm:justify-between sm:space-y-0">
         <div class="flex flex-col items-center space-y-2 sm:flex-row sm:space-x-3 sm:space-y-0">
-          <div class="flex w-full items-center !space-x-2 sm:w-fit">
-            <NInput
+          <div class="flex flex-col sm:flex-row w-full items-center !space-x-2 sm:w-fit">
+            <n-input
+              class="sm:!w-[200px]"
               v-model:value="searchParams.name"
-              class="sm:!w-[250px]"
               clearable
-              placeholder="Search by Permission Name"
-              @keyup="fetchList"
+              placeholder="Search By Name"
+              size="small"
+              type="text"
             >
-              <template #prefix>
-                <NIcon :component="SearchOutlined" class="mr-1" />
-              </template>
-            </NInput>
+              <template #prefix> <NIcon :component="SearchOutlined" class="mr-1" /> </template>
+            </n-input>
+            <n-input
+              class="sm:!w-[200px]"
+              v-model:value="searchParams.type"
+              clearable
+              placeholder="Search By Type"
+              size="small"
+              type="text"
+            >
+              <template #prefix> <NIcon :component="SearchOutlined" class="mr-1" /> </template>
+            </n-input>
+            <n-select
+              class="sm:!w-[200px]"
+              v-model:value="searchParams.status"
+              :options="[
+                { label: 'Active', value: 'active' },
+                { label: 'Disabled', value: 'disabled' }
+              ]"
+              clearable
+              filterable
+              placeholder="Search By Status"
+              size="small"
+            />
+            <n-button secondary size="small" strong type="info" @click="fetchList">
+              Search
+            </n-button>
           </div>
         </div>
         <div class="flex w-full items-center justify-between space-x-3 sm:justify-end">
@@ -138,10 +162,10 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, h, computed, type Component } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useDialog, NIcon, NPagination } from 'naive-ui';
 import { deleteRecordApi } from '@src/api/endpoints';
-import { usePermission } from '@src/utils/permission/usePermission';
+import { usePermission } from '@src/hooks/permission/usePermission';
 import { usePagination } from '@src/hooks/pagination/usePagination';
 import { useLoading } from '@src/hooks/useLoading';
 import { MoreOutlined, EditOutlined, DeleteOutlined, SearchOutlined } from '@vicons/antd';
@@ -149,6 +173,7 @@ import AddPermission from '@src/components/permission/AddPermission.vue';
 import EditPermission from '@src/components/permission/EditPermission.vue';
 import DataTableLayout from '@src/layouts/DataTableLayout/index.vue';
 import { useMobile } from '@src/hooks/useMediaQuery';
+import { renderIcon } from '@src/utils/renderIcon';
 
 const dialog = useDialog();
 const isMobile = useMobile();
@@ -165,14 +190,6 @@ const { getList, list, page, pageSizes, itemCount, pageSize, searchParams }: any
 onMounted(() => {
   getList();
 });
-
-const renderIcon = (icon: Component) => {
-  return () => {
-    return h(NIcon, null, {
-      default: () => h(icon)
-    });
-  };
-};
 
 const moreOptions = ref([
   {

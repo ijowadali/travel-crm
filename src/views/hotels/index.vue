@@ -3,18 +3,7 @@
     <template #tableHeader>
       <div class="flex flex-col items-center space-y-2 sm:flex-row sm:justify-between sm:space-y-0">
         <div class="flex flex-col items-center space-y-2 sm:flex-row sm:space-x-3 sm:space-y-0">
-          <div class="flex w-full items-center !space-x-2 sm:w-fit">
-            <!-- <NInput
-              v-model:value="searchParams.name"
-              class="sm:!w-[240px]"
-              clearable
-              placeholder="Search by Permission Name"
-              @keyup="fetchList"
-            >
-              <template #prefix>
-                <NIcon :component="SearchOutlined" class="mr-1" />
-              </template>
-            </NInput> -->
+          <div class="flex flex-col sm:flex-row w-full items-center !space-x-2 sm:w-fit">
             <n-select
               class="sm:!w-[200px]"
               v-model:value="searchParams.name"
@@ -26,20 +15,22 @@
               :tag="false"
               clearable
               label-field="name"
-              placeholder="Select Hotel"
+              placeholder="Search By Hotel"
               size="small"
               value-field="name"
               @focus="getHotelsOnFocus"
               @search="findHotel"
             />
             <n-input
-              class="sm:!w-[200px]"
+              class="sm:!w-[220px]"
               v-model:value="searchParams.owner"
               clearable
               placeholder="Search By Owner Name"
               size="small"
               type="text"
-            />
+            >
+              <template #prefix> <NIcon :component="SearchOutlined" class="mr-1" /> </template>
+            </n-input>
             <n-select
               class="sm:!w-[200px]"
               v-model:value="searchParams.status"
@@ -49,7 +40,7 @@
               ]"
               clearable
               filterable
-              placeholder="Select Status"
+              placeholder="Search By Status"
               size="small"
             />
             <n-button secondary size="small" strong type="info" @click="fetchList">
@@ -199,24 +190,25 @@
   </DataTableLayout>
 </template>
 <script lang="ts" setup>
-import { ref, onMounted, h, type Component, computed } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { NIcon, NPagination, useDialog } from 'naive-ui';
 import { deleteRecordApi } from '@src/api/endpoints';
-import { usePermission } from '@src/utils/permission/usePermission';
+import { usePermission } from '@src/hooks/permission/usePermission';
 import { usePagination } from '@src/hooks/pagination/usePagination';
 // import { useLoading } from '@src/hooks/useLoading';
 import { useMobile } from '@src/hooks/useMediaQuery';
 import {
   MoreOutlined,
   EditOutlined,
-  DeleteOutlined
+  DeleteOutlined,
   // PlusOutlined,
-  // SearchOutlined
+  SearchOutlined
 } from '@vicons/antd';
 import DataTableLayout from '@src/layouts/DataTableLayout/index.vue';
 import AddHotel from '@src/components/hotels/AddHotel.vue';
 import EditHotel from '@src/components/hotels/EditHotel.vue';
 import { usefilterHotel } from '@src/filters/hotels';
+import { renderIcon } from '@src/utils/renderIcon';
 
 const dialog = useDialog();
 const isMobile = useMobile();
@@ -230,14 +222,6 @@ const { hotels, hotelLoading, findHotel, getHotelsOnFocus } = usefilterHotel();
 
 const { getList, list, page, pageSizes, itemCount, pageSize, searchParams }: any =
   usePagination('/hotels');
-
-const renderIcon = (icon: Component) => {
-  return () => {
-    return h(NIcon, null, {
-      default: () => h(icon)
-    });
-  };
-};
 
 const moreOptions = ref([
   {

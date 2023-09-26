@@ -5,23 +5,23 @@ export function generalFormRules() {
     customer_name: {
       required: true,
       message: 'Please Enter Name',
-      trigger: 'blur',
+      trigger: 'blur'
     },
     booking_status: {
       required: true,
       message: 'Please Select Booking Status',
-      trigger: 'blur',
+      trigger: 'blur'
     },
     approval_date: {
       required: true,
       message: 'Please Select Booking Status',
-      trigger: 'blur',
+      trigger: 'blur'
     },
     expected_departure: {
       required: true,
       message: 'Please Select Booking Status',
-      trigger: 'blur',
-    },
+      trigger: 'blur'
+    }
   });
 }
 
@@ -30,48 +30,48 @@ export function mRules() {
     name: {
       required: true,
       message: 'Please Enter Name',
-      trigger: 'blur',
+      trigger: 'blur'
     },
     dob: {
       required: true,
       type: 'date',
       message: 'Please Select Date of Birth',
-      trigger: 'blur', // or 'change'
+      trigger: 'blur' // or 'change'
     },
     gender: {
       required: true,
       message: 'Please Select Gender',
-      trigger: 'blur',
+      trigger: 'blur'
     },
     passport: {
       required: true,
       message: 'Please Enter Passport Number',
-      trigger: 'blur',
+      trigger: 'blur'
     },
     issue_date: {
       required: true,
       message: 'Please Select Passport Issue Date',
-      trigger: 'blur',
+      trigger: 'blur'
     },
     expiry_date: {
       required: true,
       message: 'Please Select Passport Expiry Date',
-      trigger: 'blur',
+      trigger: 'blur'
     },
     iata: {
       required: true,
       message: 'Please Select IATA',
-      trigger: 'blur',
+      trigger: 'blur'
     },
     visa_company: {
       required: true,
       message: 'Please Select Visa Company',
-      trigger: 'blur',
+      trigger: 'blur'
     },
     visa_status: {
       required: true,
       message: 'Please Select Visa Status',
-      trigger: 'blur',
-    },
+      trigger: 'blur'
+    }
   });
 }

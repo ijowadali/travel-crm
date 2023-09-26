@@ -15,15 +15,25 @@ export function usefilterRole() {
       const response: any = await getRecordsApi('/roles', {
         name: query
       });
-      roles.value = response.result.data;
+      roles.value = response.result;
       roleLoading.value = false;
+    }
+  }
+
+  async function findRole(query: any) {
+    if (query !== '') {
+      roleLoading.value = true;
+      const response: any = await getRecordsApi('/roles', { name: query });
+      roles.value = response.result;
+      roleLoading.value = false;
+    } else {
+      roles.value = [];
     }
   }
 
   async function getRoles() {
     roleLoading.value = true;
     const response: any = await getRecordsApi('/roles');
-    console.log('res', response);
     roles.value = response.result;
     roleLoading.value = false;
   }
@@ -40,6 +50,7 @@ export function usefilterRole() {
     roleLoading,
     rolesInitialized,
     getRoleByParams,
+    findRole,
     getRoles,
     getRolesOnFocus
   };
