@@ -206,17 +206,17 @@ function confirmationDialog() {
 }
 
 function deleteOperation() {
-  loadingDispatcher.loading();
+  loadingDispatcher.start();
   deleteRecordApi(`/menus/${selectedId.value}`)
     .then((result: any) => {
       message.success(result.message);
       getList();
-      loadingDispatcher.loaded();
+      loadingDispatcher.end();
       dialog.destroyAll;
     })
     .catch((result: any) => {
       message.error(result.message);
-      loadingDispatcher.loaded();
+      loadingDispatcher.end();
       dialog.destroyAll;
     });
   selectedId.value = null;

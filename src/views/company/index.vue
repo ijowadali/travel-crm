@@ -234,17 +234,17 @@ function confirmationDialog() {
 }
 
 function deleteOperation() {
-  loadingDispatcher.loading();
+  loadingDispatcher.start();
   deleteRecordApi(`/company/${selectedId.value}`)
     .then((res: any) => {
       window['$message'].success(res.result.message);
       getList();
-      loadingDispatcher.loaded();
+      loadingDispatcher.end();
       dialog.destroyAll;
     })
     .catch((res: any) => {
       window['$message'].error(res.result.message);
-      loadingDispatcher.loaded();
+      loadingDispatcher.end();
       dialog.destroyAll;
     });
   selectedId.value = null;
