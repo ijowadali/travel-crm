@@ -7,6 +7,7 @@
             <n-select
                 v-model:value="assignHotel.city"
                 placeholder="Select City"
+                clearable
                 @update:value="findCityHotel(assignHotel.city)"
                 :options="[
                 { label: 'Madina', value: 'madina' },
@@ -189,9 +190,10 @@ const rules = ref({
     trigger: 'blur'
   },
   hotel_id: {
+    type: 'number',
     required: true,
     message: 'Please Select Hotel',
-    trigger: 'blur'
+    trigger: 'change'
   },
   room_type: {
     required: true,
@@ -199,19 +201,22 @@ const rules = ref({
     trigger: 'blur'
   },
   room_id: {
+    type: 'number',
     required: true,
     message: 'Please Select Room',
     trigger: 'blur'
   },
   bed_id: {
+    type: 'number',
     required: true,
     message: 'Please Select Bed',
     trigger: 'blur'
   },
   nights: {
+    type: 'number',
     required: true,
-    message: 'Please Enter Nights',
-    trigger: 'blur'
+    trigger: ['blur', 'change'],
+    message: 'Please Input Nights'
   },
   check_in_date: {
     required: true,
