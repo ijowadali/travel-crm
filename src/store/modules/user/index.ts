@@ -20,6 +20,7 @@ export const useUserStore2 = defineStore('app-user', {
 export const useUserStore = defineStore('app-user', () => {
   const token = ref(storage.get(ACCESS_TOKEN, ''));
   const permissions = ref([]);
+  const roles = ref([]);
   const currentUser = ref(storage.get(CURRENT_USER, {}));
 
   const hasData = () => currentUser.value.id;
@@ -30,6 +31,10 @@ export const useUserStore = defineStore('app-user', () => {
 
   const setPermissions = (newPermissions: any) => {
     permissions.value = newPermissions;
+  };
+
+  const setRoles = (newRole: any) => {
+    roles.value = newRole;
   };
 
   const setCurrentUser = (newInfo: any) => {
@@ -55,6 +60,7 @@ export const useUserStore = defineStore('app-user', () => {
     if (res.result) {
       const permissionsList = await allPermissions(res.result);
       setPermissions(permissionsList);
+      setRoles(res.result.roles);
       setCurrentUser(res.result);
     } else {
       throw new Error('api not responding correctly!');
@@ -88,6 +94,7 @@ export const useUserStore = defineStore('app-user', () => {
   return {
     token,
     permissions,
+    roles,
     hasData,
     currentUser,
     login,

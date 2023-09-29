@@ -5,8 +5,8 @@
         <div class="flex flex-col items-center space-y-2 sm:flex-row sm:space-x-3 sm:space-y-0">
           <div class="flex flex-col sm:flex-row w-full items-center !space-x-2 sm:w-fit">
             <n-input
-              class="sm:!w-[200px]"
-              v-model:value="searchParams.name"
+              class="sm:!w-[250px]"
+              v-model:value="searchParams.company_name"
               clearable
               placeholder="Search By Name"
               size="small"
@@ -15,7 +15,7 @@
               <template #prefix> <NIcon :component="SearchOutlined" class="mr-1" /> </template>
             </n-input>
             <n-input
-              class="sm:!w-[200px]"
+              class="sm:!w-[250px]"
               v-model:value="searchParams.phone"
               clearable
               placeholder="Search By Phone"
@@ -25,7 +25,7 @@
               <template #prefix> <NIcon :component="SearchOutlined" class="mr-1" /> </template>
             </n-input>
             <n-select
-              class="sm:!w-[200px]"
+              class="sm:!w-[250px]"
               v-model:value="searchParams.status"
               :options="[
                 { label: 'Active', value: 'active' },
@@ -41,7 +41,7 @@
             </n-button>
           </div>
         </div>
-        <div class="flex w-full items-center justify-between space-x-3 sm:justify-end">
+        <div class="flex flex-1 w-full items-center justify-between space-x-3 sm:justify-end">
           <NButton
             secondary
             type="info"

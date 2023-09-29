@@ -5,7 +5,7 @@
         <div class="flex flex-col items-center space-y-2 sm:flex-row sm:space-x-3 sm:space-y-0">
           <div class="flex flex-col sm:flex-row w-full items-center !space-x-2 sm:w-fit">
             <n-input
-              class="sm:!w-[200px]"
+              class="sm:!w-[250px]"
               v-model:value="searchParams.name"
               clearable
               placeholder="Search By Name"
@@ -15,7 +15,7 @@
               <template #prefix> <NIcon :component="SearchOutlined" class="mr-1" /> </template>
             </n-input>
             <n-input
-              class="sm:!w-[200px]"
+              class="sm:!w-[250px]"
               v-model:value="searchParams.type"
               clearable
               placeholder="Search By Type"
@@ -25,7 +25,7 @@
               <template #prefix> <NIcon :component="SearchOutlined" class="mr-1" /> </template>
             </n-input>
             <n-select
-              class="sm:!w-[200px]"
+              class="sm:!w-[250px]"
               v-model:value="searchParams.status"
               :options="[
                 { label: 'Active', value: 'active' },
@@ -41,7 +41,7 @@
             </n-button>
           </div>
         </div>
-        <div class="flex w-full items-center justify-between space-x-3 sm:justify-end">
+        <div class="flex flex-1 w-full items-center justify-between space-x-3 sm:justify-end">
           <NButton
             secondary
             type="info"
@@ -83,9 +83,9 @@
             <td class="sticky_el left-0 z-10">{{ item.id }}</td>
             <td class="td">{{ item.name }}</td>
             <td class="text-center td">
-              <n-tag :bordered="false" :type="item.type === 'private' ? 'error' : 'info'">{{
-                item.type
-              }}</n-tag>
+              <n-tag :bordered="false" :type="item.type === 'private' ? 'error' : 'info'"
+                >{{ item.type }}
+              </n-tag>
             </td>
             <td class="td">{{ item.menus.menu_name }}</td>
             <td class="td">{{ item.created_at }}</td>

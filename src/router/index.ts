@@ -36,14 +36,16 @@ export const LoginRoute: RouteRecordRaw = {
   name: 'Login',
   component: () => import('@src/layouts/AuthLayout/index.vue'),
   meta: {
-    title: 'Login'
+    title: 'Login',
+    dismissTab: true
   },
   children: [
     {
       path: '',
       name: 'login',
       meta: {
-        title: 'Login'
+        title: 'Login',
+        dismissTab: true
       },
       component: () => import('@src/views/login/index.vue')
     }

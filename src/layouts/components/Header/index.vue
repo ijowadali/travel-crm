@@ -62,7 +62,7 @@
       </template> -->
       <!-- :src="userStore.user.avatarUrl" -->
       <template v-if="userStore.hasData()">
-        <NDropdown trigger="click" :options="userOptions" @select="selectUserOption">
+        <NDropdown trigger="click" :options="filteredOptions" @select="selectUserOption">
           <template v-if="userStore.currentUser.profile.profile_picture">
             <NAvatar
               class="cursor-pointer select-none shadow-md !transition-all hover:opacity-90 active:opacity-70"
@@ -81,9 +81,9 @@
 </template>
 
 <script setup lang="ts">
-import { h } from 'vue';
+import { h, computed } from 'vue';
 import { useRouter } from 'vue-router';
-import { useMessage, NAvatar, NText } from 'naive-ui';
+import { NAvatar, NText } from 'naive-ui';
 import { BrandGithub, UserCircle } from '@vicons/tabler';
 import {
   MenuFoldOutlined,
@@ -105,6 +105,7 @@ import { useUserStore } from '@src/store/modules/user';
 import { useEnv } from '@src/hooks/useEnv';
 import { BrowserUtils } from '@src/utils/browser';
 import { renderIcon } from '@src/utils/renderIcon';
+import { isSuperAdminUser } from '@src/checks/adminChecks';
 
 const { teamGitHubURL, imgUrl } = useEnv();
 const { openNewWindow } = BrowserUtils;
@@ -113,17 +114,19 @@ const themeStore = useThemeStore();
 const sidebarStore = useSidebarStore();
 const userStore = useUserStore();
 const router = useRouter();
-const message = useMessage();
 // const { isFullscreen, toggle: toggleFullscreen } = useFullscreen();
 
 const logout = async () => {
-  return await router.replace('/login').then(async () => {
-    const res = await userStore.logout();
-    message.success(res.message);
-  });
+  return await router
+    .replace('/login')
+    .then(async () => {
+      const res = await userStore.logout();
+      window['$message'].success(res.message);
+    })
+    .finally(() => location.reload());
 };
 
-type UserOptionKey = 'logout' | 'profile' | 'change-password' | 'shop_setting';
+type UserOptionKey = 'logout' | 'profile' | 'change-password' | 'company_setting';
 
 const selectUserOption = (key: UserOptionKey) => {
   switch (key) {
@@ -136,8 +139,8 @@ const selectUserOption = (key: UserOptionKey) => {
     case 'change-password':
       router.push('/change-password');
       break;
-    case 'shop_setting':
-      router.push({ name: 'system_shop' });
+    case 'company_setting':
+      router.push({ name: 'system_company' });
       break;
     default:
       break;
@@ -148,33 +151,43 @@ const userOptions = [
   {
     key: 'header',
     type: 'render',
-    render: renderCustomHeader
+    render: renderCustomHeader,
+    accesses: true
   },
   {
     key: 'header-divider',
-    type: 'divider'
+    type: 'divider',
+    accesses: true
   },
   {
     label: () => 'Profile',
     key: 'profile',
-    icon: renderIcon(ProfileOutlined)
+    icon: renderIcon(ProfileOutlined),
+    accesses: true
   },
   {
-    label: () => 'Shop Setting',
-    key: 'shop_setting',
-    icon: renderIcon(SettingsOutline)
+    label: () => 'Company Setting',
+    key: 'company_setting',
+    icon: renderIcon(SettingsOutline),
+    accesses: isSuperAdminUser()
   },
   {
     label: () => 'Change Password',
     key: 'change-password',
-    icon: renderIcon(UnlockOutlined)
+    icon: renderIcon(UnlockOutlined),
+    accesses: true
   },
   {
     label: () => 'Logout',
     key: 'logout',
-    icon: renderIcon(LogoutOutlined)
+    icon: renderIcon(LogoutOutlined),
+    accesses: true
   }
 ];
+
+const filteredOptions = computed(() => {
+  return userOptions.filter((option) => option.accesses);
+});
 
 function renderCustomHeader() {
   return h(
