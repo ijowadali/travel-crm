@@ -1,5 +1,5 @@
 <template>
-  <n-card title="Comapny Setting">
+  <n-card title="Comapny Setting" v-if="isSuperAdminUser()">
     <n-form ref="formRef" :label-width="80" :model="companyData" size="small">
       <n-grid x-gap="10">
         <n-form-item-gi :span="12" label="Shop Name" path="company_name">
@@ -50,6 +50,7 @@ import { type FormInst } from 'naive-ui';
 import { updateRecordApi } from '@src/api/endpoints';
 import { SingleImageUploader } from '@src/components/upload';
 import { useUserStore } from '@src/store/modules/user';
+import { isSuperAdminUser } from '@src/checks/adminChecks';
 import { useEnv } from '@src/hooks/useEnv';
 
 const { uploadUrl } = useEnv();

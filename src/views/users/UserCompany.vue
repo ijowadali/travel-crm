@@ -1,5 +1,5 @@
 <template>
-  <n-card title="Company Setting">
+  <n-card title="Company Setting" v-if="isSuperAdminUser()">
     <n-row>
       <n-col :span="8" class="text-center">
         <n-avatar round :size="200" :src="`${imgUrl}${companyData.logo}`" />
@@ -91,6 +91,7 @@
 import { onMounted, ref } from 'vue';
 import { useUserStore } from '@src/store/modules/user';
 import { useEnv } from '@src/hooks/useEnv';
+import { isSuperAdminUser } from '@src/checks/adminChecks';
 import EditCompany from '@src/views/users/EditCompany.vue';
 
 const { imgUrl } = useEnv();

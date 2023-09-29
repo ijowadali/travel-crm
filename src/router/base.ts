@@ -8,7 +8,7 @@ export const ErrorPageRoute: RouteRecordRaw = {
   component: DashboardLayout,
   meta: {
     title: 'ErrorPage',
-    hideBreadcrumb: true
+    dismissTab: true
   },
   children: [
     {
@@ -17,7 +17,7 @@ export const ErrorPageRoute: RouteRecordRaw = {
       component: ErrorPage,
       meta: {
         title: 'ErrorPage',
-        hideBreadcrumb: true
+        dismissTab: true
       }
     }
   ]
@@ -29,7 +29,7 @@ export const RedirectRoute: RouteRecordRaw = {
   component: DashboardLayout,
   meta: {
     title: RedirectName,
-    hideBreadcrumb: true
+    dismissTab: true
   },
   children: [
     {
@@ -38,7 +38,7 @@ export const RedirectRoute: RouteRecordRaw = {
       component: () => import('@src/views/redirect/index.vue'),
       meta: {
         title: RedirectName,
-        hideBreadcrumb: true
+        dismissTab: true
       }
     }
   ]
