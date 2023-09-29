@@ -4,92 +4,95 @@
       <n-tabs ref="tabRef" type="card">
         <n-tab-pane name="general" tab="General Details">
           <n-form
-            ref="generalForm"
-            :label-width="80"
-            :model="bookingGeneralDetails"
-            :rules="rulesGeneralForm"
-            size="small"
+              ref="generalForm"
+              :label-width="80"
+              :model="bookingGeneralDetails"
+              :rules="rulesGeneralForm"
+              size="small"
           >
             <n-row gutter="12">
               <n-col :span="6">
                 <n-form-item label="Customer Name" path="customer_name">
                   <n-input
-                    v-model:value="bookingGeneralDetails.customer_name"
-                    placeholder="Enter Customer Name"
+                      v-model:value="bookingGeneralDetails.customer_name"
+                      placeholder="Enter Customer Name"
                   />
                 </n-form-item>
               </n-col>
               <n-col :span="6">
                 <n-form-item label="Booking Status" path="booking_status">
                   <n-select
-                    v-model:value="bookingGeneralDetails.booking_status"
-                    :options="[
+                      v-model:value="bookingGeneralDetails.booking_status"
+                      :options="[
                       { label: 'Draft', value: 'draft' },
                       { label: 'Processing', value: 'processing' },
                       { label: 'Final', value: 'Final' }
                     ]"
-                    filterable
-                    placeholder="Search Status"
+                      filterable
+                      placeholder="Search Status"
                   />
                 </n-form-item>
               </n-col>
               <n-col :span="6">
                 <n-form-item label="Group No" path="group_no">
                   <n-input-number
-                    v-model:value="bookingGeneralDetails.group_no"
-                    class="w-full"
-                    min="0"
+                      v-model:value="bookingGeneralDetails.group_no"
+                      class="w-full"
+                      min="0"
                   />
                 </n-form-item>
               </n-col>
               <n-col :span="6">
                 <n-form-item label="Group Name" path="group_name">
                   <n-input
-                    v-model:value="bookingGeneralDetails.group_name"
-                    placeholder="Enter Group Name"
+                      v-model:value="bookingGeneralDetails.group_name"
+                      placeholder="Enter Group Name"
                   />
                 </n-form-item>
               </n-col>
               <n-col :span="6">
                 <n-form-item label="Category" path="category">
                   <n-select
-                    v-model:value="bookingGeneralDetails.category"
-                    :options="[
+                      v-model:value="bookingGeneralDetails.category"
+                      :options="[
                       { label: 'Basic', value: 'basic' },
                       { label: 'Individual', value: 'individual' },
                       { label: 'Premium', value: 'premium' },
                       { label: 'VIP', value: 'vip' }
                     ]"
-                    filterable
-                    placeholder="Search Category"
+                      filterable
+                      placeholder="Search Category"
                   />
                 </n-form-item>
               </n-col>
               <n-col :span="6">
                 <n-form-item label="Approval Date" path="approval_date">
                   <n-date-picker
-                    v-model:formatted-value="bookingGeneralDetails.approval_date"
-                    clearable
-                    style="width: 100%"
-                    type="datetime"
-                    value-format="yyyy-MM-dd HH:mm:ss"
+                      v-model:formatted-value="bookingGeneralDetails.approval_date"
+                      clearable
+                      style="width: 100%"
+                      type="datetime"
+                      value-format="yyyy-MM-dd HH:mm:ss"
                   />
                 </n-form-item>
               </n-col>
               <n-col :span="6">
                 <n-form-item label="Expected Departure" path="expected_departure">
                   <n-date-picker
-                    v-model:formatted-value="bookingGeneralDetails.expected_departure"
-                    clearable
-                    style="width: 100%"
-                    type="datetime"
-                    value-format="yyyy-MM-dd HH:mm:ss"
+                      v-model:formatted-value="bookingGeneralDetails.expected_departure"
+                      clearable
+                      style="width: 100%"
+                      type="datetime"
+                      value-format="yyyy-MM-dd HH:mm:ss"
                   />
                 </n-form-item>
               </n-col>
               <n-col :span="6">
                 <n-form-item label="Confirmed Ticket" path="confirmed_ticket">
-                  <n-switch v-model:value="bookingGeneralDetails.confirmed_ticket" />
+                  <n-switch
+                      :checked-value="1"
+                      :unchecked-value="0"
+                      v-model:value="bookingGeneralDetails.confirmed_ticket"/>
                 </n-form-item>
               </n-col>
             </n-row>
@@ -98,7 +101,7 @@
                 <n-button :loading="loading" secondary type="info" @click="saveGeneralBooking">
                   <template #icon>
                     <n-icon>
-                      <SaveArrowRight20Filled />
+                      <SaveArrowRight20Filled/>
                     </n-icon>
                   </template>
                   Update Booking
@@ -112,83 +115,83 @@
             <n-row gutter="12">
               <n-col v-for="member of members" :key="member" :span="6">
                 <n-card
-                  :segmented="{
+                    :segmented="{
                     content: true,
                     footer: 'soft'
                   }"
-                  :title="member.name"
+                    :title="member.name"
                 >
                   <template #header-extra>
                     <n-button
-                      circle
-                      secondary
-                      strong
-                      type="primary"
-                      @click="showModel(member, 'info')"
+                        circle
+                        secondary
+                        strong
+                        type="primary"
+                        @click="showModel(member, 'info')"
                     >
                       <template #icon>
                         <n-icon>
-                          <Info16Filled />
+                          <Info16Filled/>
                         </n-icon>
                       </template>
                     </n-button>
                     <n-button
-                      circle
-                      secondary
-                      strong
-                      type="success"
-                      @click="showModel(member, 'edit')"
+                        circle
+                        secondary
+                        strong
+                        type="success"
+                        @click="showModel(member, 'edit')"
                     >
                       <template #icon>
                         <n-icon>
-                          <TextBulletListSquareEdit24Regular />
+                          <TextBulletListSquareEdit24Regular/>
                         </n-icon>
                       </template>
                     </n-button>
                   </template>
                   <n-row v-if="member.hotelDetails?.length">
                     <n-row
-                      v-for="hotel in member.hotelDetails"
-                      :key="hotel.id"
-                      :span="24"
-                      class="flex justify-between items-center"
+                        v-for="hotel in member.hotelDetails"
+                        :key="hotel.id"
+                        :span="24"
+                        class="flex justify-between items-center"
                     >
                       <span>{{ hotel.city }}</span>
                       <span>
                         <n-button
-                          circle
-                          secondary
-                          strong
-                          type="primary"
-                          @click="showInfoModel(hotel)"
+                            circle
+                            secondary
+                            strong
+                            type="primary"
+                            @click="showInfoModel(hotel)"
                         >
                           <template #icon>
                             <n-icon>
-                              <Info16Filled />
+                              <Info16Filled/>
                             </n-icon>
                           </template>
                         </n-button>
                         <n-button
-                          circle
-                          secondary
-                          strong
-                          type="success"
-                          @click="actionOperation(member.id, hotel)"
+                            circle
+                            secondary
+                            strong
+                            type="success"
+                            @click="actionOperation(member.id, hotel)"
                         >
                           <template #icon>
                             <n-icon>
-                              <TextBulletListSquareEdit24Regular />
+                              <TextBulletListSquareEdit24Regular/>
                             </n-icon>
                           </template>
                         </n-button>
                       </span>
                     </n-row>
                     <n-button
-                      v-if="member.hotelDetails.length < 3"
-                      round
-                      secondary
-                      type="info"
-                      @click="actionOperation(member.id)"
+                        v-if="member.hotelDetails.length < 3"
+                        round
+                        secondary
+                        type="info"
+                        @click="actionOperation(member.id)"
                     >
                       Assign More Hotel
                     </n-button>
@@ -202,7 +205,7 @@
           </n-card>
         </n-tab-pane>
         <n-tab-pane name="add_members" tab="Add Members">
-          <add-member :booking-id="route.params.id" />
+          <add-member :booking-id="route.params.id" @operation="getBookingData()"/>
         </n-tab-pane>
       </n-tabs>
     </n-card>
@@ -212,9 +215,9 @@
       </template>
       <n-space :vertical="true">
         <assign-hotel
-          :id="parseInt(selectedId)"
-          :hotel-data="selectedHotel"
-          @updated="showAssignModal = false"
+            :id="parseInt(selectedId)"
+            :hotel-data="selectedHotel"
+            @updated="showAssignModal = false"
         />
       </n-space>
     </n-modal>
@@ -223,7 +226,7 @@
         <div>Member Info</div>
       </template>
       <n-space :vertical="true">
-        <member-info :member="selectedId" />
+        <member-info :member="selectedId"/>
       </n-space>
     </n-modal>
     <n-modal v-model:show="showHotelInfoModal" preset="dialog" style="width: 40%">
@@ -231,44 +234,34 @@
         <div>Hotel Info</div>
       </template>
       <n-space :vertical="true">
-        <member-hotel-info :hotel-info="selectedHotel" />
+        <member-hotel-info :hotel-info="selectedHotel"/>
       </n-space>
     </n-modal>
     <n-modal v-model:show="showAddMemberModal" preset="dialog" style="width: 60%">
       <template #header>
-        <div>Add New Member</div>
+        <div>Edit Member</div>
       </template>
       <add-member
-        :booking-id="route.params.id"
-        :member-data="selectedId"
-        @operation="
-          showAddMemberModal = false;
-          getBookingData();
-        "
+          :booking-id="route.params.id"
+          :member-data="selectedId"
+          @operation="showAddMemberModal = false;getBookingData()"
       />
-      <!-- <n-space :vertical="true">
-        
-      </n-space> -->
     </n-modal>
   </ContentLayout>
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue';
-import { useRoute } from 'vue-router';
-import { type FormInst } from 'naive-ui';
-import {
-  Info16Filled,
-  SaveArrowRight20Filled,
-  TextBulletListSquareEdit24Regular
-} from '@vicons/fluent';
+import {onMounted, ref} from 'vue';
+import {useRoute} from 'vue-router';
+import {type FormInst} from 'naive-ui';
+import {Info16Filled, SaveArrowRight20Filled, TextBulletListSquareEdit24Regular} from '@vicons/fluent';
 import ContentLayout from '@src/layouts/ContentLayout/index.vue';
-import { getRecordApi, updateRecordApi } from '@src/api/endpoints';
+import {getRecordApi, updateRecordApi} from '@src/api/endpoints';
 import MemberHotelInfo from '@src/components/Booking/memberHotelInfo.vue';
 import AssignHotel from '@src/components/hotels/AssignHotel.vue';
 import addMember from '@src/components/Booking/addMember.vue';
 import MemberInfo from '@src/components/Booking/memberInfo.vue';
-import { generalFormRules } from '@src/rules/booking';
+import {generalFormRules} from '@src/rules/booking';
 
 const route: any = useRoute();
 const generalForm = ref<FormInst | null>(null);
