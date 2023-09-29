@@ -8,10 +8,10 @@
       </tr>
     </thead>
     <tbody>
-      <tr v-if="bedsData.length === 0">
+      <tr v-if="list.length === 0">
         <td colspan="11" class="data_placeholder">Record Not Exist</td>
       </tr>
-      <tr v-else v-for="item in bedsData" :key="item.id">
+      <tr v-for="item in list" :key="item.id">
         <td class="td">{{ item.name }}</td>
         <td class="td">
           <n-tag :bordered="false" :type="item.status === 'disabled' ? 'error' : 'success'">
@@ -25,11 +25,13 @@
 </template>
 
 <script lang="ts" setup>
-defineProps({
-  bedsData: {
-    type: Array
-  }
-});
+import { ref } from 'vue';
+
+const props = defineProps<{
+  bedsData: Record<string, any>;
+}>();
+
+const list: any = ref(props.bedsData);
 </script>
 
 <style lang="scss" scoped>
