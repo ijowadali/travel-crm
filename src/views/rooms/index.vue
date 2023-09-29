@@ -119,9 +119,15 @@
             <td class="td">{{ item.room_type }}</td>
             <td class="td">{{ item.no_of_bed }}</td>
             <td class="td">
-              <n-button size="small" secondary type="info" @click="handleViewBeds(item)"
-                >View Beds</n-button
+              <n-button
+                size="small"
+                secondary
+                type="info"
+                v-if="item.beds.length"
+                @click="handleViewBeds(item)"
               >
+                View Beds
+              </n-button>
             </td>
             <td class="text-center td">
               <n-tag :bordered="false" :type="item.status === 'disabled' ? 'error' : 'success'">
