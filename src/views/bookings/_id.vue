@@ -217,7 +217,7 @@
         <assign-hotel
             :id="parseInt(selectedId)"
             :hotel-data="selectedHotel"
-            @updated="showAssignModal = false"
+            @updated="showAssignModal = false;getBookingData()"
         />
       </n-space>
     </n-modal>
