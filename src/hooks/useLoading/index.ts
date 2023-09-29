@@ -5,10 +5,10 @@ export const useLoading = (defaultStatus = false): [Ref<boolean>, LoadingDispatc
   const loading = ref(defaultStatus);
 
   const dispatcher: LoadingDispatcher = {
-    loading: () => {
+    start: () => {
       loading.value = true;
     },
-    loaded: () => {
+    end: () => {
       loading.value = false;
     }
   };

@@ -72,13 +72,13 @@ const handleSubmit = async () => {
     return;
   }
 
-  loadingDispatcher.loading();
+  loadingDispatcher.start();
 
   userStore
     .login(formData)
     .then((res: any) => {
       console.log(res);
-      loadingDispatcher.loaded();
+      loadingDispatcher.end();
       if (res.message) {
         window['$message'].success(res.message);
       }
@@ -98,7 +98,7 @@ const handleSubmit = async () => {
       if (err.message) {
         window['$message'].error(err.message);
       }
-      loadingDispatcher.loaded();
+      loadingDispatcher.end();
       formData.password = '';
     });
 };

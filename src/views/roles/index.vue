@@ -201,17 +201,17 @@ function confirmationDialog() {
 }
 
 function deleteOperation() {
-  loadingDispatcher.loading();
+  loadingDispatcher.start();
   deleteRecordApi(`/roles/${selectedId.value}`)
     .then((res: any) => {
       window['$message'].success(res.result.message);
       getList();
-      loadingDispatcher.loaded();
+      loadingDispatcher.end();
       dialog.destroyAll;
     })
     .catch((res) => {
       window['$message'].error(res.result.message);
-      loadingDispatcher.loaded();
+      loadingDispatcher.end();
       dialog.destroyAll;
     });
   selectedId.value = null;
