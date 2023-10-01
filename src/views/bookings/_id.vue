@@ -110,6 +110,31 @@
             </n-space>
           </n-form>
         </n-tab-pane>
+        <n-tab-pane name="hotel" tab="Hotel Details">
+          <booking-hotel v-if="bookingHotelDetails.length < 3" :id="route.params.id" @hotelAdded="getBookingData"/>
+          <n-table :bordered="false" :single-line="false">
+            <thead>
+            <tr>
+              <th>Hotel</th>
+              <th>City</th>
+              <th>Room Type</th>
+              <th>Nights</th>
+              <th>Check In</th>
+              <th>Check Out</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="item in bookingHotelDetails" :key="item.id">
+              <td>{{ item.hotel_id }}</td>
+              <td>{{ item.city }}</td>
+              <td>{{ item.room_type }}</td>
+              <td>{{ item.nights }}</td>
+              <td>{{ item.check_in_date }}</td>
+              <td>{{ item.check_out_date }}</td>
+            </tr>
+            </tbody>
+          </n-table>
+        </n-tab-pane>
         <n-tab-pane name="members" tab="List Members">
           <n-card class="flex w-full mb-1" title="Members Details">
             <n-row gutter="12">
@@ -262,6 +287,7 @@ import AssignHotel from '@src/components/hotels/AssignHotel.vue';
 import addMember from '@src/components/Booking/addMember.vue';
 import MemberInfo from '@src/components/Booking/memberInfo.vue';
 import {generalFormRules} from '@src/rules/booking';
+import BookingHotel from "@src/components/Booking/bookingHotel.vue";
 
 const route: any = useRoute();
 const generalForm = ref<FormInst | null>(null);
@@ -272,6 +298,7 @@ const showHotelInfoModal: any = ref(false);
 const selectedId: any = ref(null);
 const selectedHotel: any = ref({});
 const members: any = ref([]);
+const bookingHotelDetails: any = ref([]);
 const bookingGeneralDetails: any = ref({});
 const loading = ref(false);
 const rulesGeneralForm = generalFormRules();
@@ -297,6 +324,9 @@ async function getBookingData() {
       };
       if (res.result.members) {
         members.value = res.result.members;
+      }
+      if (res.result.bookingHotelDetails) {
+        bookingHotelDetails.value = res.result.bookingHotelDetails;
       }
     }
   }

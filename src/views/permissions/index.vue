@@ -1,40 +1,44 @@
 <template>
-  <DataTableLayout :loading="loading" v-permission="{ action: ['can view permissions'] }">
+  <DataTableLayout :loading="loading">
     <template #tableHeader>
       <div class="flex flex-col items-center space-y-2 sm:flex-row sm:justify-between sm:space-y-0">
         <div class="flex flex-col items-center space-y-2 sm:flex-row sm:space-x-3 sm:space-y-0">
           <div class="flex flex-col sm:flex-row w-full items-center !space-x-2 sm:w-fit">
             <n-input
-              class="sm:!w-[250px]"
-              v-model:value="searchParams.name"
-              clearable
-              placeholder="Search By Name"
-              size="small"
-              type="text"
+                class="sm:!w-[250px]"
+                v-model:value="searchParams.name"
+                clearable
+                placeholder="Search By Name"
+                size="small"
+                type="text"
             >
-              <template #prefix> <NIcon :component="SearchOutlined" class="mr-1" /> </template>
+              <template #prefix>
+                <NIcon :component="SearchOutlined" class="mr-1"/>
+              </template>
             </n-input>
             <n-input
-              class="sm:!w-[250px]"
-              v-model:value="searchParams.type"
-              clearable
-              placeholder="Search By Type"
-              size="small"
-              type="text"
+                class="sm:!w-[250px]"
+                v-model:value="searchParams.type"
+                clearable
+                placeholder="Search By Type"
+                size="small"
+                type="text"
             >
-              <template #prefix> <NIcon :component="SearchOutlined" class="mr-1" /> </template>
+              <template #prefix>
+                <NIcon :component="SearchOutlined" class="mr-1"/>
+              </template>
             </n-input>
             <n-select
-              class="sm:!w-[250px]"
-              v-model:value="searchParams.status"
-              :options="[
+                class="sm:!w-[250px]"
+                v-model:value="searchParams.status"
+                :options="[
                 { label: 'Active', value: 'active' },
                 { label: 'Disabled', value: 'disabled' }
               ]"
-              clearable
-              filterable
-              placeholder="Search By Status"
-              size="small"
+                clearable
+                filterable
+                placeholder="Search By Status"
+                size="small"
             />
             <n-button secondary size="small" strong type="info" @click="fetchList">
               Search
@@ -43,11 +47,11 @@
         </div>
         <div class="flex flex-1 w-full items-center justify-between space-x-3 sm:justify-end">
           <NButton
-            secondary
-            type="info"
-            :size="isMobile ? 'small' : 'medium'"
-            @click="showModal = true"
-            v-permission="{ action: ['can view permission create'] }"
+              secondary
+              type="info"
+              :size="isMobile ? 'small' : 'medium'"
+              @click="showModal = true"
+              v-permission="{ action: ['can view permission create'] }"
           >
             Create
           </NButton>
@@ -58,58 +62,58 @@
     <template #tableContent>
       <table class="table">
         <thead class="head">
-          <tr>
-            <th class="sticky_el left-0 z-20">ID</th>
-            <th class="th">Permission Name</th>
-            <th class="th">Permission Type</th>
-            <th class="th">Menu Name</th>
-            <th class="th">Created At</th>
-            <th class="th">Updated At</th>
-            <th
+        <tr>
+          <th class="sticky_el left-0 z-20">ID</th>
+          <th class="th">Permission Name</th>
+          <th class="th">Permission Type</th>
+          <th class="th">Menu Name</th>
+          <th class="th">Created At</th>
+          <th class="th">Updated At</th>
+          <th
               class="sticky_el right-0 z-20"
               v-permission="{
                 action: ['can view permissions update', 'can view permissions delete']
               }"
-            >
-              Actions
-            </th>
-          </tr>
+          >
+            Actions
+          </th>
+        </tr>
         </thead>
         <tbody>
-          <tr v-if="list.length === 0">
-            <td colspan="7" class="data_placeholder">Record Not Exist</td>
-          </tr>
-          <tr v-else v-for="item in list" :key="item.id">
-            <td class="sticky_el left-0 z-10">{{ item.id }}</td>
-            <td class="td">{{ item.name }}</td>
-            <td class="text-center td">
-              <n-tag :bordered="false" :type="item.type === 'private' ? 'error' : 'info'"
-                >{{ item.type }}
-              </n-tag>
-            </td>
-            <td class="td">{{ item.menus.menu_name }}</td>
-            <td class="td">{{ item.created_at }}</td>
-            <td class="td">{{ item.updated_at }}</td>
-            <td
+        <tr v-if="list.length === 0">
+          <td colspan="7" class="data_placeholder">Record Not Exist</td>
+        </tr>
+        <tr v-else v-for="item in list" :key="item.id">
+          <td class="sticky_el left-0 z-10">{{ item.id }}</td>
+          <td class="td">{{ item.name }}</td>
+          <td class="text-center td">
+            <n-tag :bordered="false" :type="item.type === 'private' ? 'error' : 'info'"
+            >{{ item.type }}
+            </n-tag>
+          </td>
+          <td class="td">{{ item.menus.menu_name }}</td>
+          <td class="td">{{ item.created_at }}</td>
+          <td class="td">{{ item.updated_at }}</td>
+          <td
               class="sticky_el right-0 z-10"
               v-permission="{
                 action: ['can view permissions update', 'can view permissions delete']
               }"
-            >
-              <n-dropdown
+          >
+            <n-dropdown
                 @click="actionOperation(item)"
                 :onSelect="selectedAction"
                 trigger="click"
                 :options="filteredOptions"
-              >
-                <n-button size="small" :circle="true">
-                  <n-icon>
-                    <more-outlined />
-                  </n-icon>
-                </n-button>
-              </n-dropdown>
-            </td>
-          </tr>
+            >
+              <n-button size="small" :circle="true">
+                <n-icon>
+                  <more-outlined/>
+                </n-icon>
+              </n-button>
+            </n-dropdown>
+          </td>
+        </tr>
         </tbody>
       </table>
     </template>
@@ -117,15 +121,15 @@
     <template #tableFooter>
       <div class="flex flex-col items-center space-y-2 sm:flex-row sm:justify-end sm:space-y-0">
         <n-pagination
-          v-model:page="page"
-          v-model:page-size="pageSize"
-          :item-count="itemCount"
-          :page-sizes="pageSizes"
-          size="small"
-          :show-quick-jumper="true"
-          :show-size-picker="true"
+            v-model:page="page"
+            v-model:page-size="pageSize"
+            :item-count="itemCount"
+            :page-sizes="pageSizes"
+            size="small"
+            :show-quick-jumper="true"
+            :show-size-picker="true"
         >
-          <template #prefix="{ itemCount }"> Total: {{ itemCount }} </template>
+          <template #prefix="{ itemCount }"> Total: {{ itemCount }}</template>
         </n-pagination>
       </div>
     </template>
@@ -136,7 +140,7 @@
       </template>
       <n-space :vertical="true">
         <add-permission
-          @created="
+            @created="
             getList();
             showModal = false;
           "
@@ -150,8 +154,8 @@
       </template>
       <n-space :vertical="true">
         <edit-permission
-          :id="selectedId"
-          @updated="
+            :id="selectedId"
+            @updated="
             getList();
             showEditModal = false;
           "
@@ -162,18 +166,18 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, computed } from 'vue';
-import { useDialog, NIcon, NPagination } from 'naive-ui';
-import { deleteRecordApi } from '@src/api/endpoints';
-import { usePermission } from '@src/hooks/permission/usePermission';
-import { usePagination } from '@src/hooks/pagination/usePagination';
-import { useLoading } from '@src/hooks/useLoading';
-import { MoreOutlined, EditOutlined, DeleteOutlined, SearchOutlined } from '@vicons/antd';
+import {computed, onMounted, ref} from 'vue';
+import {NIcon, NPagination, useDialog} from 'naive-ui';
+import {deleteRecordApi} from '@src/api/endpoints';
+import {usePermission} from '@src/hooks/permission/usePermission';
+import {usePagination} from '@src/hooks/pagination/usePagination';
+import {useLoading} from '@src/hooks/useLoading';
+import {DeleteOutlined, EditOutlined, MoreOutlined, SearchOutlined} from '@vicons/antd';
 import AddPermission from '@src/components/permission/AddPermission.vue';
 import EditPermission from '@src/components/permission/EditPermission.vue';
 import DataTableLayout from '@src/layouts/DataTableLayout/index.vue';
-import { useMobile } from '@src/hooks/useMediaQuery';
-import { renderIcon } from '@src/utils/renderIcon';
+import {useMobile} from '@src/hooks/useMediaQuery';
+import {renderIcon} from '@src/utils/renderIcon';
 
 const dialog = useDialog();
 const isMobile = useMobile();
@@ -181,11 +185,11 @@ const showModal = ref(false);
 const selectedOption: any = ref(null);
 const showEditModal = ref(false);
 const selectedId = ref();
-const { hasPermission } = usePermission();
+const {hasPermission} = usePermission();
 const [loading, loadingDispatcher] = useLoading(false);
 
-const { getList, list, page, pageSizes, itemCount, pageSize, searchParams }: any =
-  usePagination('/permissions');
+const {getList, list, page, pageSizes, itemCount, pageSize, searchParams}: any =
+    usePagination('/permissions');
 
 onMounted(() => {
   getList();
@@ -223,17 +227,17 @@ function confirmationDialog() {
 function deleteOperation() {
   loadingDispatcher.start();
   deleteRecordApi(`/permissions/${selectedId.value}`)
-    .then((res: any) => {
-      window['$message'].success(res.result.message);
-      getList();
-      loadingDispatcher.end();
-      dialog.destroyAll;
-    })
-    .catch((res) => {
-      window['$message'].error(res.result.message);
-      loadingDispatcher.end();
-      dialog.destroyAll;
-    });
+      .then((res: any) => {
+        window['$message'].success(res.result.message);
+        getList();
+        loadingDispatcher.end();
+        dialog.destroyAll;
+      })
+      .catch((res) => {
+        window['$message'].error(res.result.message);
+        loadingDispatcher.end();
+        dialog.destroyAll;
+      });
   selectedId.value = null;
   selectedOption.value = null;
 }
@@ -260,21 +264,27 @@ const fetchList = () => {
 .table {
   @apply w-full text-sm text-left text-gray-500 dark:text-gray-400;
 }
+
 .head {
   @apply sticky top-0 text-xs text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400 z-20;
 }
+
 .th {
   @apply px-6 py-3 border-r border-b border-gray-200 dark:border-gray-800 text-center whitespace-nowrap;
 }
+
 .body_tr {
   @apply hover:bg-gray-50 dark:hover:bg-gray-600;
 }
+
 .td {
   @apply px-3 py-3 border-r border-b border-gray-200 dark:border-gray-800 whitespace-nowrap;
 }
+
 .sticky_el {
   @apply sticky bg-gray-50 dark:bg-gray-700 px-6 whitespace-nowrap text-center border border-gray-200 dark:border-gray-800;
 }
+
 .data_placeholder {
   text-align: center;
   color: gray;
