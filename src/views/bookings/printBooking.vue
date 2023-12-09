@@ -97,9 +97,28 @@ import {useRoute} from 'vue-router';
 import {getRecordApi} from '@src/api/endpoints';
 import ContentLayout from "@src/layouts/ContentLayout/index.vue";
 
+interface PrintData {
+  customer_name: string;
+  members: Array<{
+    id: number;
+    passport: string;
+    name: string;
+  }>;
+  group_no: number;
+  bookingHotelDetails: Array<{
+    id: number;
+    city: string;
+    hotel_id: string;
+    room_type: string;
+    nights: number;
+    check_in_date: string;
+    check_out_date: string;
+  }>;
+  // Add other properties as needed
+}
 
 const route = useRoute();
-const printData = ref({});
+const printData = ref<Partial<PrintData>>({});
 onMounted(async () => {
   await getRecordApi('/bookings/' + route.params.id).then((res: any) => {
     printData.value = res.result;

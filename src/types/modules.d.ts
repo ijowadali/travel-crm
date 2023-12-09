@@ -1,19 +1,21 @@
 declare module '*.vue' {
-  import { DefineComponent } from 'vue';
+  import {DefineComponent} from 'vue';
   const Component: DefineComponent<{}, {}, any>;
-  export default Component;
+    export default Component;
 }
 
 declare module 'virtual:*' {
-  const result: any;
-  export default result;
+    const result: any;
+    export default result;
 }
 
 declare type Recordable<T = any> = Record<string, T>;
 
 interface Window {
-  $message: any;
-  $dialog: any;
-  $notification: any;
-  $loading: any;
+    $message: any;
+    $dialog: any;
+    $notification: any;
+    $loading: any;
 }
+
+declare module 'vue3-print-nb'
